@@ -88,16 +88,3 @@
   margin: 10px 0 0 30px;
   color: rgb(19, 129, 255);
 }
-
-.message {
-  margin-top: 30px;
-  @include flex-setup();
-
-  button {
-    width: 164px;
-    height: 49px;
-    background-color: $button;
-    border: none;
-    border-radius: 50px;
-  }
-}

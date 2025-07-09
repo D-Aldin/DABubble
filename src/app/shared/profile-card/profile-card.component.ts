@@ -19,7 +19,7 @@ export class ProfileCardComponent {
 // example how to implement this in other components whitout button
 
 // <app-profile-card [src]="'./../../assets/images/profile-images/head-1.png'" [name]="'Aldin'" [active]="true" [email]="'aldin@gmail.com'">
-// Ich habe hier ngcontent implementiert, damit ein Button für die verschiedenen Profilkarten verwendet werden kann
+// I have implemented ngcontent here so that a button can be used for the various profile cards
 // </app-profile-card>
 
 // example with button
