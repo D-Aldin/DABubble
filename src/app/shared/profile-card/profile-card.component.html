@@ -1,0 +1,29 @@
+<div class="profile-card">
+   <div class="headline">
+      <h3>Profile</h3>
+      <button class="close"></button>
+   </div>
+   <div class="profile-img">
+      <img [src]="src" alt="profile-image">
+   </div>
+   <div class="main-content">
+      <h2>{{name}}</h2>
+      <div class="status">
+         <div [ngClass]="this.active ? 'isActive' : 'inactive'"></div>
+         @if(active) {
+         <p [ngStyle]="{'color': 'green'}">Aktiv</p>
+         } @else {
+         <p [ngStyle]="{'color': 'grey'}">Abwesend</p>
+         }
+      </div>
+      <div class="active"></div>
+      <div class="email-container">
+         <img src="./../../../assets/icons/profile-card/mail.png" alt="mail">
+         <p>E-Mail-Adresse</p>
+      </div>
+      <a class="email-link">{{email}}</a>
+   </div>
+   <div class="message">
+      <ng-content></ng-content>
+   </div>
+</div>

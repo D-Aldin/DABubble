@@ -1,0 +1,90 @@
+@import "./../../../styles/mixins";
+@import "./../../../styles/variables";
+
+.profile-card {
+  margin: 30px;
+  width: 500px;
+  height: 705px;
+  background-color: white;
+  border: transparent;
+  border-radius: 30px;
+  padding: 40px;
+  box-shadow: 1px 1px 10px 1px rgb(203, 203, 203);
+}
+
+.headline {
+  @include flex-setup($justify: space-between);
+}
+
+.close {
+  background-color: white;
+  width: 35px;
+  height: 35px;
+  border: none;
+  background-image: url("../../../assets/icons/profile-card/close.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+
+  &:hover {
+    background-image: url("../../../assets/icons/profile-card/close-hover.png");
+  }
+}
+
+.profile-img {
+  margin-top: 90px;
+  @include flex-setup();
+
+  img {
+    border-radius: 50%;
+  }
+}
+
+.main-content {
+  margin-top: 100px;
+
+  h2 {
+    margin: 10px 0 10px 0px;
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.isActive {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid green;
+  background-color: green;
+  border-radius: 50%;
+}
+
+.inactive {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid rgb(110, 110, 110);
+  background-color: rgb(126, 126, 126);
+  border-radius: 50%;
+}
+
+.email-container {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+  gap: 10px;
+
+  img {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.email-link {
+  margin: 10px 0 0 30px;
+  color: rgb(19, 129, 255);
+}

@@ -1,3 +1,6 @@
+@import "./styles/mixins";
+@import "./styles/variables";
+
 @use './styles/variables' as *;
 
 @font-face {
@@ -15,22 +18,4 @@
 
 body {
   font-family: "Nunito", sans-serif;
-}
-
-a {
-  cursor: pointer;
-}
-
-.button-style {
-  background-color: $primary-button-color;
-  color: white;
-
-  &:hover:not(:disabled) {
-    background-color: $primary_color;
-  }
-
-  &:disabled {
-    background-color: $placeholder-color;
-    cursor: not-allowed !important;
-  }
 }
