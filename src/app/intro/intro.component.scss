@@ -33,7 +33,6 @@ section {
   width: 400px;
   height: 100px;
   overflow: hidden;
-  border: 1px solid;
   position: relative;
   right: 50%;
   left: 10%;
@@ -44,7 +43,7 @@ section {
     position: absolute;
     white-space: nowrap;
     left: -100%;
-    animation: slideIn 3s forwards;
+    animation: slideIn 1.5s forwards;
   }
 }
 
@@ -54,7 +53,7 @@ section {
     opacity: 0;
   }
   30% {
-    opacity: 1;
+    opacity: 0.8;
   }
   100% {
     left: 0;
