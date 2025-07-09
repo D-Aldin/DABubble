@@ -1,8 +1,8 @@
+@import "./../../styles/_mixins.scss";
+
 section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  @include flex-setup();
+  width: 100vw;
   height: 100vh;
   background-image: linear-gradient(
     to bottom,
@@ -12,4 +12,52 @@ section {
     #535af3,
     #444df2
   );
+}
+
+.logo-container {
+  position: absolute;
+  left: 50%;
+  animation: moveLeft 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes moveLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-270px);
+  }
+}
+
+.dabubble-text {
+  width: 400px;
+  height: 100px;
+  overflow: hidden;
+  border: 1px solid;
+  position: relative;
+  right: 50%;
+  left: 10%;
+
+  h1 {
+    font-size: 80px;
+    color: white;
+    position: absolute;
+    white-space: nowrap;
+    left: -100%;
+    animation: slideIn 3s forwards;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
 }
