@@ -1,0 +1,135 @@
+@use '../../../styles/variables' as *;
+
+.main-header {
+    width: 100%;
+    min-height: 200px;
+    background-color: $secondary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center; // centers the inner `.header-content`
+    padding: 0 2rem;
+
+    .header-content {
+        width: 100%;
+        max-width: 1920px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .logo {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            padding-left: 32px;
+
+            .logo-img {
+                height: 50px;
+                width: auto;
+            }
+
+            .logo-name-img {
+                width: 156px;
+                height: auto;
+            }
+        }
+
+        .signup-link-box {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .signup-text {
+            margin: 0 0 0.5rem 0;
+            font-weight: 400;
+            font-style: Regular;
+            font-size: 18px;
+            line-height: 100%;
+            letter-spacing: 0%;
+            text-align: right;
+        }
+
+        .link-container {
+            color: $primary-color;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding-top: 10px;
+            padding-right: 15px;
+            padding-bottom: 10px;
+            padding-left: 15px;
+            border-radius: 25px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 125ms ease-in-out;
+
+            &:hover {
+                .signup-link {
+                    color: $primary-button-color;
+                }
+
+                border: 1px solid $primary-color;
+            }
+
+            .signup-link {
+                color: $primary-color;
+                text-decoration: none;
+                font-weight: 400;
+                transition: color 0.125s;
+                font-style: Regular;
+                font-size: 18px;
+                line-height: 120%;
+                letter-spacing: 0%;
+            }
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            position: relative;
+            background-color: white;
+            width: 989px;
+            height: 70px;
+            justify-content: space-between;
+            padding-top: 17.5px;
+            padding-right: 45px;
+            padding-bottom: 17.5px;
+            padding-left: 45px;
+            border-radius: 42px;
+
+            input {
+                flex: 1;
+                border: none;
+                outline: none;
+                font-size: 24px;
+                background: transparent;
+
+                &::placeholder {
+                    color: $placeholder-color;
+                    font-weight: 400;
+                    font-style: Regular;
+                    font-size: 24px;
+                    line-height: 100%;
+                    letter-spacing: 0%;
+                }
+            }
+
+            .search-icon {
+                position: absolute;
+                right: 1rem;
+                width: 35px;
+                height: 35px;
+                cursor: pointer;
+                background-image: url('/assets/icons/searchbar.svg');
+                background-size: contain;
+                background-repeat: no-repeat;
+
+                &:hover {
+                    background-image: url('/assets/icons/searchbar-hover.svg');
+                }
+            }
+        }
+    }
+}

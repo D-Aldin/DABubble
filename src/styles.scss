@@ -1,3 +1,5 @@
+@use './styles/variables' as *;
+
 @font-face {
   font-family: "Nunito";
   src: url("./assets/fonts/Nunito-VariableFont_wght.ttf");
@@ -13,4 +15,22 @@
 
 body {
   font-family: "Nunito", sans-serif;
+}
+
+a {
+  cursor: pointer;
+}
+
+.button-style {
+  background-color: $primary-button-color;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: $primary_color;
+  }
+
+  &:disabled {
+    background-color: $placeholder-color;
+    cursor: not-allowed !important;
+  }
 }

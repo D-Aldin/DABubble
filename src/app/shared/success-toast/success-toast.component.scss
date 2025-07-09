@@ -1,0 +1,58 @@
+@use '../../../styles/variables' as *;
+
+.success-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: $primary-button-color;
+    color: white;
+    border-radius: 1rem;
+    font-weight: 500;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    transform: translateX(150%);
+    opacity: 0;
+    animation: slide-in 0.4s ease-out forwards, slide-out 0.4s ease-in 3.2s forwards;
+    width: auto;
+    height: 149px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    padding: 50px;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 36px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+    img {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+// Optional modifier for layout spacing
+.with-icon {
+    padding-left: 1.5rem;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(150%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out {
+    to {
+        transform: translateX(150%);
+        opacity: 0;
+    }
+}

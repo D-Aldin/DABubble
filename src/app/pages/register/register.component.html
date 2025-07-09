@@ -1,7 +1,51 @@
-<!-- <app-input-field
-  [src]="'../../assets/icons/person_filled.svg'"
-  [placeholder]="'E-Mail'"
-  [type]="'email'"
-  [formControl]="form.get('email')!"
-  [errorMsg]="form.get('email')?.touched && form.get('email')?.invalid ? 'Diese E-Mail-Adresse ist leider ungültig.' : ''">
-</app-input-field> -->
+<app-header></app-header>
+<div class="register-container">
+  <div class="register-card">
+    <button class="back-button">
+      <div class="back-button-img" role="img" aria-label="Zurück"></div>
+    </button>
+
+    <h1 class="title">Konto erstellen</h1>
+    <p class="subtitle">
+      Mit deinem Namen und deiner E-Mail-Adresse hast<br />
+      du dein neues DABubble-Konto.
+    </p>
+
+    <form [formGroup]="form">
+      <!-- Name field -->
+      <app-input-field formControlName="name" [placeholder]="'Name und Nachname'"
+        [src]="'assets/icons/person_filled.svg'" [errorMsg]="nameValidation()" [maxlength]="20">
+      </app-input-field>
+
+      <!-- E-Mail field -->
+      <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
+        [errorMsg]="emailValidation()">
+      </app-input-field>
+
+      <!-- Passwort field -->
+      <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
+        [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
+      </app-input-field>
+
+      <label class="checkbox-container">
+        <input type="checkbox" formControlName="privacy" required />
+        <span>
+          Ich stimme der
+          <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> zu.
+        </span>
+      </label>
+
+      <div class="button-container">
+        <button class="submit-button button-style" [disabled]="form.invalid">Weiter</button>
+      </div>
+    </form>
+  </div>
+  
+  <div class="privacy-policy-legal-notice-container">
+    <span>Impressum</span>
+    <span>Datenschutz</span>
+  </div>
+
+</div>
+
+<!-- <app-success-toast message="Konto erfolgreich erstellt!" [hasIcon]="false"></app-success-toast> -->

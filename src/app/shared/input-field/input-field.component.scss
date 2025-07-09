@@ -24,7 +24,7 @@
         cursor: pointer;
 
         &.invalid {
-            border: 1px solid deeppink;
+            border: 1px solid $error-msg-color;
         }
 
         &:hover {
@@ -32,7 +32,7 @@
         }
 
         &:focus-within {
-            border-color: rgba(83, 90, 241, 1);
+            border-color: $input-field-focus-color;
         }
 
         img {
@@ -65,7 +65,7 @@
         min-height: 20px; // reserve vertical space
         margin-top: 4px;
         font-size: 0.85rem;
-        color: deeppink;
+        color: $error-msg-color;
         font-weight: 500;
     }
 }

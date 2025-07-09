@@ -1,0 +1,20 @@
+<header class="main-header">
+    <div class="header-content">
+        <div class="logo">
+            <img class="logo-img" src="../../../assets/icons/logo.png" alt="Logo" />
+            <img class="logo-name-img" src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
+        </div>
+
+        <div class="search-bar" *ngIf="showSearchBar">
+            <input type="text" placeholder="Devspace durchsuchen" />
+            <div class="search-icon" role="img" aria-label="Suche"></div>
+        </div>
+
+        <div class="signup-link-box" *ngIf="showSignUpLink">
+            <p class="signup-text">Neu bei DABubble?</p>
+            <div class="link-container">
+                <a routerLink="/register" class="signup-link">Konto erstellen</a>
+            </div>
+        </div>
+    </div>
+</header>
