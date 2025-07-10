@@ -9,13 +9,14 @@
     // min-height: 100vh;
     background-color: $secondary-color;
     flex-direction: column;
+    position: relative;
 
     .signup-link {
         position: absolute;
-        top: 2rem;
+        top: -7rem;
         right: 2rem;
         font-size: 0.9rem;
-        color: #333;
+        color: black;
         display: flex;
         gap: 0.3rem;
         align-items: center;
