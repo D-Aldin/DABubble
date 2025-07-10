@@ -31,7 +31,7 @@
         <input type="checkbox" formControlName="privacy" required />
         <span>
           Ich stimme der
-          <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> zu.
+          <a [routerLink]="['/privacy-policy']" target="_blank">Datenschutzerklärung</a> zu.
         </span>
       </label>
 
@@ -42,8 +42,8 @@
   </div>
   
   <div class="privacy-policy-legal-notice-container">
-    <span>Impressum</span>
-    <span>Datenschutz</span>
+    <span [routerLink]="['/legal-notice']"  >Impressum</span>
+    <span [routerLink]="['/privacy-policy']">Datenschutz</span>
   </div>
 
 </div>

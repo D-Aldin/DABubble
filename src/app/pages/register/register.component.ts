@@ -4,11 +4,12 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angu
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../shared/header/header.component";
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [InputFieldComponent, ReactiveFormsModule, CommonModule, HeaderComponent, SuccessToastComponent],
+  imports: [InputFieldComponent, ReactiveFormsModule, CommonModule, HeaderComponent, SuccessToastComponent, RouterModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
