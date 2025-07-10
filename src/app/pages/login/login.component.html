@@ -1,11 +1,23 @@
+<div class="section-wrapper">
+  <div class="intro-animation">
+   <div class="wrapper-animation">
+      <div class="logo-container">
+         <img class="logo" src="./../../assets/icons/logo.png" alt="logo">
+      </div>
+      <div class="dabubble-text">
+         <h1>DABubble</h1>
+      </div>
+   </div>
+</div>
 <app-header></app-header>
 <div class="login-container">
   <div class="signup-link">
     <span>Neu bei DABubble?</span>
     <a [routerLink]="['/register']">Konto erstellen</a>
   </div>
-  
-  <div class="login-card">
+
+  <div class="login-card-wrapper">
+    <div class="login-card">
     <h1 class="title">Anmeldung</h1>
     <p class="subtitle">Wir empfehlen dir, die E-mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
     <form [formGroup]="loginForm">
@@ -42,4 +54,13 @@
     <span [routerLink]="['/privacy-policy']">Datenschutz</span>
   </div>
 </div>
+
+  </div>
+  
+  
+
+
+
+</div>
+
 
