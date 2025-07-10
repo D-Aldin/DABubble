@@ -19,3 +19,19 @@
 body {
   font-family: "Nunito", sans-serif;
 }
+
+.button-style {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: $primary-button-color;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-color;
+  }
+
+  &:disabled {
+    background-color: $placeholder-color;
+    cursor: not-allowed !important;
+  }
+}

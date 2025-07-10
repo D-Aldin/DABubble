@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../shared/header/header.component";
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { RouterModule } from '@angular/router';
+import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
 
 @Component({
   selector: 'app-register',
@@ -14,9 +15,14 @@ import { RouterModule } from '@angular/router';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  form: any = new FormControl('', [Validators.required, Validators.minLength(2)]);;
+  form: any = new FormControl('', [Validators.required, Validators.minLength(2)]);
   emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   namePattern = /^[A-Za-zÄÖÜäöüß.,'\-]+(?:\s+[A-Za-zÄÖÜäöüß.,'\-]+)+$/;
+  avatarImgPaths = avatarImgPaths;
+  selectedAvatar: string = defaultAvatar;
+  isButtonDisabled: boolean = true;
+  registerFormStatus: boolean = false;
+  registerCompletionStatus: boolean = false;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -70,5 +76,18 @@ export class RegisterComponent {
     }
 
     return '';
+  }
+
+  selectAvatar(avatar: string): void {
+    this.selectedAvatar = avatar;
+    this.validateButton();
+  }
+
+  validateButton(): void {
+    this.isButtonDisabled = this.selectedAvatar === defaultAvatar;
+  }
+
+  proceedToAvatarChoosing(): void {
+    this.registerFormStatus = !this.registerFormStatus;
   }
 }

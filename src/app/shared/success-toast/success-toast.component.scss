@@ -20,6 +20,7 @@
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 0px;
     padding: 50px;
     font-weight: 700;
     font-style: Bold;
@@ -33,7 +34,6 @@
     }
 }
 
-// Optional modifier for layout spacing
 .with-icon {
     padding-left: 1.5rem;
 }

@@ -48,28 +48,6 @@
     flex-direction: column;
     align-items: center;
 
-    .back-button {
-        position: absolute;
-        top: 3rem;
-        left: 1.5rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-
-        .back-button-img {
-            width: 40px;
-            height: 40px;
-            background-image: url('/assets/icons/arrow_back.svg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            transition: background-image 0.125s ease;
-
-            &:hover {
-                background-image: url('/assets/icons/arrow-back-hover.svg');
-            }
-        }
-    }
-
     .title {
         text-align: center;
         color: $primary-button-color;
@@ -78,6 +56,8 @@
         line-height: 120%;
         letter-spacing: 0%;
         text-align: center;
+        width: 100%;
+        margin-right: 14px;
     }
 
     .subtitle {
@@ -123,26 +103,146 @@
                 }
             }
         }
+    }
+}
 
-        .button-container {
-            width: 100%;
-            height: auto;
-            display: flex;
-            justify-content: flex-end;
+.button-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
 
-            .submit-button {
-                border: none;
-                border-radius: 2rem;
-                padding: 0.75rem;
-                font-size: 1rem;
-                font-weight: 500;
-                margin-top: 1rem;
-                cursor: pointer;
-                transition: background 0.3s;
+    .submit-button {
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem;
+        margin-top: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 107px;
+        height: 49px;
+        font-family: Nunito;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 18px;
+        line-height: 100%;
+        letter-spacing: 0%;
+    }
+}
 
-                width: 107px;
-                height: 49px;
+.heading-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: normal;
+    align-items: center;
+
+    .back-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+
+        .back-button-img {
+            width: 40px;
+            height: 40px;
+            background-image: url('/assets/icons/arrow_back.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: background-image 0.125s ease;
+
+            &:hover {
+                background-image: url('/assets/icons/arrow-back-hover.svg');
             }
         }
+    }
+}
+
+.avatar-selection {
+    background-color: white;
+    padding: 40px;
+    text-align: center;
+    margin: auto;
+    width: 100%;
+    max-width: 606px;
+    height: auto;
+    border-radius: 30px;
+
+    h1 {
+        color: $primary-button-color;
+        // margin-bottom: 30px;
+        width: 100%;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 46px;
+        line-height: 120%;
+        letter-spacing: 0%;
+        text-align: center;
+    }
+
+    .avatar-preview {
+        margin-bottom: 20px;
+        margin-top: 30px;
+
+        .selected-avatar {
+            margin-bottom: 10px;
+            width: 168px;
+            height: 168px;
+            border-radius: 100px;
+            padding: 16px;
+        }
+
+        h2 {
+            color: black;
+            font-weight: 700;
+            font-style: Bold;
+            font-size: 32px;
+            line-height: 100%;
+            letter-spacing: 0%;
+        }
+    }
+
+    .select-label {
+        color: black;
+        margin-bottom: 12px;
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 20px;
+        line-height: 100%;
+        letter-spacing: 0%;
+        width: 100%;
+        text-align: left;
+        margin-left: 32px;
+    }
+
+    .avatar-list {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+
+        .avatar-option {
+            width: 64px;
+            height: 64px;
+            border-radius: 41px;
+            cursor: pointer;
+            transition: border 0.125s;
+            border: 3px solid transparent;
+
+            &.selected {
+                border: 3px solid #3d4fe4;
+            }
+
+            &:hover {
+                border: 3px solid lightgray;
+            }
+        }
+    }
+
+    .button-container {
+        text-align: center;
+        display: flex;
+        justify-content: right;
+        margin-right: 32px;
+        margin-top: 56px;
     }
 }
