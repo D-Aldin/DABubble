@@ -1,0 +1,198 @@
+@use '../../../styles/variables' as *;
+
+.login-container {
+  height: calc(100vh - 200px);
+  width: 100%;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    // min-height: 100vh;
+    background-color: $secondary-color;
+    flex-direction: column;
+
+    .signup-link {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        font-size: 0.9rem;
+        color: #333;
+        display: flex;
+        gap: 0.3rem;
+        align-items: center;
+        flex-direction: column;
+    
+        a {
+          color: #6c63ff;
+          font-weight: 500;
+          text-decoration: none;
+    
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+  .privacy-policy-legal-notice-container {
+      display: flex;
+      gap: 16px;
+      padding: 14px 34px;
+  
+      span {
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 18px;
+        line-height: 120%;
+        letter-spacing: 0%;
+        color: $primary-color;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: 125ms ease-in-out;
+        padding: 6px 10px;
+        border-radius: 25px;
+  
+        &:hover {
+          color: $primary-button-color;
+          border: 1px solid $primary-color;
+        }
+      }
+    }
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  width: 100%;
+  max-width: 606px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+
+  .title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #3d5afe;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: black;
+    text-align: center;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+
+    .forgot-password {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #3d5afe;
+      text-decoration: none;
+      margin-top: -0.5rem;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+        .divider {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          gap: 0.5rem;
+          width: 100%;
+          margin: 1rem 0;
+    
+          span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            color: #000;
+          }
+    
+          hr {
+            flex: 1;
+            border: none;
+            border-top: 1px solid black;
+            height: 1px;
+            background-color: black;
+          }
+        }
+
+    .google-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+      background-color: rgb(236, 238, 254);
+      border: 1px solid #ddd;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      width: 100%;
+      max-width: 500px;
+      height: 60px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+
+      button {
+        flex: 1;
+        padding: 0.7rem 1rem;
+        font-size: 1rem;
+        font-weight: 500;
+        border-radius: 40px;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+        width: 124px;
+        height: 44px;
+      }
+
+      .primary-btn {
+        background-color: #3d5afe;
+        color: white;
+        border: none;
+
+        &:hover {
+          background-color: #2947ff;
+        }
+      }
+
+      .secondary-btn {
+        background-color: white;
+        color: #3d5afe;
+        border: 2px solid #3d5afe;
+
+        &:hover {
+          background-color: #eef0ff;
+        }
+      }
+    }
+  }
+}

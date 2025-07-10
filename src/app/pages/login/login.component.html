@@ -1,1 +1,45 @@
-<p>login works!</p>
+<app-header></app-header>
+<div class="login-container">
+  <div class="signup-link">
+    <span>Neu bei DABubble?</span>
+    <a [routerLink]="['/register']">Konto erstellen</a>
+  </div>
+  
+  <div class="login-card">
+    <h1 class="title">Anmeldung</h1>
+    <p class="subtitle">Wir empfehlen dir, die E-mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+    <form [formGroup]="loginForm">
+
+      <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
+        [errorMsg]="emailValidation()">
+      </app-input-field>
+
+      <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
+        [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
+      </app-input-field>
+
+      <a class="forgot-password" href="#">Passwort vergessen?</a>
+
+      <div class="divider">
+        <hr /><span>ODER</span><hr />
+      </div>
+  
+      <button type="button" class="google-button" (click)="onGoogleLogin()">
+        <img src="assets/images/login-img/Google.png" alt="Google" />
+        Anmelden mit Google
+      </button>
+  
+      <div class="button-group">
+        <button type="submit" class="primary-btn" [disabled]="loginForm.invalid">Anmelden</button>
+        <button type="button" class="secondary-btn" (click)="onGuestLogin()">Gäste-Login</button>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="privacy-policy-legal-notice-container">
+    <span [routerLink]="['/legal-notice']"  >Impressum</span>
+    <span [routerLink]="['/privacy-policy']">Datenschutz</span>
+  </div>
+</div>
+
