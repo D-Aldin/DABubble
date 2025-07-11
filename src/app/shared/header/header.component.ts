@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +20,7 @@ export class HeaderComponent {
   public showProfileMenu: boolean = false;
   public isChevronHovered: boolean = false;
 
-  constructor(public router: Router) {
+  constructor(public router: Router, private userAuthService: AuthService) {
     this.handleHeaderAppearancesForRoutes();
   }
 
@@ -40,6 +41,8 @@ export class HeaderComponent {
   }
 
   logout(): void {
-    // Logout-Logik hier
+    this.userAuthService.logout().then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 }

@@ -6,8 +6,8 @@ import { HeaderComponent } from "../../shared/header/header.component";
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { Router, RouterModule } from '@angular/router';
 import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
-import { AuthService } from '../../core/auth.service';
-import { UserService } from '../../core/user.service';
+import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-register',

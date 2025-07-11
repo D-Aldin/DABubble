@@ -139,16 +139,16 @@
       cursor: pointer;
       position: relative;
 
+      &:hover {
+        color: $primary-color;
+      }
+
       .user-name {
         font-weight: 700;
         font-style: Bold;
         font-size: 32px;
         line-height: 100%;
         letter-spacing: 0%;
-
-        &:hover {
-          color: $primary-color;
-        }
       }
 
       .avatar-wrapper {
