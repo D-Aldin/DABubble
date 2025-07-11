@@ -28,6 +28,10 @@
     line-height: 100%;
     letter-spacing: 0%;
 
+    &.error {
+        background-color: $error-msg-color; // kräftiges Rot für Fehler
+    }
+
     img {
         width: 16px;
         height: 16px;

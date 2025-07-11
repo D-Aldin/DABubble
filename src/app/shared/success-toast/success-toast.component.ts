@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 
 @Component({
   selector: 'app-success-toast',
@@ -11,4 +11,9 @@ import { Component, Input } from '@angular/core';
 export class SuccessToastComponent {
   @Input() message: string = 'Aktion erfolgreich';
   @Input() hasIcon: boolean = false;
+  @Input() success: boolean = false;
+
+  @HostBinding('class.error') get isError() {
+    return !this.success;
+  }
 }

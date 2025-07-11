@@ -1,21 +1,25 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatCurrency } from '@angular/common';
 import { InputFieldComponent } from '../../shared/input-field/input-field.component';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/auth.service';
+import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [HeaderComponent,ReactiveFormsModule, CommonModule, InputFieldComponent, RouterModule],
+  imports: [HeaderComponent, ReactiveFormsModule, CommonModule, InputFieldComponent, RouterModule, SuccessToastComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   loginForm!: FormGroup;
+  showErrorToast: boolean = false;
+  showSuccessToast: boolean = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -47,7 +51,7 @@ export class LoginComponent {
     }
     return '';
   }
-  
+
   passwordValidation(): string {
     const passCtrl = this.loginForm.get('password');
     if (passCtrl?.touched || passCtrl?.dirty) {
@@ -56,5 +60,34 @@ export class LoginComponent {
     }
     return '';
   }
-  
+
+  onLogin(): void {
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value.email, this.loginForm.value.password)
+        .then(async userCredential => {
+          this.showSuccessFeedback()
+          this.proceedToDashboard()
+        })
+        .catch(error => {
+          this.showErrorFeedback()
+        });
+    }
+    this.loginForm.reset();
+  }
+
+  showSuccessFeedback(): void {
+    this.showSuccessToast = true;
+    this.showErrorToast = false;
+  }
+
+  showErrorFeedback(): void {
+    this.showSuccessToast = false;
+    this.showErrorToast = true;
+  }
+
+  proceedToDashboard(): void {
+    setTimeout(() => {
+      this.router.navigateByUrl('/dashboard')
+    }, 2000);
+  }
 }

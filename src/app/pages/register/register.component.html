@@ -39,14 +39,14 @@
 
       <div class="button-container">
         <button class="submit-button button-style" [disabled]="form.invalid"
-          (click)="proceedToAvatarChoosing()">Weiter</button>
+          (click)="toggleAvatarChoosing()">Weiter</button>
       </div>
     </form>
   </div>
 
   <div class="avatar-selection" *ngIf="registerFormStatus">
     <div class="heading-container">
-      <button class="back-button" (click)="registerFormStatus = !registerFormStatus">
+      <button class="back-button" (click)="toggleAvatarChoosing()">
         <div class="back-button-img" role="img" aria-label="Zurück"></div>
       </button>
       <h1>Wähle deinen Avatar</h1>
@@ -65,8 +65,7 @@
     </div>
 
     <div class="button-container">
-      <button class="submit-button button-style" [disabled]="isButtonDisabled"
-        (click)="registerCompletionStatus = !registerCompletionStatus; onRegister()">Weiter</button>
+      <button class="submit-button button-style" [disabled]="isButtonDisabled" (click)="onRegister()">Weiter</button>
     </div>
   </div>
 
@@ -77,5 +76,8 @@
 
 </div>
 
-<app-success-toast message="Konto erfolgreich erstellt!" [hasIcon]="false"
-  *ngIf="registerCompletionStatus"></app-success-toast>
+<app-success-toast message="Konto erfolgreich erstellt!" [hasIcon]="false" *ngIf="showSuccessToast"
+  [success]="true"></app-success-toast>
+
+<app-success-toast message="Dieses Konto ist bereits registriert!" [hasIcon]="false" *ngIf="showErrorToast"
+  [success]="false"></app-success-toast>

@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angu
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "../../shared/header/header.component";
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
 import { AuthService } from '../../core/auth.service';
 import { UserService } from '../../core/user.service';
@@ -24,9 +24,10 @@ export class RegisterComponent {
   selectedAvatar: string = defaultAvatar;
   isButtonDisabled: boolean = true;
   registerFormStatus: boolean = false;
-  registerCompletionStatus: boolean = false;
+  showErrorToast: boolean = false;
+  showSuccessToast: boolean = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService, private router: Router) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(this.namePattern), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
@@ -89,7 +90,7 @@ export class RegisterComponent {
     this.isButtonDisabled = this.selectedAvatar === defaultAvatar;
   }
 
-  proceedToAvatarChoosing(): void {
+  toggleAvatarChoosing(): void {
     this.registerFormStatus = !this.registerFormStatus;
   }
 
@@ -98,14 +99,31 @@ export class RegisterComponent {
       this.authService.register(this.form.value.email, this.form.value.password)
         .then(async userCredential => {
           const user = userCredential.user;
-          console.log('Registrierung erfolgreich:', user.uid);
           await this.userService.createUserDocument(user.uid, this.selectedAvatar);
+          this.showSuccessFeedback()
+          this.proceedToLogin()
         })
         .catch(error => {
-          console.error('Registrierung fehlgeschlagen:', error.message);
+          this.showErrorFeedback()
         });
-    } else {
-      this.form.markAllAsTouched();
     }
+    this.form.reset();
+  }
+
+  showSuccessFeedback(): void {
+    this.showSuccessToast = true;
+    this.showErrorToast = false;
+  }
+
+  showErrorFeedback(): void {
+    this.showSuccessToast = false;
+    this.showErrorToast = true;
+    this.toggleAvatarChoosing()
+  }
+
+  proceedToLogin(): void {
+    setTimeout(() => {
+      this.router.navigateByUrl('/login')
+    }, 2000);
   }
 }

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { ProfileCardComponent } from './shared/profile-card/profile-card.component';
+import { ThreadComponent } from './shared/thread/thread.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet ],
+  imports: [CommonModule, RouterOutlet, ThreadComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
