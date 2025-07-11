@@ -1,4 +1,4 @@
-<div class="success-toast" [class.with-icon]="hasIcon">
+<div class="success-toast" [class.with-icon]="hasIcon" [ngClass]="{ 'error': !success }">
   <img *ngIf="hasIcon" src="/assets/icons/send-icon.svg" alt="Gesendet" />
   <span>{{ message }}</span>
 </div>

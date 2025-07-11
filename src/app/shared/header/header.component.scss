@@ -14,6 +14,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    max-width: 1920px;
 
     .logo {
       display: flex;
@@ -127,6 +128,102 @@
 
         &:hover {
           background-image: url("/assets/icons/searchbar-hover.svg");
+        }
+      }
+    }
+
+    .profile-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
+
+      .user-name {
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 32px;
+        line-height: 100%;
+        letter-spacing: 0%;
+
+        &:hover {
+          color: $primary-color;
+        }
+      }
+
+      .avatar-wrapper {
+        position: relative;
+
+        .avatar-image {
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+        }
+
+        .online-indicator {
+          position: absolute;
+          bottom: 12px;
+          right: 0px;
+          width: 14px;
+          height: 14px;
+          background-color: rgba(146, 200, 62, 1); // Grün
+          border-radius: 50%;
+          border: 2px solid white;
+        }
+      }
+
+      .chevron-icon {
+        width: 24px;
+        height: 24px;
+        transition: filter 0.2s ease;
+      }
+    }
+
+    .profile-menu {
+      position: absolute;
+      top: 15%;
+      right: 28px;
+      width: 282px;
+      height: 181px;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      gap: 15px;
+      padding: 30px;
+      border-top-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+      border-bottom-left-radius: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+      button {
+        font-size: 20px;
+        font-weight: 600;
+        color: black;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 999px;
+        transition: all 0.125s ease;
+        width: 100%;
+        height: 53px;
+        padding-top: 10px;
+        padding-right: 70px;
+        padding-bottom: 10px;
+        padding-left: 70px;
+        font-family: Nunito;
+        font-weight: 600;
+        font-style: SemiBold;
+        font-size: 24px;
+        line-height: 100%;
+        letter-spacing: 0%;
+
+        &:hover {
+          background-color: $secondary-color; // light blue hover background
+          color: $button; // blue text
         }
       }
     }

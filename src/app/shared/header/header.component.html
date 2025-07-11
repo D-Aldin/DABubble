@@ -5,16 +5,33 @@
             <img class="logo-name-img" src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
         </div>
 
-        <!-- <div class="search-bar" *ngIf="showSearchBar">
+        <div class="search-bar" *ngIf="showSearchBar">
             <input type="text" placeholder="Devspace durchsuchen" />
             <div class="search-icon" role="img" aria-label="Suche"></div>
-        </div> -->
+        </div>
 
         <div class="signup-link-box" *ngIf="showSignUpLink">
             <p class="signup-text">Neu bei DABubble?</p>
             <div class="link-container">
-                <a routerLink="/register" class="signup-link">Konto erstellen</a>
+                <a [routerLink]="['/register']" class="signup-link">Konto erstellen</a>
             </div>
+        </div>
+
+        <div class="profile-container" (click)="toggleProfileMenu()" *ngIf="showProfileAvatar"
+            (mouseenter)="isChevronHovered = true" (mouseleave)="isChevronHovered = false">
+            <span class="user-name">Frederik Beck</span>
+            <div class="avatar-wrapper">
+                <img src="../../../assets/images/register/default-profile-img.svg" alt="Profilbild"
+                    class="avatar-image" />
+                <span class="online-indicator"></span>
+            </div>
+            <img [src]="isChevronHovered ? 'assets/icons/dashboard/keyboard_arrow_down_hover.svg' : 'assets/icons/dashboard/keyboard_arrow_down.svg'"
+                alt="Chevron" class="chevron-icon" />
+        </div>
+
+        <div *ngIf="!showProfileMenu && showProfileAvatar" class="profile-menu">
+            <button>Profil</button>
+            <button (click)="logout()">Log out</button>
         </div>
     </div>
 </header>
