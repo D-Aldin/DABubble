@@ -6,6 +6,8 @@ import { HeaderComponent } from "../../shared/header/header.component";
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { RouterModule } from '@angular/router';
 import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
+import { AuthService } from '../../core/auth.service';
+import { UserService } from '../../core/user.service';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +26,7 @@ export class RegisterComponent {
   registerFormStatus: boolean = false;
   registerCompletionStatus: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(this.namePattern), Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
@@ -89,5 +91,21 @@ export class RegisterComponent {
 
   proceedToAvatarChoosing(): void {
     this.registerFormStatus = !this.registerFormStatus;
+  }
+
+  onRegister(): void {
+    if (this.form.valid) {
+      this.authService.register(this.form.value.email, this.form.value.password)
+        .then(async userCredential => {
+          const user = userCredential.user;
+          console.log('Registrierung erfolgreich:', user.uid);
+          await this.userService.createUserDocument(user.uid, this.selectedAvatar);
+        })
+        .catch(error => {
+          console.error('Registrierung fehlgeschlagen:', error.message);
+        });
+    } else {
+      this.form.markAllAsTouched();
+    }
   }
 }

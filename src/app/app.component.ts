@@ -6,7 +6,7 @@ import { IntroComponent } from './intro/intro.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, IntroComponent],
+  imports: [CommonModule, RouterOutlet, IntroComponent ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
