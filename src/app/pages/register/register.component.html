@@ -39,14 +39,14 @@
 
       <div class="button-container">
         <button class="submit-button button-style" [disabled]="form.invalid"
-          (click)="proceedToAvatarChoosing()">Weiter</button>
+          (click)="toggleAvatarChoosing()">Weiter</button>
       </div>
     </form>
   </div>
 
   <div class="avatar-selection" *ngIf="registerFormStatus">
     <div class="heading-container">
-      <button class="back-button" (click)="registerFormStatus = !registerFormStatus">
+      <button class="back-button" (click)="toggleAvatarChoosing()">
         <div class="back-button-img" role="img" aria-label="Zurück"></div>
       </button>
       <h1>Wähle deinen Avatar</h1>

@@ -65,12 +65,10 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value.email, this.loginForm.value.password)
         .then(async userCredential => {
-          console.log('Login erfolgreich:', userCredential.user.email);
           this.showSuccessFeedback()
           this.proceedToDashboard()
         })
         .catch(error => {
-          console.error('Login fehlgeschlagen:', error.message);
           this.showErrorFeedback()
         });
     }

@@ -90,7 +90,7 @@ export class RegisterComponent {
     this.isButtonDisabled = this.selectedAvatar === defaultAvatar;
   }
 
-  proceedToAvatarChoosing(): void {
+  toggleAvatarChoosing(): void {
     this.registerFormStatus = !this.registerFormStatus;
   }
 
@@ -118,6 +118,7 @@ export class RegisterComponent {
   showErrorFeedback(): void {
     this.showSuccessToast = false;
     this.showErrorToast = true;
+    this.toggleAvatarChoosing()
   }
 
   proceedToLogin(): void {
