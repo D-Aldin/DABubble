@@ -1,0 +1,30 @@
+@import "./../../../styles/mixins";
+@import "./../../../styles/variables";
+
+.thread {
+  width: 490px;
+  height: 940px;
+  border: 1px solid;
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.headline {
+  @include flex-setup($justify: space-between);
+
+  .headline-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    h4 {
+      font-size: 0.875rem !important;
+      color: $primary-color;
+    }
+  }
+}
+
+.close {
+  @include close-button();
+}

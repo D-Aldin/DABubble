@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
+import { ThreadComponent } from './shared/thread/thread.component';
 import { AuthService } from './core/services/auth.service';
 import { User } from 'firebase/auth';
 import { SuccessToastComponent } from './shared/success-toast/success-toast.component';
@@ -8,7 +9,7 @@ import { SuccessToastComponent } from './shared/success-toast/success-toast.comp
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SuccessToastComponent],
+  imports: [CommonModule, RouterOutlet, SuccessToastComponent, ThreadComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

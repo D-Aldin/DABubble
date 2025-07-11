@@ -6,3 +6,19 @@
     flex-direction: $direction;
   }
 }
+
+@mixin close-button {
+  background-color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  border: none;
+  background-image: url("../../src/assets/icons/close.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  cursor: pointer;
+
+  &:hover {
+    background-image: url("../../src/assets/icons/close-hover.png");
+  }
+}
