@@ -23,6 +23,7 @@ export class ProfileCardComponent {
 // </app-profile-card>
 
 // example with button
+
 // <app-profile-card [src]="'./../../assets/images/profile-images/head-1.png'" [name]="'Aldin'" [active]="true" [email]="'aldin@gmail.com'">
 // <button>Nachricht</button>
 // </app-profile-card>

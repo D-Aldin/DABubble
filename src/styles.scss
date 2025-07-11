@@ -1,7 +1,6 @@
-@use './styles/variables' as *;
+@use "./styles/variables" as *;
 @import "./styles/mixins";
 // @import "./styles/variables";
-
 
 @font-face {
   font-family: "Nunito";
@@ -14,10 +13,12 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  // border: 1px solid red;
 }
 
 body {
   font-family: "Nunito", sans-serif;
+  height: 100vh;
 }
 
 .button-style {
