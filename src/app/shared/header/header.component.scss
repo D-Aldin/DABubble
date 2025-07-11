@@ -135,7 +135,7 @@
     .profile-container {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 20px;
       cursor: pointer;
       position: relative;
 
@@ -181,8 +181,8 @@
 
     .profile-menu {
       position: absolute;
-      top: 15%;
-      right: 28px;
+      top: 110px;
+      right: 16px;
       width: 282px;
       height: 181px;
       background-color: white;

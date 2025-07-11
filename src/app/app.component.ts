@@ -15,7 +15,6 @@ import { SuccessToastComponent } from './shared/success-toast/success-toast.comp
 })
 export class AppComponent implements OnInit {
   title = 'dabubble';
-  currentUser: User | null = null;
   showToast: boolean = false;
   toastMessage: string = '';
   successCondition = true;

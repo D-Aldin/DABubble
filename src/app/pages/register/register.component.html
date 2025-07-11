@@ -15,7 +15,7 @@
 
     <form [formGroup]="form">
       <!-- Name field -->
-      <app-input-field formControlName="name" [placeholder]="'Name und Nachname'"
+      <app-input-field formControlName="name" [placeholder]="'Name und Nachname'" (input)="onNameChange($event)"
         [src]="'assets/icons/person_filled.svg'" [errorMsg]="nameValidation()" [maxlength]="20">
       </app-input-field>
 
@@ -65,7 +65,9 @@
     </div>
 
     <div class="button-container">
-      <button class="submit-button button-style" [disabled]="isButtonDisabled" (click)="onRegister()">Weiter</button>
+      <button class="submit-button button-style" [disabled]="isButtonDisabled" (click)="onRegister()" type="button">
+        Weiter
+      </button>
     </div>
   </div>
 
