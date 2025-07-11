@@ -1,0 +1,25 @@
+@import "./../../../styles/mixins";
+@import "./../../../styles/variables";
+
+.section-wrapper {
+  @include flex-setup();
+  padding: 0 20px 0 20px;
+}
+
+.date {
+  display: flex;
+  justify-content: center;
+  height: 1;
+  border: 1px solid rgb(173, 176, 217, 1);
+  border-radius: 30px;
+  padding: 3px 10px 3px 10px;
+  white-space: nowrap;
+}
+
+.line {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgb(173, 176, 217, 1);
+  height: 0.2px;
+  width: calc(100vw - 50px);
+}
