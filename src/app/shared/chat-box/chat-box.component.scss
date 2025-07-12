@@ -1,43 +1,6 @@
 @import "./../../../styles/mixins";
 @import "./../../../styles/variables";
 
-.thread {
-  width: 490px;
-  height: 100vh;
-  border: none;
-  background-color: white;
-  border-radius: 30px;
-}
-
-.headline {
-  @include flex-setup($justify: space-between);
-  border-bottom: 1px solid rgb(242, 242, 242);
-  box-shadow: 0px 2px 10px rgb(224, 224, 224);
-  padding: 20px;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-
-  .headline-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-    h4 {
-      font-size: 0.875rem !important;
-      color: $primary-color;
-    }
-  }
-}
-
-.close {
-  @include close-button();
-}
-
-.main-content {
-  padding: 30px;
-}
-
 .thread-message {
   display: grid;
   grid-template-columns: 90px min-content auto;
@@ -135,4 +98,8 @@
 .line {
   border-bottom: 1px solid rgb(173, 176, 217);
   width: 100%;
+}
+
+.mirror {
+  transform: scaleX(-1);
 }
