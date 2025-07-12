@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule, formatCurrency } from '@angular/common';
 import { InputFieldComponent } from '../../shared/input-field/input-field.component';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../core/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 
 @Component({

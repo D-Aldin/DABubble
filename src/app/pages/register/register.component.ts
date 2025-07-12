@@ -6,8 +6,8 @@ import { HeaderComponent } from "../../shared/header/header.component";
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { Router, RouterModule } from '@angular/router';
 import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
-import { AuthService } from '../../core/auth.service';
-import { UserService } from '../../core/user.service';
+import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -26,6 +26,7 @@ export class RegisterComponent {
   registerFormStatus: boolean = false;
   showErrorToast: boolean = false;
   showSuccessToast: boolean = false;
+  nameInput: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService, private router: Router) {
     this.form = this.fb.group({
@@ -99,7 +100,7 @@ export class RegisterComponent {
       this.authService.register(this.form.value.email, this.form.value.password)
         .then(async userCredential => {
           const user = userCredential.user;
-          await this.userService.createUserDocument(user.uid, this.selectedAvatar);
+          await this.userService.createUserDocument(user.uid, this.selectedAvatar, this.nameInput);
           this.showSuccessFeedback()
           this.proceedToLogin()
         })
@@ -125,5 +126,10 @@ export class RegisterComponent {
     setTimeout(() => {
       this.router.navigateByUrl('/login')
     }, 2000);
+  }
+
+  onNameChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.nameInput = inputElement.value;
   }
 }

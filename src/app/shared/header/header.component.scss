@@ -135,9 +135,13 @@
     .profile-container {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 20px;
       cursor: pointer;
       position: relative;
+
+      &:hover {
+        color: $primary-color;
+      }
 
       .user-name {
         font-weight: 700;
@@ -145,10 +149,6 @@
         font-size: 32px;
         line-height: 100%;
         letter-spacing: 0%;
-
-        &:hover {
-          color: $primary-color;
-        }
       }
 
       .avatar-wrapper {
@@ -181,8 +181,8 @@
 
     .profile-menu {
       position: absolute;
-      top: 15%;
-      right: 28px;
+      top: 110px;
+      right: 16px;
       width: 282px;
       height: 181px;
       background-color: white;

@@ -1,2 +1,40 @@
 <app-header></app-header>
-<p>dashboard works!</p>
+
+<div class="dashboard-wrapper">
+  <!-- Sidenav -->
+  @if (showSidenav) {
+    <app-sidenav class="sidenav"></app-sidenav>
+  }
+
+  <!-- Main content container -->
+  <div class="main-container" [class.expanded]="!showSidenav">
+
+    <!-- Toggle Button  -->
+    <button class="sidenav-toggle-btn" (click)="toggleSidenav()" (mouseenter)="hovered = true" (mouseleave)="hovered = false">
+      <div class="btn-content" [class.hover-blue]="hovered">
+        @if (showSidenav) {
+          <div class="icon-box">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="label">Workspace-Menü schließen</span>
+        } @else {
+          <div class="icon-box">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="label">Workspace-Menü öffnen</span>
+        }
+      </div>
+    </button>
+    
+    
+    
+    <!--Dashboard Main Content -->
+    <div class="main-content">
+      <h1>Dashboard</h1>
+    </div>
+  </div>
+</div>

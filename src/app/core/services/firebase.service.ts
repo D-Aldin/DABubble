@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from '../app.config';
+import { firebaseConfig } from '../../app.config';
 
 @Injectable({
   providedIn: 'root',
