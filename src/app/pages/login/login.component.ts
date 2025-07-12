@@ -6,6 +6,7 @@ import { InputFieldComponent } from '../../shared/input-field/input-field.compon
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -18,8 +19,11 @@ export class LoginComponent {
   loginForm!: FormGroup;
   showErrorToast: boolean = false;
   showSuccessToast: boolean = false;
+  avatarPath: string = '';
+  displayName: string = '';
+  displayEmail: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -39,8 +43,13 @@ export class LoginComponent {
     //Handle guest login logic
   }
 
-  onGoogleLogin(): void {
-    //Handle Google Auth login
+  async onGoogleLogin(): Promise<void> {
+    const result = await this.authService.loginWithGoogle();
+    if (result && result.user.displayName && result.user.photoURL && result.user.email) {
+      console.log('Angemeldet als:', result.user.displayName);
+      this.router.navigateByUrl('/dashboard');
+      await this.userService.createUserDocument(result.user.uid, result.user.photoURL, result.user.displayName);
+    }
   }
 
   emailValidation(): string {
