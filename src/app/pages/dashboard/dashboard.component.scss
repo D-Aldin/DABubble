@@ -3,7 +3,7 @@
   width: 100%;
   min-height: 100vh;
   background-color: #eceefe;
-  padding-left: 1rem;
+  padding: 1rem;
 }
 
 .main-container {
@@ -24,8 +24,7 @@
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
-  border-top-left-radius: 36px;
-  border-top-right-radius: 36px;
+  border-radius: 36px;
 }
 
 .sidenav-toggle-btn {
