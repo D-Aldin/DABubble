@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { ThreadComponent } from './shared/thread/thread.component';
 import { AuthService } from './core/services/auth.service';
-import { User } from 'firebase/auth';
 import { SuccessToastComponent } from './shared/success-toast/success-toast.component';
 
 @Component({
@@ -25,12 +24,16 @@ export class AppComponent implements OnInit {
     this.userAuthService.user$.subscribe(user => {
       if (!user && this.router.url !== '/login') {
         if (!this.userAuthService.loggedOutManually) {
-          this.toastMessage = 'Bitte melde dich an, um fortzufahren.';
-          this.showToast = true;
+          this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
         }
         this.userAuthService.loggedOutManually = false;
       }
     });
-    this.showToast = false
+    this.setToast(false, '');
+  }
+
+  setToast(show: boolean, message: string): void {
+    this.showToast = show;
+    this.toastMessage = message;
   }
 }

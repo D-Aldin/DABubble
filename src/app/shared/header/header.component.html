@@ -1,4 +1,4 @@
-<header class="main-header" [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
+<header [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
     <div class="header-content">
         <div class="logo">
             <img class="logo-img" src="../../../assets/icons/logo.png" alt="Logo" />
@@ -12,8 +12,8 @@
 
         <div class="signup-link-box" *ngIf="showSignUpLink">
             <p class="signup-text">Neu bei DABubble?</p>
-            <div class="link-container">
-                <a [routerLink]="['/register']" class="signup-link">Konto erstellen</a>
+            <div class="link-container" [routerLink]="['/register']">
+                <a class="signup-link">Konto erstellen</a>
             </div>
         </div>
 
@@ -21,8 +21,7 @@
             (mouseenter)="isChevronHovered = true" (mouseleave)="isChevronHovered = false">
             <span class="user-name">{{userName}}</span>
             <div class="avatar-wrapper">
-                <img [src]="avatarPath" alt="Profilbild"
-                    class="avatar-image" />
+                <img [src]="avatarPath" alt="Profilbild" class="avatar-image" />
                 <span class="online-indicator"></span>
             </div>
             <img [src]="isChevronHovered ? 'assets/icons/dashboard/keyboard_arrow_down_hover.svg' : 'assets/icons/dashboard/keyboard_arrow_down.svg'"
@@ -30,8 +29,12 @@
         </div>
 
         <div *ngIf="!showProfileMenu && showProfileAvatar" class="profile-menu">
-            <button>Profil</button>
+            <button (click)="showProfileCardContainer()">Profil</button>
             <button (click)="logout()">Log out</button>
         </div>
+
+        <app-profile-card *ngIf="showProfileCard" [src]="avatarPath" [name]="userName" [active]="true"
+            [email]="userEmail" (closeCard)="showProfileCard = false">
+        </app-profile-card>
     </div>
 </header>

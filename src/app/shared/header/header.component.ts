@@ -4,11 +4,12 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
+import { ProfileCardComponent } from "../profile-card/profile-card.component";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ProfileCardComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -19,9 +20,11 @@ export class HeaderComponent {
   public showSearchBar: boolean = true;
   public isHovering: boolean = false;
   public showProfileMenu: boolean = false;
+  public showProfileCard: boolean = false;
   public isChevronHovered: boolean = false;
   public userName: string = '';
   public avatarPath: string = '';
+  public userEmail: string = '';
 
   constructor(public router: Router, private userAuthService: AuthService, private userService: UserService) {
     this.handleHeaderAppearancesForRoutes();
@@ -39,7 +42,23 @@ export class HeaderComponent {
   }
 
   toggleProfileMenu(): void {
+    if (this.showProfileCard == true || this.showProfileMenu == true) {
+      this.showProfileMenu = false;
+    } else {
+      this.showProfileMenu = !this.showProfileMenu;
+    }
+    this.closeProfileMenu();
+  }
+
+  showProfileCardContainer() {
     this.showProfileMenu = !this.showProfileMenu;
+    this.showProfileCard = !this.showProfileCard;
+  }
+
+  closeProfileMenu() {
+    if (this.showProfileCard == true) {
+      this.showProfileMenu = false;
+    }
   }
 
   logout(): void {
@@ -57,6 +76,7 @@ export class HeaderComponent {
     if (!currentUser) return;
 
     this.fetchAndSetUserDocument(currentUser.uid);
+    this.setUserEmail();
   }
 
   private getCurrentUser() {
@@ -78,6 +98,13 @@ export class HeaderComponent {
       this.avatarPath = userDoc.avatarPath;
     } else {
       this.userName = 'Unbekannt';
+    }
+  }
+
+  private setUserEmail(): void {
+    const userData = this.getCurrentUser();
+    if (userData && userData.email) {
+      this.userEmail = userData.email
     }
   }
 }

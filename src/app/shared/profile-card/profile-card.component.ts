@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ɵEmptyOutletComponent } from '@angular/router';
 
 @Component({
@@ -14,6 +14,11 @@ export class ProfileCardComponent {
   @Input({ required: true }) name!: string;
   @Input({ required: true }) active: boolean = false;
   @Input({ required: true }) email!: string;
+  @Output() closeCard = new EventEmitter<void>();
+
+  onClose() { //closes the player-card on close button click
+    this.closeCard.emit(); 
+  }
 }
 
 // example how to implement this in other components whitout button

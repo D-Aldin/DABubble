@@ -14,6 +14,14 @@
 
 .headline {
   @include flex-setup($justify: space-between);
+
+  h3 {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
+  }
 }
 
 .close {
@@ -21,13 +29,13 @@
   width: 35px;
   height: 35px;
   border: none;
-  background-image: url("../../../assets/icons/profile-card/close.png");
+  background-image: url("../../../assets/icons/close.png");
   background-repeat: no-repeat;
   background-size: cover;
   cursor: pointer;
 
   &:hover {
-    background-image: url("../../../assets/icons/profile-card/close-hover.png");
+    background-image: url("../../../assets/icons/close-hover.png");
   }
 }
 
@@ -36,7 +44,9 @@
   @include flex-setup();
 
   img {
-    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    border-radius: 500px;
   }
 }
 
@@ -45,6 +55,11 @@
 
   h2 {
     margin: 10px 0 10px 0px;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 32px;
+    line-height: 100%;
+    letter-spacing: 0%;
   }
 }
 
@@ -52,14 +67,22 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
+  p {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: 0%;
+  }
 }
 
 .isActive {
   width: 10px;
   height: 10px;
   display: inline-block;
-  border: 1px solid green;
-  background-color: green;
+  border: 1px solid rgba(146, 200, 62, 1);
+  background-color: rgba(146, 200, 62, 1);
   border-radius: 50%;
 }
 
@@ -76,15 +99,29 @@
   display: flex;
   align-items: center;
   margin-top: 30px;
+  margin-bottom: 14px;
   gap: 10px;
 
   img {
     width: 25px;
     height: 25px;
   }
+
+  p {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: 0%;
+  }
 }
 
 .email-link {
-  margin: 10px 0 0 30px;
+  margin: 10px 0 0 35px;
   color: rgb(19, 129, 255);
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 18px;
+  line-height: 120%;
+  letter-spacing: 0%;
 }

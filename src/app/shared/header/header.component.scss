@@ -1,12 +1,12 @@
 @use "../../../styles/variables" as *;
 
-.main-header {
+header {
   width: 100%;
   min-height: 200px;
   background-color: $secondary-color;
   display: flex;
   align-items: center;
-  justify-content: center; // centers the inner `.header-content`
+  justify-content: center;
   padding: 0 2rem;
 
   .header-content {
@@ -227,5 +227,30 @@
         }
       }
     }
+  }
+}
+
+app-profile-card {
+  position: absolute;
+  top: 110px;
+  right: 16px;
+  z-index: 100;
+
+  ::ng-deep .main-content {
+    margin-top: 44px;
+  }
+
+  ::ng-deep .profile-card {
+    width: 500px;
+    height: auto;
+    border-top-left-radius: 30px !important;
+    border-bottom-right-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
+    border-top-right-radius: 0px !important;
+    margin: 0;
+  }
+
+  ::ng-deep .profile-img {
+    margin-top: 36px;
   }
 }

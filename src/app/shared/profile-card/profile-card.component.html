@@ -1,7 +1,7 @@
 <div class="profile-card">
    <div class="headline">
-      <h3>Profile</h3>
-      <button class="close"></button>
+      <h3>Profil</h3>
+      <button (click)="onClose()" class="close"></button>
    </div>
    <div class="profile-img">
       <img [src]="src" alt="profile-image">
@@ -11,7 +11,7 @@
       <div class="status">
          <div [ngClass]="this.active ? 'isActive' : 'inactive'"></div>
          @if(active) {
-         <p [ngStyle]="{'color': 'green'}">Aktiv</p>
+         <p [ngStyle]="{'color': 'rgba(146, 200, 62, 1)'}">Aktiv</p>
          } @else {
          <p [ngStyle]="{'color': 'grey'}">Abwesend</p>
          }
