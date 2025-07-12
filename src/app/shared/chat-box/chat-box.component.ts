@@ -13,5 +13,5 @@ export class ChatBoxComponent {
   @Input({ required: true }) time!: string;
   @Input({ required: true }) message!: string;
 
-  userMe!: true;
+  userMe: boolean = true;
 }
