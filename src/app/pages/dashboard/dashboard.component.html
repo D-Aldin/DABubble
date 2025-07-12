@@ -41,10 +41,11 @@
 
   <!--Dashboard Thread Content -->
   <app-thread>
-    <app-chat-box [src]="'./../../../assets/images/profile-images/head-1.png'" [userName]="'Muzammal'" [time]="'12.aprli'" [message]="'adasdas'"></app-chat-box>
-    <app-chat-box [src]="'./../../../assets/images/profile-images/head-1.png'" [userName]="'Muzammal'" [time]="'12.aprli'" [message]="'adasdas'"></app-chat-box>
-    <app-chat-box [src]="'./../../../assets/images/profile-images/head-1.png'" [userName]="'Muzammal'" [time]="'12.aprli'" [message]="'adasdas'"></app-chat-box>
-    
+    @for (item of chatMessages; track $index) {
+      <app-chat-box [src]="item.src" [userName]="item.userName" [time]="item.time" [message]="item.message" [userMe]="item.userMe">></app-chat-box>
+    }
+
+
 
   </app-thread>
   
