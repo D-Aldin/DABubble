@@ -32,8 +32,7 @@ section {
   padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
-  border-top-left-radius: 36px;
-  border-top-right-radius: 36px;
+  border-radius: 36px;
 }
 
 .sidenav-toggle-btn {

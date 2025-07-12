@@ -1,22 +1,22 @@
-.container{
+.container {
   width: 400px;
   min-height: calc(100vh - 200px);
   background-color: #fff;
   padding: 2rem;
-  border-top-left-radius: 36px;
-  border-top-right-radius: 36px;
-    .heading{
-      display: flex;
-      align-items: center;
-        gap: 10px;
-    }
+  border-radius: 36px;
+  .heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    img {
-        width: 56px;
-        height: 56px;
-      }
-    
-      h1 {
-        font-size: 1.5rem;
-        color: #333; }
+  img {
+    width: 56px;
+    height: 56px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    color: #333;
+  }
 }

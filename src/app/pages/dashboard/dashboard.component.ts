@@ -20,6 +20,30 @@ export class DashboardComponent {
   showSidenav = true;
   hovered = false;
 
+  chatMessages = [
+    {
+      src: './../../../assets/images/profile-images/head-1.png',
+      userName: 'Muzammal',
+      time: '12:12 Uhr',
+      message: 'first msg',
+      userMe: false,
+    },
+    {
+      src: './../../../assets/images/profile-images/head-1.png',
+      userName: 'Muzammal',
+      time: '12:12 Uhr',
+      message: 'Hello World',
+      userMe: true,
+    },
+    {
+      src: './../../../assets/images/profile-images/head-1.png',
+      userName: 'Muzammal',
+      time: '12:12 Uhr',
+      message: 'Welcome',
+      userMe: false,
+    },
+  ];
+
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
   }

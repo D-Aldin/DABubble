@@ -3,7 +3,7 @@
 
 .thread {
   width: 490px;
-  height: 100vh;
+  height: calc(100vh - 200px);
   border: none;
   background-color: white;
   border-radius: 30px;

@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chat-box',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss',
 })
@@ -13,5 +14,5 @@ export class ChatBoxComponent {
   @Input({ required: true }) time!: string;
   @Input({ required: true }) message!: string;
 
-  userMe: boolean = true;
+  @Input() userMe: boolean = true;
 }
