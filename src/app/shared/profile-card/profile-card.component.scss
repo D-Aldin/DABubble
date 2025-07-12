@@ -17,18 +17,7 @@
 }
 
 .close {
-  background-color: white;
-  width: 35px;
-  height: 35px;
-  border: none;
-  background-image: url("../../../assets/icons/profile-card/close.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  cursor: pointer;
-
-  &:hover {
-    background-image: url("../../../assets/icons/profile-card/close-hover.png");
-  }
+  @include close-button();
 }
 
 .profile-img {
