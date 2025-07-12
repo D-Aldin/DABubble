@@ -34,7 +34,8 @@
         </div>
 
         <app-profile-card *ngIf="showProfileCard" [src]="avatarPath" [name]="userName" [active]="true"
-            [email]="userEmail" (closeCard)="showProfileCard = false">
+            [email]="userEmail" [isInsertedInHeader]="true" (closeCard)="showProfileCard = false"
+            (save)="onNameSaved($event)">
         </app-profile-card>
     </div>
 </header>

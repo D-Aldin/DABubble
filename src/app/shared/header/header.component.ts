@@ -107,4 +107,12 @@ export class HeaderComponent {
       this.userEmail = userData.email
     }
   }
+
+  async onNameSaved(newName: string) {
+    this.userName = newName;
+    const userData = this.getCurrentUser()
+    if (userData) {
+      await this.userService.createUserDocument(userData.uid, this.avatarPath, this.userName)
+    }
+  }
 }

@@ -42,11 +42,8 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(this.auth, provider);
-      // ✅ Benutzer ist jetzt in Firebase Authentication eingetragen
-      console.log('Angemeldeter Nutzer:', result.user);
       return result;
     } catch (error) {
-      console.error('Google-Anmeldung fehlgeschlagen:', error);
       return null;
     }
   }

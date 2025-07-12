@@ -1,8 +1,17 @@
+@use "../../../styles/variables" as *;
+
+section {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  background-color: $secondary-color;
+}
+
 .dashboard-wrapper {
   display: flex;
   width: 100%;
-  background-color: #eceefe;
-  padding-left: 1rem;
+  max-width: 1920px;
+  padding: 0 1rem;
 }
 
 .main-container {
@@ -40,6 +49,7 @@
   cursor: pointer;
   height: 400px;
   width: 56px;
+
   .btn-content {
     writing-mode: vertical-rl;
     transform: rotate(180deg); // rotate vertically but upright

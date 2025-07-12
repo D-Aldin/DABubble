@@ -61,6 +61,38 @@
     line-height: 100%;
     letter-spacing: 0%;
   }
+
+  .name-and-edit-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      background: none;
+      border: none;
+      color: $input-field-focus-color; // Soft blue (like in your design)
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.125s ease;
+      font-weight: 600;
+      font-style: SemiBold;
+      font-size: 18px;
+      line-height: 100%;
+      letter-spacing: 0%;
+
+
+      &:hover {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
 }
 
 .status {
@@ -124,4 +156,146 @@
   font-size: 18px;
   line-height: 120%;
   letter-spacing: 0%;
+}
+
+.edit-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+// label with icon
+.input-label {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 18px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  width: 100%;
+  max-width: 320px;
+
+  img {
+    width: 30px;
+    height: 30px;
+  }
+
+  label {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 20px;
+    line-height: 100%;
+    letter-spacing: 0%;
+  }
+}
+
+.edit-input {
+  width: 100%;
+  border: 1px solid $input-border-color;
+  outline: none;
+  transition: border-color 0.2s ease;
+  margin-bottom: 26px;
+  border-radius: 30px;
+  gap: 10px;
+  padding-top: 15px;
+  padding-right: 20px;
+  padding-bottom: 15px;
+  padding-left: 20px;
+  color: rgba(104, 104, 104, 1);
+  font-weight: 500;
+  font-style: Medium;
+  font-size: 18px;
+  line-height: 120%;
+  letter-spacing: 0%;
+
+
+  &:focus {
+    border-color: #3c3cf0;
+  }
+
+   &.error {
+    border-color: $error-msg-color;
+  }
+}
+
+// button group
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  width: 100%;
+}
+
+.cancel {
+  background-color: white;
+  color: #5b5bf0;
+  border: 2px solid #5b5bf0;
+  cursor: pointer;
+  transition: background-color 0.125s ease;
+  width: 141px;
+  height: 49px;
+  border-radius: 50px;
+  gap: 10px;
+  opacity: 1;
+  padding-top: 12px;
+  padding-right: 25px;
+  padding-bottom: 12px;
+  padding-left: 25px;
+  border-width: 1px;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+
+
+  &:hover {
+    background-color: $button;
+    border-color: $button;
+    color: white;
+  }
+}
+
+.save {
+  background-color: $primary-button-color;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.125s ease;
+  width: 141px;
+  height: 49px;
+  border-radius: 50px;
+  gap: 10px;
+  opacity: 1;
+  padding-top: 12px;
+  padding-right: 25px;
+  padding-bottom: 12px;
+  padding-left: 25px;
+  border-width: 1px;
+  font-weight: 700;
+  font-style: Bold;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+
+  &:hover {
+    background-color: $primary-color;
+  }
+}
+
+.error-message {
+  min-height: 18px;
+  color: $error-msg-color;
+  font-size: 13px;
+  margin-top: -18px;
+  margin-bottom: 30px;
+  transition: opacity 0.125s ease;
+
+  span {
+    display: block;
+  }
 }
