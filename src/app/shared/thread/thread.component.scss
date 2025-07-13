@@ -1,5 +1,10 @@
 @import "./../../../styles/mixins";
 @import "./../../../styles/variables";
+@import "@ctrl/ngx-emoji-mart/picker";
+
+.d-none {
+  display: none;
+}
 
 .thread {
   width: 490px;
@@ -116,7 +121,7 @@
   }
 }
 
-.answer {
+.answer-wrapper {
   margin: 20px 0 20px 0;
 }
 
@@ -136,3 +141,61 @@
   border-bottom: 1px solid rgb(173, 176, 217);
   width: 100%;
 }
+
+.answer-content {
+  max-height: 300px;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.message-box {
+  position: relative;
+  display: inline-block;
+
+  textarea {
+    width: 445px;
+    height: 100px;
+    border-radius: 20px;
+    resize: none;
+    padding: 15px;
+    font-family: "Nunito";
+
+    &::placeholder {
+      font-family: "Nunito";
+    }
+  }
+
+  .button-container {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    display: flex;
+    gap: 10px;
+    padding: 5px;
+
+    & > button:nth-child(3) {
+      margin-left: 320%;
+    }
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+}
+<<<<<<< HEAD
+
+.emoji-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  bottom: 600px;
+}
+=======
+>>>>>>> fcf394a8d0b24b3dd2ed527a99b9017047582415

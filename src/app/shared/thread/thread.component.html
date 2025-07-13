@@ -1,10 +1,62 @@
-<div class="thread">
+<div class="thread" [ngClass]="{'d-none': isClose}">
+<<<<<<< HEAD
+<div class="headline">
+   <div class="headline-content">
+      <h3>Profile</h3>
+      <h4># thread-name</h4>
+   </div>
+   <button class="close"  (click)="close($event)"></button>
+</div>
+<div class="main-content">
+   <div class="thread-message">
+      <div class="avatar"><img src="./../../../assets/images/profile-images/head-1.png" alt=""></div>
+      <div class="user-name">aldin</div>
+      <div class="time">14:34 Uhr</div>
+      <div class="message">
+         <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus ab unde corrupti modi fugit adipisci </p>
+      </div>
+      <div class="emoji-container">
+         <div class="emoji">😊</div>
+         <div class="count">2</div>
+      </div>
+      <div class="add-reaction">
+         <button ></button>
+      </div>
+   </div>
+   <div class="answer-wrapper">
+      <div class="number-of-answers">
+         <span>2 Antworten</span>
+         <div class="line"></div>
+      </div>
+      <div class="answer-content">
+         <ng-content></ng-content>
+      </div>
+   </div>
+   <div class="message-box">
+      <textarea name="message-box" placeholder="Antworten..." [(ngModel)]="message"></textarea>
+      <div class="button-container">
+         <button (click)="toggleEmojiPicker()">
+         <img src="./../../../assets/icons/emoji.png" alt="emoji">
+         </button>
+         <button>
+         <img src="./../../../assets/icons/tag.png" alt="@">
+         </button>
+         <button (click)="captureMessage()">
+         <img src="./../../../assets/icons/send.png" alt="send">
+         </button>
+      </div>
+   </div>
+   <div class="emoji-wrapper" >
+      <emoji-mart title="Pick your emoji…" emoji="point_up" set="apple" (emojiClick)="addEmoji($event)" [hidden]="!emojiPicker"></emoji-mart>
+   </div>
+</div>
+=======
     <div class="headline">
         <div class="headline-content">
               <h3>Profile</h3>
               <h4># thread-name</h4>
         </div>
-        <button class="close"></button>
+        <button class="close"  (click)="close($event)"></button>
     </div>
     <div class="main-content">
         <div class="thread-message">
@@ -25,13 +77,31 @@
 
         </div>
 
-        <div class="answer">
+        <div class="answer-wrapper">
             <div class="number-of-answers">
                 <span>2 Antworten</span>
                 <div class="line"></div>
             </div>
-          
+            <div class="answer-content">
+<ng-content></ng-content>
+            </div>
+           
         </div>
 
-        <ng-content></ng-content>
+        <div class="message-box">
+            <textarea name="message-box" placeholder="Antworten..."></textarea>
+            <div class="button-container">
+                <button>
+                    <img src="./../../../assets/icons/emoji.png" alt="emoji">
+                </button>
+                <button>
+                    <img src="./../../../assets/icons/tag.png" alt="@">
+                </button>
+                <button >
+                    <img src="./../../../assets/icons/send.png" alt="send">
+                </button>
+            </div>
+        </div>
     </div>
+    
+>>>>>>> fcf394a8d0b24b3dd2ed527a99b9017047582415
