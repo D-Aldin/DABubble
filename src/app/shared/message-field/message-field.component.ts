@@ -1,25 +1,20 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-thread',
+  selector: 'app-message-field',
   standalone: true,
-  imports: [CommonModule, FormsModule, EmojiComponent, PickerModule],
-  templateUrl: './thread.component.html',
-  styleUrl: './thread.component.scss',
+  imports: [FormsModule, PickerModule, EmojiComponent, CommonModule],
+  templateUrl: './message-field.component.html',
+  styleUrl: './message-field.component.scss',
 })
-export class ThreadComponent {
-  isClose: boolean = false;
+export class MessageFieldComponent {
+  @Input() customClass: string = '';
   message: string = '';
   emojiPicker: boolean = false;
-
-  close(event: Event) {
-    this.isClose = true;
-    event.stopPropagation();
-  }
 
   captureMessage() {
     console.log(this.message);

@@ -13,6 +13,7 @@ section {
   width: 100%;
   max-width: 1920px;
   padding: 0 1rem;
+  max-height: calc(100vh - 200px);
 }
 
 .main-container {
@@ -28,6 +29,7 @@ section {
 }
 
 .main-content {
+  position: relative;
   background-color: #f9f9f9;
   border-radius: 8px;
   padding: 2rem;
@@ -85,4 +87,10 @@ section {
       text-align: center;
     }
   }
+}
+
+app-message-field {
+  position: absolute;
+  min-width: calc(100% - 4rem);
+  bottom: 10px;
 }
