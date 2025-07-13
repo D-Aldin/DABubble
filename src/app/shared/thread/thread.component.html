@@ -1,10 +1,10 @@
-<div class="thread" (click)="close()" [ngClass]="{'d-none': isClose}">
+<div class="thread" [ngClass]="{'d-none': isClose}">
     <div class="headline">
         <div class="headline-content">
               <h3>Profile</h3>
               <h4># thread-name</h4>
         </div>
-        <button class="close"></button>
+        <button class="close"  (click)="close($event)"></button>
     </div>
     <div class="main-content">
         <div class="thread-message">
@@ -25,13 +25,30 @@
 
         </div>
 
-        <div class="answer">
+        <div class="answer-wrapper">
             <div class="number-of-answers">
                 <span>2 Antworten</span>
                 <div class="line"></div>
             </div>
-          
+            <div class="answer-content">
+<ng-content></ng-content>
+            </div>
+           
         </div>
 
-        <ng-content></ng-content>
+        <div class="message-box">
+            <textarea name="message-box" placeholder="Antworten..."></textarea>
+            <div class="button-container">
+                <button>
+                    <img src="./../../../assets/icons/emoji.png" alt="emoji">
+                </button>
+                <button>
+                    <img src="./../../../assets/icons/tag.png" alt="@">
+                </button>
+                <button >
+                    <img src="./../../../assets/icons/send.png" alt="send">
+                </button>
+            </div>
+        </div>
     </div>
+    

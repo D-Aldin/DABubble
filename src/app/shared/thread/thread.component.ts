@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { InputFieldComponent } from '../input-field/input-field.component';
 
 @Component({
   selector: 'app-thread',
@@ -11,7 +12,8 @@ import { CommonModule } from '@angular/common';
 export class ThreadComponent {
   isClose: boolean = false;
 
-  close() {
+  close(event: Event) {
     this.isClose = true;
+    event.stopPropagation();
   }
 }
