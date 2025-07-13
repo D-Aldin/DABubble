@@ -1,17 +1,37 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, EmojiComponent, PickerModule],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
 })
 export class ThreadComponent {
   isClose: boolean = false;
+  message: string = '';
+  emojiPicker: boolean = false;
 
-  close() {
+  close(event: Event) {
     this.isClose = true;
+    event.stopPropagation();
+  }
+
+  captureMessage() {
+    console.log(this.message);
+    this.message = '';
+  }
+
+  toggleEmojiPicker() {
+    this.emojiPicker = !this.emojiPicker;
+  }
+
+  addEmoji(event: any) {
+    this.message += event.emoji.native;
+    this.emojiPicker = false;
   }
 }
