@@ -1,4 +1,5 @@
 @use "../../../styles/variables" as *;
+@use "../../../styles/mixins";
 
 header {
   width: 100%;
@@ -22,6 +23,7 @@ header {
       align-items: center;
       gap: 16px;
       padding-left: 32px;
+      animation: logoFadeIn 3s cubic-bezier(0.6, 0, 1, 1) forwards;
 
       .logo-img {
         height: 50px;

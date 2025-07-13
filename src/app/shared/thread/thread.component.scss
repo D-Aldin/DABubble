@@ -1,6 +1,10 @@
 @import "./../../../styles/mixins";
 @import "./../../../styles/variables";
 
+.d-none {
+  display: none;
+}
+
 .thread {
   width: 490px;
   height: calc(100vh - 200px);
