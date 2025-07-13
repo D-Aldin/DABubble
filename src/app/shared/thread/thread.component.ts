@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+<<<<<<< HEAD
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
+=======
+import { InputFieldComponent } from '../input-field/input-field.component';
+>>>>>>> fcf394a8d0b24b3dd2ed527a99b9017047582415
 
 @Component({
   selector: 'app-thread',
@@ -19,6 +23,7 @@ export class ThreadComponent {
   close(event: Event) {
     this.isClose = true;
     event.stopPropagation();
+<<<<<<< HEAD
   }
 
   captureMessage() {
@@ -33,5 +38,7 @@ export class ThreadComponent {
   addEmoji(event: any) {
     this.message += event.emoji.native;
     this.emojiPicker = false;
+=======
+>>>>>>> fcf394a8d0b24b3dd2ed527a99b9017047582415
   }
 }
