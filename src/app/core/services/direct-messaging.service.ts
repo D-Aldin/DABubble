@@ -1,9 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { AuthService } from './auth.service';
+import { Observable, map } from 'rxjs';
+import { ChatUser } from '../interfaces/chat-user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DirectMessagingService {
+  private firestore = inject(Firestore);
+  private authService = inject(AuthService);
 
   constructor() { }
+
+  getAllUsersExceptCurrent(): Observable<ChatUser[]> {
+    const usersRef = collection(this.firestore, 'users');
+    const currentUid = this.authService.getCurrentUser()?.uid;
+
+    return collectionData(usersRef, { idField: 'uid' }).pipe(
+      map(users => {
+        return (users as ChatUser[]).filter(user => user.uid !== currentUid);
+      })
+    );
+  }
+
 }

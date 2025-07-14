@@ -1,7 +1,61 @@
 <div class="container">
   <div class="heading">
-    <img src="/assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
-  <h1>Devspace</h1>
+    <div class="logo-and-heading">
+      <img src="/assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
+      <h1>Devspace</h1>
+    </div>
+    <button class="edit-btn">
+      <img src="/assets/images/sidenav-img/edit_square.svg" alt="Edit" />
+    </button>
   </div>
+
+  <!-- Channels Section -->
+  <div class="section">
+    <div class="section-header" (click)="toggleChannels()">
+      <div class="section-left">
+        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
+        <div class="channel-heading">
+          <img src="/assets/images/sidenav-img/workspaces.svg" alt="Channels" />
+          <span>Channels</span>
+        </div>
+      </div>
+      <button class="plus-btn">+</button>
+    </div>
+    @if(showChannels) {
+      <div class="section-body">
+       @for (channel of channels$ | async; track channel.id) {
+      <div class="channel-item"># {{ channel.title }}</div>
+    }
+      <div class="add-channel"><img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel"> Channel hinzufügen</div>
+    </div>
+    }
+  </div>
+
+  <!-- Direktnachrichten Section -->
+ <div class="section">
+  <div class="section-header" (click)="toggleDMs()">
+    <div class="section-left">
+      <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="">
+     <div class="direct-message">
+       <img src="/assets/images/sidenav-img/account_circle.svg" alt="DMs" />
+        <span>Direktnachrichten</span>
+     </div>
+    </div>
+  </div>
+
+  @if (showDMs) {
+    <div class="section-body">
+      @for (user of users$ | async; track user.uid) {
+        <div class="dm-item">
+          <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+          <span>{{ user.name }}</span>
+          @if (true) { <!-- Replace with online logic if needed -->
+          <span class="online-dot"></span>
+        }
+        </div>
+      }
+    </div>
+  }
 </div>
 
+</div>

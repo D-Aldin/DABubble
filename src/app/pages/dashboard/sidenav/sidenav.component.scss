@@ -7,7 +7,12 @@
   .heading {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    .logo-and-heading{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
   }
 
   img {
@@ -18,5 +23,155 @@
   h1 {
     font-size: 1.5rem;
     color: #333;
+    font-weight: 600;
+  }
+    .edit-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+  
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    .section {
+      margin-top: 2rem;
+      display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        width: 100%;
+        padding-left: 1.6rem;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      width: 100%;
+        padding-right: 0.5rem;
+
+      .section-left {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+
+        img {
+          width: 10px;
+          height: 10px;
+          &:hover{
+            color: blue;
+          }
+        }
+        .channel-heading{
+          font-size: 24px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          img{
+            width: 24px;
+            height: 24px;
+          }
+        }
+        .direct-message{
+          display: flex;
+            align-items: center;
+            gap: 10px;
+            img {
+                width: 24px;
+                height: 24px;
+              }
+        }
+
+        span {
+          font-size: 1.5rem;
+          color: #1d1c1d;
+        }
+      }
+      &:hover {
+            filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+            // This will make it blue on hover 
+          }
+
+      .plus-btn {
+      background: none;
+        border: none;
+        font-size: 1.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        color: #1d1c1d;
+        padding: 0;
+        margin: 0;
+      }
+    }
+
+    .section-body {
+      margin-top: 0.5rem;
+
+      .channel-item {
+        padding: 0.4rem 0.8rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #5f59f7;
+        background-color: #eeedfe;
+        margin-bottom: 0.4rem;
+        display: inline-block;
+
+        &.selected {
+          font-weight: 600;
+        }
+      }
+
+      .add-channel {
+        font-size: 1.1rem;
+        color: #1d1c1d;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        img{
+          width: 16px;
+        }
+        &:hover {
+          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+        }
+      }
+
+      .dm-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.4rem 0;
+        font-size: 1.1rem;
+        color: #1d1c1d;
+        position: relative;
+
+        .avatar {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+        }
+
+        .online-dot {
+          position: absolute;
+          left: 22px;
+          bottom: 6px;
+          width: 9px;
+          height: 9px;
+          background-color: #34c759; 
+          border: 2px solid #fff;
+          border-radius: 50%;
+        }
+      }
+    }
   }
 }
+

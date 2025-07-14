@@ -8,7 +8,7 @@ import { InputFieldComponent } from '../input-field/input-field.component';
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, FormsModule, EmojiComponent, PickerModule],
+  imports: [CommonModule, FormsModule, PickerModule],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
 })
