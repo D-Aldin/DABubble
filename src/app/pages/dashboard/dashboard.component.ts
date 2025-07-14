@@ -4,6 +4,8 @@ import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
 import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
+import { RouterModule } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +16,8 @@ import { MessageFieldComponent } from '../../shared/message-field/message-field.
     ThreadComponent,
     ChatBoxComponent,
     MessageFieldComponent,
+    RouterModule,
+    RouterOutlet,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',

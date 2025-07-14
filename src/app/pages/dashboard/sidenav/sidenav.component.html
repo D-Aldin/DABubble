@@ -47,8 +47,12 @@
     <div class="section-body">
       @for (user of users$ | async; track user.uid) {
         <div class="dm-item">
-          <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+          <a routerLink="direct-message">
+                <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
           <span>{{ user.name }}</span>
+
+          </a>
+      
           @if (true) { <!-- Replace with online logic if needed -->
           <span class="online-dot"></span>
         }

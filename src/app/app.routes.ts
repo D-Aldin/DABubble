@@ -7,15 +7,26 @@ import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.co
 import { authGuard } from './core/guards/auth.guard';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ResetRequestComponent } from './pages/reset-request/reset-request.component';
+import { DirectMessageComponent } from './pages/direct-message/direct-message.component';
 
 export const routes: Routes = [
-    { path: 'login', component: LoginComponent },
-    { path: 'reset-password', component: ResetPasswordComponent },
-    { path: 'reset-request', component: ResetRequestComponent },
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-    { path: 'register', component: RegisterComponent },
-    { path: 'legal-notice', component: LegalNoticeComponent },
-    { path: 'privacy-policy', component: PrivacyPolicyComponent },
-    { path: '**', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'reset-request', component: ResetRequestComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'direct-message',
+        component: DirectMessageComponent,
+      },
+    ],
+  },
+  { path: 'register', component: RegisterComponent },
+  { path: 'legal-notice', component: LegalNoticeComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: '**', component: LoginComponent },
 ];
