@@ -3,6 +3,7 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
 import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
+import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,7 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
     HeaderComponent,
     ThreadComponent,
     ChatBoxComponent,
+    MessageFieldComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -37,7 +39,7 @@ export class DashboardComponent {
     },
     {
       src: './../../../assets/images/profile-images/head-1.png',
-      userName: 'Muzammal',
+      userName: 'Shardzhil',
       time: '12:12 Uhr',
       message: 'Welcome',
       userMe: false,
