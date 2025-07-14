@@ -26,4 +26,9 @@ export class UserService {
       return null;
     }
   }
+
+  async setOnlineStatus(uid: string, online: boolean): Promise<void> {
+    const userRef = doc(this.firestore, 'users', uid);
+    await setDoc(userRef, { online }, { merge: true });
+  }
 }

@@ -25,6 +25,7 @@ export class HeaderComponent {
   public userName: string = '';
   public avatarPath: string = '';
   public userEmail: string = '';
+  public onlineStatus: boolean | any;
 
   constructor(public router: Router, private userAuthService: AuthService, private userService: UserService) {
     this.handleHeaderAppearancesForRoutes();
@@ -62,7 +63,11 @@ export class HeaderComponent {
   }
 
   logout(): void {
+    const user = this.userAuthService.getCurrentUser();
     this.userAuthService.logout().then(() => {
+      if (user) {
+        this.setUserOnlineStatus(user.uid, false)
+      }
       this.router.navigate(['/login']);
     });
   }
@@ -74,9 +79,9 @@ export class HeaderComponent {
   private loadUserData(): void {
     const currentUser = this.getCurrentUser();
     if (!currentUser) return;
-
     this.fetchAndSetUserDocument(currentUser.uid);
     this.setUserEmail();
+    this.setUserOnlineStatus(currentUser.uid, true)
   }
 
   private getCurrentUser() {
@@ -114,5 +119,10 @@ export class HeaderComponent {
     if (userData) {
       await this.userService.createUserDocument(userData.uid, this.avatarPath, this.userName)
     }
+  }
+
+  async setUserOnlineStatus(uid: string, online: boolean) {
+    await this.userService.setOnlineStatus(uid, online)
+    this.onlineStatus = online;
   }
 }

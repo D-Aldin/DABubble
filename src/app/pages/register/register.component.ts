@@ -65,7 +65,7 @@ export class RegisterComponent {
       }
 
       if (control.errors['pattern']) {
-        return 'Bitte geben Sie ein Vor- und Nachnamen ein';
+        return 'Vor- und Nachnamen eingeben, ohne Sonderzeichen und Zahlen';
       }
     }
 

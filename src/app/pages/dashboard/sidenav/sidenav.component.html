@@ -22,40 +22,38 @@
       <button class="plus-btn">+</button>
     </div>
     @if(showChannels) {
-      <div class="section-body">
-       @for (channel of channels$ | async; track channel.id) {
+    <div class="section-body">
+      @for (channel of channels$ | async; track channel.id) {
       <div class="channel-item"># {{ channel.title }}</div>
-    }
-      <div class="add-channel"><img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel"> Channel hinzufügen</div>
+      }
+      <div class="add-channel"><img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel"> Channel
+        hinzufügen</div>
     </div>
     }
   </div>
 
   <!-- Direktnachrichten Section -->
- <div class="section">
-  <div class="section-header" (click)="toggleDMs()">
-    <div class="section-left">
-      <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="">
-     <div class="direct-message">
-       <img src="/assets/images/sidenav-img/account_circle.svg" alt="DMs" />
-        <span>Direktnachrichten</span>
-     </div>
+  <div class="section">
+    <div class="section-header" (click)="toggleDMs()">
+      <div class="section-left">
+        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="">
+        <div class="direct-message">
+          <img src="/assets/images/sidenav-img/account_circle.svg" alt="DMs" />
+          <span>Direktnachrichten</span>
+        </div>
+      </div>
     </div>
-  </div>
 
-  @if (showDMs) {
+    @if (showDMs) {
     <div class="section-body">
       @for (user of users$ | async; track user.uid) {
-        <div class="dm-item">
-          <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
-          <span>{{ user.name }}</span>
-          @if (true) { <!-- Replace with online logic if needed -->
-          <span class="online-dot"></span>
-        }
-        </div>
+      <div class="dm-item">
+        <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+        <span>{{ user.name }}</span>
+        <span class="online-dot"
+          [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
+      </div>
       }
     </div>
-  }
-</div>
-
-</div>
+    }
+  </div>

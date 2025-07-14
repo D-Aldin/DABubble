@@ -49,6 +49,7 @@ export class LoginComponent {
       console.log('Angemeldet als:', result.user.displayName);
       this.router.navigateByUrl('/dashboard');
       await this.userService.createUserDocument(result.user.uid, result.user.photoURL, result.user.displayName);
+      await this.userService.setOnlineStatus(result.user.uid, true)
     }
   }
 
@@ -75,7 +76,8 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value.email, this.loginForm.value.password)
         .then(async userCredential => {
           this.showSuccessFeedback()
-          this.proceedToDashboard()
+          this.proceedToDashboard();
+          await this.userService.setOnlineStatus(userCredential.user.uid, true)
         })
         .catch(error => {
           this.showErrorFeedback()

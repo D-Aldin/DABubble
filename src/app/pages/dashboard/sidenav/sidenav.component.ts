@@ -25,12 +25,12 @@ export class SidenavComponent {
 
   toggleChannels() {
     this.showChannels = !this.showChannels;
-      this.channels$.subscribe(channels => {
+    this.channels$.subscribe(channels => {
       console.log('🔥 Channels from Firebase:', channels);
     });
   }
 
-   toggleDMs() {
+  toggleDMs() {
     this.showDMs = !this.showDMs;
   }
 }
