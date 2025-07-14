@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
-import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
+// import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-message-field',
   standalone: true,
-  imports: [FormsModule, PickerModule, EmojiComponent, CommonModule],
+  imports: [FormsModule, CommonModule, PickerModule],
   templateUrl: './message-field.component.html',
   styleUrl: './message-field.component.scss',
 })
