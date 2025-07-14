@@ -5,9 +5,13 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LegalNoticeComponent } from './pages/legal-notice/legal-notice.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { authGuard } from './core/guards/auth.guard';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { ResetRequestComponent } from './pages/reset-request/reset-request.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
+    { path: 'reset-password', component: ResetPasswordComponent },
+    { path: 'reset-request', component: ResetRequestComponent },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
     { path: 'register', component: RegisterComponent },

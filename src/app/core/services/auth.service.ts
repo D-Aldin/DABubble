@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, User, UserCredential } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, User, UserCredential, updatePassword as firebaseUpdatePassword } from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -46,5 +46,13 @@ export class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  requestPasswordReset(email: string): Promise<void> {
+    return sendPasswordResetEmail(this.auth, email);
+  }
+
+  updatePassword(currentUser: User, newPassword: string): Promise<void> {
+    return firebaseUpdatePassword(currentUser, newPassword);
   }
 }

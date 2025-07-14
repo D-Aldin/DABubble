@@ -30,7 +30,7 @@
             [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
           </app-input-field>
 
-          <a class="forgot-password" href="#">Passwort vergessen?</a>
+          <a class="forgot-password" [routerLink]="['/reset-request']">Passwort vergessen?</a>
 
           <div class="divider">
             <hr /><span>ODER</span>

@@ -1,0 +1,115 @@
+@use '../../../styles/variables' as *;
+
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $secondary-color;
+    flex-direction: column;
+}
+
+.reset-container {
+    width: 698px;
+    height: auto;
+    border-radius: 30px;
+    background-color: white;
+    padding: 32px;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    // text-align: center;
+
+    .heading-container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: normal;
+        align-items: center;
+        gap: 30px;
+
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+
+            .back-button-img {
+                width: 40px;
+                height: 40px;
+                background-image: url('/assets/icons/arrow_back.svg');
+                background-size: contain;
+                background-repeat: no-repeat;
+                transition: background-image 0.125s ease;
+
+                &:hover {
+                    background-image: url('/assets/icons/arrow-back-hover.svg');
+                }
+            }
+        }
+    }
+}
+
+.title {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 46px;
+    line-height: 120%;
+    letter-spacing: 0%;
+    text-align: center;
+    color: $primary-button-color;
+}
+
+.subtitle {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 20px;
+    line-height: 120%;
+    text-align: center;
+    color: rgba(0, 0, 0, 1);
+    margin: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    align-items: center;
+    width: 486px;
+    height: 237px;
+}
+
+.info-text {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 20px;
+    line-height: 120%;
+    letter-spacing: 0%;
+    text-align: center;
+    color: rgba(104, 104, 104, 1);
+}
+
+.button-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
+
+    .submit-button {
+        border: none;
+        border-radius: 2rem;
+        padding: 0.75rem;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: auto;
+        height: 49px;
+        font-family: Nunito;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 18px;
+        line-height: 100%;
+        letter-spacing: 0%;
+    }
+}
