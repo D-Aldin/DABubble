@@ -1,18 +1,17 @@
 <div class="message-box" >
-      <textarea name="message-box" placeholder="Antworten..." [(ngModel)]="message"></textarea>
-      <div class="button-container">
-         <button (click)="toggleEmojiPicker()">
-         <img src="./../../../assets/icons/emoji.png" alt="emoji">
-         </button>
-         <button>
-         <img src="./../../../assets/icons/tag.png" alt="@">
-         </button>
-         <button (click)="captureMessage()">
-         <img src="./../../../assets/icons/send.png" alt="send">
-         </button>
-      </div>
+   <textarea name="message-box" placeholder="Antworten..." [(ngModel)]="message"></textarea>
+   <div class="button-container">
+      <button (click)="toggleEmojiPicker()">
+      <img src="./../../../assets/icons/emoji.png" alt="emoji">
+      </button>
+      <button>
+      <img src="./../../../assets/icons/tag.png" alt="@">
+      </button>
    </div>
-   <div class="emoji-wrapper" >
-      <emoji-mart title="Pick your emoji…" emoji="point_up" set="apple" (emojiClick)="addEmoji($event)" [hidden]="!emojiPicker"></emoji-mart>
-   </div>
-
+</div>
+<button class="send-button" (click)="captureMessage()">
+<img src="./../../../assets/icons/send.png" alt="send">
+</button>
+<div class="emoji-wrapper" >
+   <emoji-mart title="Pick your emoji…" emoji="point_up" set="apple" (emojiClick)="addEmoji($event)" [hidden]="!emojiPicker"></emoji-mart>
+</div>

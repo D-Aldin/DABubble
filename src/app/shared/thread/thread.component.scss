@@ -1,7 +1,6 @@
 @import "./../../../styles/mixins";
 @import "./../../../styles/variables";
 
-
 .d-none {
   display: none;
 }
@@ -12,6 +11,8 @@
   border: none;
   background-color: white;
   border-radius: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .headline {
@@ -39,8 +40,17 @@
   @include close-button();
 }
 
+.main-content-wrapper {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem;
+}
+
 .main-content {
-  padding: 30px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .thread-message {
@@ -143,7 +153,8 @@
 }
 
 .answer-content {
-  max-height: 300px;
+  // max-height: 300px;
+  min-height: 100%;
   overflow: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -196,4 +207,8 @@
   flex-direction: column;
   position: relative;
   bottom: 525px;
+}
+
+app-message-field {
+  position: relative;
 }
