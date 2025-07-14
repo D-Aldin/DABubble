@@ -5,13 +5,14 @@ import { DirectMessagingService } from '../../../core/services/direct-messaging.
 import { Observable } from 'rxjs';
 import { ChatUser } from '../../../core/interfaces/chat-user';
 import { Channel } from '../../../core/interfaces/channel';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidenav.component.html',
-  styleUrl: './sidenav.component.scss'
+  styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent {
   showChannels = true;
@@ -25,12 +26,18 @@ export class SidenavComponent {
 
   toggleChannels() {
     this.showChannels = !this.showChannels;
-    this.channels$.subscribe(channels => {
+    this.channels$.subscribe((channels) => {
       console.log('🔥 Channels from Firebase:', channels);
     });
   }
 
   toggleDMs() {
     this.showDMs = !this.showDMs;
+  }
+
+  selectUser(userName: string) {
+    this.users$.subscribe((usersArray) => {
+      const selectedUser = usersArray.find((user) => (user.name = userName));
+    });
   }
 }

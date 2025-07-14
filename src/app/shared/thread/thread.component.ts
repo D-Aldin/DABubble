@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
-import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
-import { InputFieldComponent } from '../input-field/input-field.component';
+import { MessageFieldComponent } from '../message-field/message-field.component';
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, FormsModule, PickerModule],
+  imports: [CommonModule, FormsModule, PickerModule, MessageFieldComponent],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
 })

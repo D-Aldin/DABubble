@@ -48,8 +48,12 @@
     <div class="section-body">
       @for (user of users$ | async; track user.uid) {
       <div class="dm-item">
-        <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+          <a routerLink="direct-message">
+              <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
         <span>{{ user.name }}</span>
+
+          </a>
+      
         <span class="online-dot"
           [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
       </div>

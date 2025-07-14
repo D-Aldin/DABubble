@@ -4,14 +4,14 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
-import { ProfileCardComponent } from "../profile-card/profile-card.component";
+import { ProfileCardComponent } from '../profile-card/profile-card.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, RouterModule, ProfileCardComponent],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   public showSignUpLink: boolean = false;
@@ -27,13 +27,17 @@ export class HeaderComponent {
   public userEmail: string = '';
   public onlineStatus: boolean | any;
 
-  constructor(public router: Router, private userAuthService: AuthService, private userService: UserService) {
+  constructor(
+    public router: Router,
+    private userAuthService: AuthService,
+    private userService: UserService
+  ) {
     this.handleHeaderAppearancesForRoutes();
   }
 
   handleHeaderAppearancesForRoutes() {
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.showSignUpLink = event.urlAfterRedirects === '/login';
         this.showProfileAvatar = event.urlAfterRedirects === '/dashboard';
@@ -74,6 +78,7 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.loadUserData();
+    console.log(this.showSearchBar);
   }
 
   private loadUserData(): void {
@@ -93,8 +98,9 @@ export class HeaderComponent {
   }
 
   private fetchAndSetUserDocument(uid: string): void {
-    this.userService.getUserDocument(uid)
-      .then(userDoc => this.handleUserDocument(userDoc))
+    this.userService
+      .getUserDocument(uid)
+      .then((userDoc) => this.handleUserDocument(userDoc));
   }
 
   private handleUserDocument(userDoc: any): void {
@@ -109,15 +115,19 @@ export class HeaderComponent {
   private setUserEmail(): void {
     const userData = this.getCurrentUser();
     if (userData && userData.email) {
-      this.userEmail = userData.email
+      this.userEmail = userData.email;
     }
   }
 
   async onNameSaved(newName: string) {
     this.userName = newName;
-    const userData = this.getCurrentUser()
+    const userData = this.getCurrentUser();
     if (userData) {
-      await this.userService.createUserDocument(userData.uid, this.avatarPath, this.userName)
+      await this.userService.createUserDocument(
+        userData.uid,
+        this.avatarPath,
+        this.userName
+      );
     }
   }
 

@@ -21,7 +21,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.userAuthService.user$.subscribe((user) => {
-      if (!user && this.router.url !== '/login' && this.router.url !== '/reset-request' && this.router.url !== '/reset-password') {
+      if (
+        !user &&
+        this.router.url !== '/login' &&
+        this.router.url !== '/reset-request' &&
+        this.router.url !== '/reset-password'
+      ) {
         if (!this.userAuthService.loggedOutManually) {
           this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
         }

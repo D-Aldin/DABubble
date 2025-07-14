@@ -9,7 +9,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     .logo-and-heading {
       display: flex;
       align-items: center;
@@ -27,7 +26,6 @@
     color: #333;
     font-weight: 600;
   }
-
   .edit-btn {
     background: none;
     border: none;
@@ -39,7 +37,6 @@
       height: 24px;
     }
   }
-
   .section {
     margin-top: 2rem;
     display: flex;
@@ -68,29 +65,24 @@
         img {
           width: 10px;
           height: 10px;
-
           &:hover {
             color: blue;
           }
         }
-
         .channel-heading {
           font-size: 24px;
           display: flex;
           align-items: center;
           gap: 10px;
-
           img {
             width: 24px;
             height: 24px;
           }
         }
-
         .direct-message {
           display: flex;
           align-items: center;
           gap: 10px;
-
           img {
             width: 24px;
             height: 24px;
@@ -104,11 +96,16 @@
       }
 
       &:hover {
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+          brightness(94%) contrast(92%);
+        // This will make it blue on hover
+      }
         filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
         // This will make it blue on hover 
       }
 
       .plus-btn {
+        background: none;
         background: none;
         border: none;
         font-size: 1.5rem;
@@ -148,16 +145,19 @@
         gap: 5px;
 
         img {
+        img {
           width: 16px;
         }
 
         &:hover {
-          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+            brightness(94%) contrast(92%);
         }
       }
 
       .dm-item {
         display: flex;
+        cursor: pointer;
         align-items: center;
         gap: 0.6rem;
         padding: 0.4rem 0;
