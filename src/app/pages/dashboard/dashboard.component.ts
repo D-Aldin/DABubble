@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject  } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
@@ -10,6 +10,7 @@ import { AddChannelComponent } from '../../shared/add-channel/add-channel.compon
 import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
 import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
+import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-dashboard',
@@ -38,7 +39,7 @@ export class DashboardComponent {
   channelName = '';
   channelDescription = '';
 
-  constructor(private channelService: ChannelService) {}
+  constructor(private channelService: ChannelService, private firestore: Firestore) {}
 
   chatMessages = [
     {
@@ -103,17 +104,27 @@ export class DashboardComponent {
   this.showPeopleDialog = false;
 }
 
- handlePeopleConfirmed(selectedUsers: string[]) {
+ async handlePeopleConfirmed(selectedUsers: string[]) {
+  let finalMembers: string[] = [];
+
+  if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
+    const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+    finalMembers = usersSnapshot.docs.map(doc => doc.id);
+  } else {
+    finalMembers = selectedUsers;
+  }
+
   const finalChannel = {
     ...this.channelDataBuffer,
-    members: selectedUsers,
+    members: finalMembers,
   } as Channel;
 
   this.channelService.createChannel(finalChannel).then(() => {
-    console.log('Channel created with users:', selectedUsers);
+    console.log('Channel created with users:', finalMembers);
     this.closePeopleDialog();
   });
 }
+
 
 
   handleChannelCreation(channelData: Channel) {
