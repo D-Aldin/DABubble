@@ -6,6 +6,7 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 import { RouterModule } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
+import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +19,7 @@ import { RouterOutlet } from '@angular/router';
     MessageFieldComponent,
     RouterModule,
     RouterOutlet,
+    AddChannelComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -25,6 +27,7 @@ import { RouterOutlet } from '@angular/router';
 export class DashboardComponent {
   showSidenav = true;
   hovered = false;
+  showAddChannelDialog = false;
 
   chatMessages = [
     {
@@ -53,4 +56,13 @@ export class DashboardComponent {
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
   }
+
+ openAddChannelDialog() {
+    this.showAddChannelDialog = true;
+  }
+
+  closeAddChannelDialog() {
+    this.showAddChannelDialog = false;
+  }
+
 }

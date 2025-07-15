@@ -1,0 +1,94 @@
+.add-channel-dialog {
+  background-color: white;
+  border-radius: 2rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
+
+  .description {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  form {
+    margin-top: 2rem;
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .optional {
+      font-weight: normal;
+      color: gray;
+      font-size: 0.9rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+
+      .hashtag {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+        color: gray;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        border: 1px solid #ccc;
+        border-radius: 2rem;
+        font-family: "Nunito", sans-serif;
+      }
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 2rem;
+      font-family: "Nunito", sans-serif;
+    }
+
+    .submit-wrapper {
+      margin-top: 2rem;
+      text-align: right;
+
+      button {
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 2rem;
+        background-color: #4361ee;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #3a52d1;
+        }
+      }
+    }
+  }
+}

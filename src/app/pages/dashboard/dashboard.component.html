@@ -5,7 +5,7 @@
 <div class="dashboard-wrapper">
   <!-- Sidenav -->
   @if (showSidenav) {
-    <app-sidenav class="sidenav"></app-sidenav>
+    <app-sidenav class="sidenav" (openAddChannelDialog)="openAddChannelDialog()"></app-sidenav>
   }
 
   <!-- Main content container -->
@@ -32,8 +32,15 @@
       </div>
     </button>
     
-    
-    
+    <!-- Add-Channel-Dialog -->
+    @if (showAddChannelDialog) {
+      <div class="overlay" (click)="closeAddChannelDialog()">
+        <div class="dialog-container" (click)="$event.stopPropagation()">
+          <app-add-channel (close)="closeAddChannelDialog()"></app-add-channel>
+        </div>
+      </div>
+    }
+
     <!--Dashboard Main Content -->
     <div class="main-content">
       <h1>Dashboard</h1>

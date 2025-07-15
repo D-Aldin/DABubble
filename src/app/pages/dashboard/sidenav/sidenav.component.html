@@ -19,14 +19,14 @@
           <span>Channels</span>
         </div>
       </div>
-      <button class="plus-btn">+</button>
+      <button class="plus-btn"  (click)="emitOpenDialog()">+</button>
     </div>
     @if(showChannels) {
     <div class="section-body">
       @for (channel of channels$ | async; track channel.id) {
       <div class="channel-item"># {{ channel.title }}</div>
       }
-      <div class="add-channel"><img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel"> Channel
+      <div class="add-channel" (click)="emitOpenDialog()"><img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel"> Channel
         hinzufügen</div>
     </div>
     }

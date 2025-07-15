@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, EventEmitter, Output  } from '@angular/core';
 import { ChannelService } from '../../../core/services/channel.service';
 import { DirectMessagingService } from '../../../core/services/direct-messaging.service';
 import { Observable } from 'rxjs';
@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent {
+  @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
   showDMs = true;
 
@@ -27,7 +28,7 @@ export class SidenavComponent {
   toggleChannels() {
     this.showChannels = !this.showChannels;
     this.channels$.subscribe((channels) => {
-      console.log('🔥 Channels from Firebase:', channels);
+      console.log('Channels from Firebase:', channels);
     });
   }
 
@@ -40,4 +41,9 @@ export class SidenavComponent {
       const selectedUser = usersArray.find((user) => (user.name = userName));
     });
   }
+
+  emitOpenDialog() {
+    this.openAddChannelDialog.emit();
+  }
+
 }

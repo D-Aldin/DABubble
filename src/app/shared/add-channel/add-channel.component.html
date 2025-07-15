@@ -1,1 +1,27 @@
-<p>add-channel works!</p>
+<div class="add-channel-dialog">
+  <div class="dialog-header">
+    <h2>Channel erstellen</h2>
+    <button class="close-btn" (click)="closeDialog()">&times;</button>
+  </div>
+
+  <p class="description">
+    Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein
+    <strong>#marketing</strong> zum Beispiel.
+  </p>
+
+  <form>
+    <label for="channel-name">Channel-Name</label>
+    <div class="input-wrapper">
+      <span class="hashtag">#</span>
+      <input id="channel-name" type="text" placeholder="z.B. Kooperationsprojekte" [(ngModel)]="channelName" name="channelName">
+    </div>
+
+    <label for="description">Beschreibung <span class="optional">(optional)</span></label>
+    <input id="description" type="text" placeholder="Dein Text hier" [(ngModel)]="channelDescription" name="channelDescription">
+
+    <div class="submit-wrapper">
+      <button type="button" (click)="createChannel()">Erstellen</button>
+    </div>
+  </form>
+</div>
+
