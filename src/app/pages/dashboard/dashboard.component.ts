@@ -1,9 +1,8 @@
-import { Component, inject  } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
 import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
-import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 import { RouterModule } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
@@ -20,11 +19,11 @@ import { Firestore, collection, getDocs } from '@angular/fire/firestore';
     HeaderComponent,
     ThreadComponent,
     ChatBoxComponent,
-    MessageFieldComponent,
+
     RouterModule,
     RouterOutlet,
     AddChannelComponent,
-    AddPeopleComponent
+    AddPeopleComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -39,7 +38,10 @@ export class DashboardComponent {
   channelName = '';
   channelDescription = '';
 
-  constructor(private channelService: ChannelService, private firestore: Firestore) {}
+  constructor(
+    private channelService: ChannelService,
+    private firestore: Firestore
+  ) {}
 
   chatMessages = [
     {
@@ -69,7 +71,7 @@ export class DashboardComponent {
     this.channelDataBuffer = {
       title: data.name,
       description: data.description,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
     this.closeAddChannelDialog();
     this.openAddPeopleDialog();
@@ -79,7 +81,7 @@ export class DashboardComponent {
     this.showSidenav = !this.showSidenav;
   }
 
- openAddChannelDialog() {
+  openAddChannelDialog() {
     this.showAddChannelDialog = true;
   }
 
@@ -98,41 +100,38 @@ export class DashboardComponent {
     this.showPeopleDialog = true;
   }
 
-
   closePeopleDialog() {
-  this.createdChannelName = '';
-  this.showPeopleDialog = false;
-}
-
- async handlePeopleConfirmed(selectedUsers: string[]) {
-  let finalMembers: string[] = [];
-
-  if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
-    const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
-    finalMembers = usersSnapshot.docs.map(doc => doc.id);
-  } else {
-    finalMembers = selectedUsers;
+    this.createdChannelName = '';
+    this.showPeopleDialog = false;
   }
 
-  const finalChannel = {
-    ...this.channelDataBuffer,
-    members: finalMembers,
-  } as Channel;
+  async handlePeopleConfirmed(selectedUsers: string[]) {
+    let finalMembers: string[] = [];
 
-  this.channelService.createChannel(finalChannel).then(() => {
-    console.log('Channel created with users:', finalMembers);
-    this.closePeopleDialog();
-  });
-}
+    if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
+      const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+      finalMembers = usersSnapshot.docs.map((doc) => doc.id);
+    } else {
+      finalMembers = selectedUsers;
+    }
 
+    const finalChannel = {
+      ...this.channelDataBuffer,
+      members: finalMembers,
+    } as Channel;
 
+    this.channelService.createChannel(finalChannel).then(() => {
+      console.log('Channel created with users:', finalMembers);
+      this.closePeopleDialog();
+    });
+  }
 
   handleChannelCreation(channelData: Channel) {
     this.channelName = channelData.title;
     this.channelDescription = channelData.description;
-    this.openAddPeopleDialog({ name: channelData.title, description: channelData.description });
+    this.openAddPeopleDialog({
+      name: channelData.title,
+      description: channelData.description,
+    });
   }
-
-
-
 }

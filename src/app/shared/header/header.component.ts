@@ -5,11 +5,12 @@ import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
+import { SpinnerComponent } from "../spinner/spinner.component";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProfileCardComponent],
+  imports: [CommonModule, RouterModule, ProfileCardComponent, SpinnerComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -26,6 +27,7 @@ export class HeaderComponent {
   public avatarPath: string = '';
   public userEmail: string = '';
   public onlineStatus: boolean | any;
+  public isProfileAvatarLoading: boolean = true;
 
   constructor(
     public router: Router,
@@ -88,15 +90,14 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.loadUserData();
-    console.log(this.showSearchBar);
   }
 
-  private loadUserData(): void {
+  private async loadUserData(): Promise<void> {
     const currentUser = this.getCurrentUser();
     if (!currentUser) return;
-    this.fetchAndSetUserDocument(currentUser.uid);
+    await this.fetchAndSetUserDocument(currentUser.uid); // 👈 await
     this.setUserEmail();
-    this.setUserOnlineStatus(currentUser.uid, true)
+    this.setUserOnlineStatus(currentUser.uid, true);
   }
 
   private getCurrentUser() {
@@ -107,18 +108,24 @@ export class HeaderComponent {
     return user;
   }
 
-  private fetchAndSetUserDocument(uid: string): void {
-    this.userService
-      .getUserDocument(uid)
-      .then((userDoc) => this.handleUserDocument(userDoc));
+  private async fetchAndSetUserDocument(uid: string): Promise<void> {
+    this.isProfileAvatarLoading = true;
+    const userDoc = await this.userService.getUserDocument(uid);
+    this.handleUserDocument(userDoc);
+    this.isProfileAvatarLoading = false;
   }
 
   private handleUserDocument(userDoc: any): void {
-    if (userDoc && userDoc.name) {
+    if (userDoc && userDoc.name && userDoc.avatarPath) {
       this.userName = userDoc.name;
       this.avatarPath = userDoc.avatarPath;
+      console.log(this.userName);
+      console.log(this.avatarPath);
+
     } else {
       this.userName = 'Unbekannt';
+      console.log(this.userName);
+      console.log(this.avatarPath);
     }
   }
 
