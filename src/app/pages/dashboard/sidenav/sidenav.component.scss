@@ -1,9 +1,11 @@
+@use "../../../../styles/variables" as *;
+
 .container {
   width: 400px;
   min-height: calc(100vh - 200px);
   background-color: #fff;
-  padding: 2rem;
-  border-radius: 36px;
+  padding: 32px 30px;
+  border-radius: 30px;
 
   .heading {
     display: flex;
@@ -40,9 +42,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 25px;
     width: 100%;
-    padding-left: 1.6rem;
 
     .section-header {
       display: flex;
@@ -52,7 +53,7 @@
       font-size: 0.95rem;
       cursor: pointer;
       width: 100%;
-      padding-right: 0.5rem;
+      padding-left: 23px;
 
       .section-left {
         display: flex;
@@ -63,6 +64,7 @@
         img {
           width: 10px;
           height: 10px;
+          transition: transform 0.125s ease-in-out;
 
           &:hover {
             color: blue;
@@ -116,31 +118,43 @@
     }
 
     .section-body {
-      margin-top: 0.5rem;
-
       .channel-item {
-        padding: 0.4rem 0.8rem;
-        border-radius: 12px;
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: #5f59f7;
-        background-color: #eeedfe;
-        margin-bottom: 0.4rem;
+        border-radius: 20px;
         display: inline-block;
+        width: fit-content;
+        padding: 4px 20px;
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 18px;
+        line-height: 100%;
+        letter-spacing: 0%;
+        border-radius: 20px;
+        cursor: pointer;
 
         &.selected {
           font-weight: 600;
         }
+
+        &:hover {
+          background-color: $secondary-color;
+          color: $input-field-focus-color;
+          font-weight: 700;
+          font-style: Bold;
+        }
       }
 
       .add-channel {
-        font-size: 1.1rem;
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 18px;
+        line-height: 100%;
+        letter-spacing: 0%;
         color: #1d1c1d;
         cursor: pointer;
-        margin-top: 0.5rem;
         display: flex;
         align-items: center;
         gap: 5px;
+        padding-left: 20px;
 
         img {
           width: 16px;
@@ -155,11 +169,17 @@
         display: flex;
         align-items: center;
         gap: 0.6rem;
-        padding: 0.4rem 0;
+        padding: 4px 20px;
         font-size: 1.1rem;
         color: #1d1c1d;
         position: relative;
         cursor: pointer;
+        width: fit-content;
+        border-radius: 35px;
+
+        &:hover {
+          background-color: $secondary-color;
+        }
 
         .avatar {
           width: 50px;
@@ -169,8 +189,8 @@
 
         .online-dot {
           position: absolute;
-          left: 34px;
-          bottom: 4px;
+          left: 52px;
+          bottom: 0px;
           width: 14px;
           height: 14px;
           background-color: rgba(146, 200, 62, 1);
@@ -190,4 +210,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.section-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding-left: 30px;
+}
+
+.channel-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-left: 36px;
+}
+
+.rotate-img {
+  transform: rotate(-90deg);
 }

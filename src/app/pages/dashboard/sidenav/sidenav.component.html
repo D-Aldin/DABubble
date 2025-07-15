@@ -13,7 +13,7 @@
   <div class="section">
     <div class="section-header" (click)="toggleChannels()">
       <div class="section-left">
-        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
+        <img [class.rotate-img]="showChannels" src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
         <div class="channel-heading">
           <img src="/assets/images/sidenav-img/workspaces.svg" alt="Channels" />
           <span>Channels</span>
@@ -22,20 +22,21 @@
       <button class="plus-btn" (click)="emitOpenDialog()">+</button>
     </div>
     @if(showChannels) {
-    <div class="section-body full-width">
-      <!-- Spinner which is shown while channels are loaded -->
+    <div class="section-body full-width channel-flex">
+      <!-- Spinner is shown while channels are loaded -->
       <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
         <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
       </div>
-      
+
       <ng-template #usersLoaded>
         @for (channel of channels$ | async; track channel.id) {
         <div class="channel-item"># {{ channel.title }}</div>
         }
       </ng-template>
-      <div class="add-channel" (click)="emitOpenDialog()"><img src="/assets/images/sidenav-img/add_circle.svg"
-          alt="add-channel"> Channel
-        hinzufügen</div>
+      <div class="add-channel" (click)="emitOpenDialog()">
+        <img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel">
+        Channel hinzufügen
+      </div>
     </div>
     }
   </div>
@@ -44,7 +45,7 @@
   <div class="section">
     <div class="section-header" (click)="toggleDMs()">
       <div class="section-left">
-        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="">
+        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="showDMs" alt="">
         <div class="direct-message">
           <img src="/assets/images/sidenav-img/account_circle.svg" alt="DMs" />
           <span>Direktnachrichten</span>
@@ -53,7 +54,7 @@
     </div>
 
     @if (showDMs) {
-    <div class="section-body full-width">
+    <div class="section-body full-width section-flex">
       <!-- Spinner loader while Users are loaded -->
       <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
         <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>

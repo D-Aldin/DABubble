@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, EventEmitter, Output  } from '@angular/core';
+import { Component, inject, EventEmitter, Output } from '@angular/core';
 import { ChannelService } from '../../../core/services/channel.service';
 import { DirectMessagingService } from '../../../core/services/direct-messaging.service';
 import { Observable } from 'rxjs';
