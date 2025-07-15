@@ -19,14 +19,22 @@
           <span>Channels</span>
         </div>
       </div>
-      <button class="plus-btn"  (click)="emitOpenDialog()">+</button>
+      <button class="plus-btn" (click)="emitOpenDialog()">+</button>
     </div>
     @if(showChannels) {
-    <div class="section-body">
-      @for (channel of channels$ | async; track channel.id) {
-      <div class="channel-item"># {{ channel.title }}</div>
-      }
-      <div class="add-channel" (click)="emitOpenDialog()"><img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel"> Channel
+    <div class="section-body full-width">
+      <!-- Spinner which is shown while channels are loaded -->
+      <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
+        <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
+      </div>
+      
+      <ng-template #usersLoaded>
+        @for (channel of channels$ | async; track channel.id) {
+        <div class="channel-item"># {{ channel.title }}</div>
+        }
+      </ng-template>
+      <div class="add-channel" (click)="emitOpenDialog()"><img src="/assets/images/sidenav-img/add_circle.svg"
+          alt="add-channel"> Channel
         hinzufügen</div>
     </div>
     }
@@ -45,19 +53,26 @@
     </div>
 
     @if (showDMs) {
-    <div class="section-body">
-      @for (user of users$ | async; track user.uid) {
-      <div class="dm-item" [routerLink]="'direct-message'">
-        <!-- <a routerLink="direct-message"> -->
-        <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
-        <span>{{ user.name }}</span>
-
-        <!-- </a> -->
-
-        <span class="online-dot"
-          [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
+    <div class="section-body full-width">
+      <!-- Spinner loader while Users are loaded -->
+      <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
+        <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
       </div>
-      }
+
+      <ng-template #usersLoaded>
+        @for (user of users$ | async; track user.uid) {
+        <div class="dm-item" [routerLink]="'direct-message'">
+          <!-- <a routerLink="direct-message"> -->
+          <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+          <span>{{ user.name }}</span>
+
+          <!-- </a> -->
+
+          <span class="online-dot"
+            [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
+        </div>
+        }
+      </ng-template>
     </div>
     }
   </div>

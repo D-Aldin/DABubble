@@ -6,11 +6,12 @@ import { Observable } from 'rxjs';
 import { ChatUser } from '../../../core/interfaces/chat-user';
 import { Channel } from '../../../core/interfaces/channel';
 import { RouterModule } from '@angular/router';
+import { SpinnerComponent } from "../../../shared/spinner/spinner.component";
 
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SpinnerComponent],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })

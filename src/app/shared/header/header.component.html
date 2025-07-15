@@ -17,8 +17,13 @@
             </div>
         </div>
 
-        <div class="profile-container" (click)="toggleProfileMenu()" *ngIf="showProfileAvatar"
-            (mouseenter)="isChevronHovered = true" (mouseleave)="isChevronHovered = false">
+        <div *ngIf="isProfileAvatarLoading && showProfileAvatar" class="profile-spinner">
+            <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
+        </div>
+
+        <div class="profile-container" (click)="toggleProfileMenu()"
+            *ngIf="showProfileAvatar && !isProfileAvatarLoading" (mouseenter)="isChevronHovered = true"
+            (mouseleave)="isChevronHovered = false">
             <span class="user-name">{{userName}}</span>
             <div class="avatar-wrapper">
                 <img [src]="avatarPath" alt="Profilbild" class="avatar-image" />
@@ -29,12 +34,12 @@
                 alt="Chevron" class="chevron-icon" />
         </div>
 
-        <div  *ngIf="!showProfileMenu && showProfileAvatar" class="profile-menu">
+        <div *ngIf="!showProfileMenu && showProfileAvatar" class="profile-menu">
             <button (click)="showProfileCardContainer()">Profil</button>
             <button (click)="logout()">Log out</button>
         </div>
 
-        <app-profile-card *ngIf="showProfileCard"  [src]="avatarPath" [name]="userName" [active]="onlineStatus"
+        <app-profile-card *ngIf="showProfileCard" [src]="avatarPath" [name]="userName" [active]="onlineStatus"
             [email]="userEmail" [isInsertedInHeader]="true" (closeCard)="showProfileCard = false"
             (save)="onNameSaved($event)">
         </app-profile-card>
