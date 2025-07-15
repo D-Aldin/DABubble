@@ -8,6 +8,8 @@ import { RouterModule } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
 import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
+import { ChannelService } from '../../core/services/channel.service';
+import { Channel } from '../../core/interfaces/channel';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +34,11 @@ export class DashboardComponent {
   showAddChannelDialog = false;
   showPeopleDialog = false;
   createdChannelName = '';
+  channelDataBuffer: Partial<Channel> = {};
+  channelName = '';
+  channelDescription = '';
+
+  constructor(private channelService: ChannelService) {}
 
   chatMessages = [
     {
@@ -57,6 +64,16 @@ export class DashboardComponent {
     },
   ];
 
+  handleProceedToPeople(data: { name: string; description: string }) {
+    this.channelDataBuffer = {
+      title: data.name,
+      description: data.description,
+      createdAt: new Date()
+    };
+    this.closeAddChannelDialog();
+    this.openAddPeopleDialog();
+  }
+
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
   }
@@ -66,25 +83,45 @@ export class DashboardComponent {
   }
 
   closeAddChannelDialog() {
-  this.createdChannelName = '';
-  this.showAddChannelDialog = false;
-}
+    this.createdChannelName = '';
+    this.showAddChannelDialog = false;
+  }
 
-  openAddPeopleDialog() {
+  openAddPeopleDialog(data?: { name: string; description: string }) {
+    if (data) {
+      this.channelName = data.name;
+      this.channelDescription = data.description;
+    }
+
     this.showAddChannelDialog = false;
     this.showPeopleDialog = true;
   }
+
 
   closePeopleDialog() {
   this.createdChannelName = '';
   this.showPeopleDialog = false;
 }
 
-  handlePeopleConfirmed(selectedUsers: any) {
-    console.log('Selected users:', selectedUsers);
+ handlePeopleConfirmed(selectedUsers: string[]) {
+  const finalChannel = {
+    ...this.channelDataBuffer,
+    members: selectedUsers,
+  } as Channel;
+
+  this.channelService.createChannel(finalChannel).then(() => {
+    console.log('Channel created with users:', selectedUsers);
     this.closePeopleDialog();
-    // TODO: Save to Firebase or continue to next step
+  });
+}
+
+
+  handleChannelCreation(channelData: Channel) {
+    this.channelName = channelData.title;
+    this.channelDescription = channelData.description;
+    this.openAddPeopleDialog({ name: channelData.title, description: channelData.description });
   }
+
 
 
 }

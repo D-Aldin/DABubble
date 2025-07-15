@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AddPeopleComponent } from './add-people/add-people.component';
@@ -18,10 +18,14 @@ export class AddChannelComponent {
   @Output() openAddPeopleDialog = new EventEmitter<void>();
   channelDescription = '';
   showPeopleStep = false;
+  @Output() proceedToPeople = new EventEmitter<{ name: string; description: string }>();
 
    proceedToAddPeople() {
-  this.openAddPeopleDialog.emit(); // Close current and open people-dialog
-}
+    this.proceedToPeople.emit({
+      name: this.channelName,
+      description: this.channelDescription
+    });
+  }
 
    handlePeopleAdded(event: any) {
     console.log('Users added:', event);
@@ -30,12 +34,6 @@ export class AddChannelComponent {
 
   cancelAddPeople() {
     this.showPeopleStep = false;
-  }
-
-  createChannel() {
-    console.log('Channel Name:', this.channelName);
-    console.log('Description:', this.channelDescription);
-    // TODO: add Firebase logic later
   }
 
   closeDialog() {
