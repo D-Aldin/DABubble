@@ -62,10 +62,10 @@
 
       <ng-template #usersLoaded>
         @for (user of users$ | async; track user.uid) {
-        <div class="dm-item" [routerLink]="'direct-message'">
+        <div class="dm-item" [routerLink]="'direct-message'" (click)="selectUser(user.name)">
           <!-- <a routerLink="direct-message"> -->
           <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
-          <span (click)="selectUser(user.name)">{{ user.name }}</span>
+          <span>{{ user.name }}</span>
 
           <!-- </a> -->
 
