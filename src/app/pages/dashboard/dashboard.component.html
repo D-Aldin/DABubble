@@ -38,7 +38,9 @@
         <div class="dialog-container" (click)="$event.stopPropagation()">
           <app-add-channel 
             (close)="closeAddChannelDialog()" 
-            (openAddPeopleDialog)="openAddPeopleDialog()">
+            (openAddPeopleDialog)="openAddPeopleDialog()"
+            (complete)="handleChannelCreation($event)"
+            (proceedToPeople)="handleProceedToPeople($event)">
           </app-add-channel>
         </div>
       </div>

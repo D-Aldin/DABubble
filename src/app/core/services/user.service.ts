@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, setDoc, collection, collectionData } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +32,10 @@ export class UserService {
     const userRef = doc(this.firestore, 'users', uid);
     await setDoc(userRef, { online }, { merge: true });
   }
+
+  getAllUsers(): Observable<{ id: string, avatarPath: string, name: string }[]> {
+    const usersRef = collection(this.firestore, 'users');
+    return collectionData(usersRef, { idField: 'id' }) as Observable<{ id: string, avatarPath: string, name: string }[]>;
+  }
+  
 }

@@ -15,10 +15,22 @@
   </label>
 
   @if (!addAllMembers) {
-    <div class="search-container">
-      <input type="text" [(ngModel)]="searchTerm" placeholder="Name eingeben" />
-    </div>
-  }
+  <div class="search-container">
+    <input type="text" [(ngModel)]="searchTerm" (input)="onSearchTermChange()" placeholder="Name eingeben" />
+  </div>
+
+  <ul class="user-list">
+    @for (user of filteredUsers; track user.id) {
+      <li>
+        <label>
+          <input type="checkbox" [value]="user.id" (change)="onUserSelectionChange(user.id, $event)" />
+          {{ user.name }}
+        </label>
+      </li>
+    }
+  </ul>
+}
+
 
   <div class="btn-wrapper">
     <button class="submit-btn" (click)="finish()">Erstellen</button>

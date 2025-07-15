@@ -25,7 +25,7 @@ export class AuthService {
   constructor() {
     onAuthStateChanged(this.auth, (user) => {
       this.userSubject.next(user);
-      this.initializedSubject.next(true); // ✅ only now we're sure
+      this.initializedSubject.next(true); //  only now we're sure
     });
   }
 
