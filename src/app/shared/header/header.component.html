@@ -1,11 +1,11 @@
-<header >
+<header [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
     <div class="header-content">
         <div class="logo">
             <img class="logo-img" src="../../../assets/icons/logo.png" alt="Logo" />
             <img class="logo-name-img" src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
         </div>
 
-        <div class="search-bar" [hidden]="!showSearchBar">
+        <div class="search-bar" *ngIf="showSearchBar">
             <input type="text" placeholder="Devspace durchsuchen" />
             <div class="search-icon" role="img" aria-label="Suche"></div>
         </div>
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="profile-container" (click)="toggleProfileMenu()" [hidden]="!showProfileAvatar"
+        <div class="profile-container" (click)="toggleProfileMenu()" *ngIf="showProfileAvatar"
             (mouseenter)="isChevronHovered = true" (mouseleave)="isChevronHovered = false">
             <span class="user-name">{{userName}}</span>
             <div class="avatar-wrapper">
@@ -34,7 +34,7 @@
             <button (click)="logout()">Log out</button>
         </div>
 
-        <app-profile-card [hidden]="!showProfileCard"  [src]="avatarPath" [name]="userName" [active]="onlineStatus"
+        <app-profile-card *ngIf="showProfileCard"  [src]="avatarPath" [name]="userName" [active]="onlineStatus"
             [email]="userEmail" [isInsertedInHeader]="true" (closeCard)="showProfileCard = false"
             (save)="onNameSaved($event)">
         </app-profile-card>

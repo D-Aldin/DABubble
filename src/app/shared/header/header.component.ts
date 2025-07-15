@@ -40,9 +40,9 @@ export class HeaderComponent {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.showSignUpLink = event.urlAfterRedirects === '/login';
-        this.showProfileAvatar = event.urlAfterRedirects === '/dashboard';
-        this.showSearchBar = event.urlAfterRedirects === '/dashboard';
-        this.showProfileMenu = event.urlAfterRedirects === '/dashboard';
+        this.showProfileAvatar = ['/dashboard', '/dashboard/direct-message'].includes(event.urlAfterRedirects)
+        this.showSearchBar = ['/dashboard', '/dashboard/direct-message'].includes(event.urlAfterRedirects)
+        this.showProfileMenu = ['/dashboard', '/dashboard/direct-message'].includes(event.urlAfterRedirects)
       });
   }
 

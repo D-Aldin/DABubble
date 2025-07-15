@@ -37,3 +37,36 @@ body {
     cursor: not-allowed !important;
   }
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $button;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: darken($button, 10%);
+}
+
+// Hide arrows
+::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+// Firefox
+* {
+  scrollbar-width: thin;
+  scrollbar-color: $button transparent;
+}
