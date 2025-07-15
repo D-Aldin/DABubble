@@ -1,0 +1,27 @@
+<div class="people-dialog">
+  <div class="dialog-header">
+    <h2>Leute hinzufügen</h2>
+    <button class="close-btn" (click)="cancelDialog()">&times;</button>
+  </div>
+
+  <label class="radio-option">
+    <input type="radio" [(ngModel)]="addAllMembers" [value]="true" />
+    Alle Mitglieder von <span class="highlight">{{ channelName }}</span> hinzufügen
+  </label>
+
+  <label class="radio-option">
+    <input type="radio" [(ngModel)]="addAllMembers" [value]="false" />
+    Bestimmte Leute hinzufügen
+  </label>
+
+  @if (!addAllMembers) {
+    <div class="search-container">
+      <input type="text" [(ngModel)]="searchTerm" placeholder="Name eingeben" />
+    </div>
+  }
+
+  <div class="btn-wrapper">
+    <button class="submit-btn" (click)="finish()">Erstellen</button>
+  </div>
+</div>
+

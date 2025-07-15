@@ -32,14 +32,29 @@
       </div>
     </button>
     
-    <!-- Add-Channel-Dialog -->
+    <!-- Add-Channel-Dialog & Add-People-dialog-->
     @if (showAddChannelDialog) {
       <div class="overlay" (click)="closeAddChannelDialog()">
         <div class="dialog-container" (click)="$event.stopPropagation()">
-          <app-add-channel (close)="closeAddChannelDialog()"></app-add-channel>
+          <app-add-channel 
+            (close)="closeAddChannelDialog()" 
+            (openAddPeopleDialog)="openAddPeopleDialog()">
+          </app-add-channel>
         </div>
       </div>
     }
+    @if (showPeopleDialog) {
+      <div class="overlay" (click)="closePeopleDialog()">
+        <div class="dialog-container" (click)="$event.stopPropagation()">
+          <app-add-people
+            [channelName]="createdChannelName"
+            (cancel)="closePeopleDialog()"
+            (confirm)="handlePeopleConfirmed($event)">
+          </app-add-people>
+        </div>
+      </div>
+    }
+
 
     <!--Dashboard Main Content -->
     <div class="main-content">

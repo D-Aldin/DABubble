@@ -7,6 +7,7 @@ import { MessageFieldComponent } from '../../shared/message-field/message-field.
 import { RouterModule } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
+import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +20,8 @@ import { AddChannelComponent } from '../../shared/add-channel/add-channel.compon
     MessageFieldComponent,
     RouterModule,
     RouterOutlet,
-    AddChannelComponent
+    AddChannelComponent,
+    AddPeopleComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -28,6 +30,8 @@ export class DashboardComponent {
   showSidenav = true;
   hovered = false;
   showAddChannelDialog = false;
+  showPeopleDialog = false;
+  createdChannelName = '';
 
   chatMessages = [
     {
@@ -62,7 +66,25 @@ export class DashboardComponent {
   }
 
   closeAddChannelDialog() {
+  this.createdChannelName = '';
+  this.showAddChannelDialog = false;
+}
+
+  openAddPeopleDialog() {
     this.showAddChannelDialog = false;
+    this.showPeopleDialog = true;
   }
+
+  closePeopleDialog() {
+  this.createdChannelName = '';
+  this.showPeopleDialog = false;
+}
+
+  handlePeopleConfirmed(selectedUsers: any) {
+    console.log('Selected users:', selectedUsers);
+    this.closePeopleDialog();
+    // TODO: Save to Firebase or continue to next step
+  }
+
 
 }
