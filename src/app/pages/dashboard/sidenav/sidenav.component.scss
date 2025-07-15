@@ -15,14 +15,17 @@
     .logo-and-heading {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 23px;
     }
   }
 
   h1 {
-    font-size: 1.5rem;
-    color: #333;
-    font-weight: 600;
+    color: rgba(0, 0, 0, 1);
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
   }
 
   .edit-btn {
@@ -81,6 +84,14 @@
             width: 24px;
             height: 24px;
           }
+
+          span {
+            font-weight: 700;
+            font-style: Bold;
+            font-size: 20px;
+            line-height: 100%;
+            letter-spacing: 0%;
+          }
         }
 
         .direct-message {
@@ -95,8 +106,12 @@
         }
 
         span {
-          font-size: 1.5rem;
-          color: #1d1c1d;
+          font-weight: 700;
+          font-style: Bold;
+          font-size: 20px;
+          line-height: 100%;
+          letter-spacing: 0%;
+          color: black;
         }
       }
 
@@ -120,7 +135,7 @@
     .section-body {
       .channel-item {
         border-radius: 20px;
-        display: inline-block;
+        display: flex;
         width: fit-content;
         padding: 4px 20px;
         font-weight: 400;
@@ -130,6 +145,8 @@
         letter-spacing: 0%;
         border-radius: 20px;
         cursor: pointer;
+        transition: 0.125s ease;
+        gap: 17px;
 
         &.selected {
           font-weight: 600;
@@ -153,11 +170,11 @@
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 5px;
-        padding-left: 20px;
+        gap: 8px;
+        padding-left: 14px;
 
         img {
-          width: 16px;
+          width: 24px;
         }
 
         &:hover {
@@ -176,6 +193,7 @@
         cursor: pointer;
         width: fit-content;
         border-radius: 35px;
+        transition: 0.125s ease;
 
         &:hover {
           background-color: $secondary-color;
@@ -188,14 +206,8 @@
         }
 
         .online-dot {
-          position: absolute;
-          left: 52px;
-          bottom: 0px;
-          width: 14px;
-          height: 14px;
-          background-color: rgba(146, 200, 62, 1);
-          border: 2px solid #fff;
-          border-radius: 50%;
+          left: 57px;
+          bottom: 4px;
         }
       }
     }

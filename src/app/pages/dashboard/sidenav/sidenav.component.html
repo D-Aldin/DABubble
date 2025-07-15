@@ -30,7 +30,10 @@
 
       <ng-template #usersLoaded>
         @for (channel of channels$ | async; track channel.id) {
-        <div class="channel-item"># {{ channel.title }}</div>
+        <div class="channel-item">
+          <b>#</b>
+          <span>{{ channel.title }}</span>
+        </div>
         }
       </ng-template>
       <div class="add-channel" (click)="emitOpenDialog()">
