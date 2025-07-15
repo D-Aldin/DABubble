@@ -13,7 +13,7 @@
   <div class="section">
     <div class="section-header" (click)="toggleChannels()">
       <div class="section-left">
-        <img [class.rotate-img]="showChannels" src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
+        <img [class.rotate-img]="!showChannels" src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
         <div class="channel-heading">
           <img src="/assets/images/sidenav-img/workspaces.svg" alt="Channels" />
           <span>Channels</span>
@@ -45,7 +45,7 @@
   <div class="section">
     <div class="section-header" (click)="toggleDMs()">
       <div class="section-left">
-        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="showDMs" alt="">
+        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="!showDMs" alt="">
         <div class="direct-message">
           <img src="/assets/images/sidenav-img/account_circle.svg" alt="DMs" />
           <span>Direktnachrichten</span>
