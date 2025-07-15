@@ -1,1 +1,35 @@
-<p>direct-message works!</p>
+@if(selectedUser) {
+<section>
+   <div class="headline">
+    
+         <div class="main-avatar">
+            <img [src]="selectedUser.avatarPath" alt="">
+            <h3>{{selectedUser.name}}</h3>
+              <span class="online-dot"
+               [ngStyle]="{ 'background-color': selectedUser.online ? 'rgba(146, 200, 62, 1)' : 'grey' }">
+            </span>
+         </div>
+       
+    
+   </div>
+
+   <div class="message">
+
+      <div class="you-talk-to">
+         <div class="secondary-avatar">
+            <img [src]="selectedUser.avatarPath" alt="">
+            <h3>{{selectedUser.name}}</h3>
+            <h4>Diese Unterhaltung findet nur zwischen &#64;<a>{{selectedUser.name}}</a> und dir statt.</h4>
+         </div>
+      </div>
+
+
+
+   </div>
+
+   <div class="message-field-wrapper">
+      <app-message-field></app-message-field>
+   </div>
+   
+</section>
+}
