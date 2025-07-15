@@ -70,3 +70,14 @@ body {
   scrollbar-width: thin;
   scrollbar-color: $button transparent;
 }
+
+.online-dot {
+  position: absolute;
+  left: 34px;
+  bottom: 4px;
+  width: 14px;
+  height: 14px;
+  background-color: rgba(146, 200, 62, 1);
+  border: 2px solid #fff;
+  border-radius: 50%;
+}

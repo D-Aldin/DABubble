@@ -30,12 +30,13 @@ section {
 
 .main-content {
   position: relative;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-radius: 8px;
-  padding: 2rem;
+  // padding: 2rem;
   overflow-y: auto;
   height: calc(100vh - 200px);
   border-radius: 36px;
+  overflow: hidden;
 }
 
 .sidenav-toggle-btn {
@@ -52,8 +53,8 @@ section {
   height: 400px;
   width: 56px;
   transition: transform 0.3s ease-in-out;
-  &:hover{
-    transform: scaleX(1.1)  ;
+  &:hover {
+    transform: scaleX(1.1);
   }
 
   .btn-content {

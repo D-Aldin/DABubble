@@ -8,7 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .logo-and-heading{
+    .logo-and-heading {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -25,21 +25,21 @@
     border: none;
     cursor: pointer;
     padding: 0;
-  
+
     img {
       width: 24px;
       height: 24px;
-      }
     }
+  }
 
-    .section {
-      margin-top: 2rem;
-      display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        width: 100%;
-        padding-left: 1.6rem;
+  .section {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    padding-left: 1.6rem;
 
     .section-header {
       display: flex;
@@ -60,28 +60,28 @@
         img {
           width: 10px;
           height: 10px;
-          &:hover{
+          &:hover {
             color: blue;
           }
         }
-        .channel-heading{
+        .channel-heading {
           font-size: 24px;
           display: flex;
           align-items: center;
           gap: 10px;
-          img{
+          img {
             width: 24px;
             height: 24px;
           }
         }
-        .direct-message{
+        .direct-message {
           display: flex;
-            align-items: center;
-            gap: 10px;
-            img {
-                width: 24px;
-                height: 24px;
-              }
+          align-items: center;
+          gap: 10px;
+          img {
+            width: 24px;
+            height: 24px;
+          }
         }
 
         span {
@@ -90,12 +90,13 @@
         }
       }
       &:hover {
-            filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
-            // This will make it blue on hover 
-          }
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+          brightness(94%) contrast(92%);
+        // This will make it blue on hover
+      }
 
       .plus-btn {
-      background: none;
+        background: none;
         border: none;
         font-size: 1.5rem;
         font-weight: 500;
@@ -133,11 +134,12 @@
         align-items: center;
         gap: 5px;
 
-        img{
+        img {
           width: 16px;
         }
         &:hover {
-          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+            brightness(94%) contrast(92%);
         }
       }
 
@@ -157,18 +159,17 @@
           border-radius: 50%;
         }
 
-        .online-dot {
-          position: absolute;
-          left: 34px;
-          bottom: 4px;
-          width: 14px;
-          height: 14px;
-          background-color: rgba(146, 200, 62, 1); 
-          border: 2px solid #fff;
-          border-radius: 50%;
-        }
+        // .online-dot {
+        //   position: absolute;
+        //   left: 34px;
+        //   bottom: 4px;
+        //   width: 14px;
+        //   height: 14px;
+        //   background-color: rgba(146, 200, 62, 1);
+        //   border: 2px solid #fff;
+        //   border-radius: 50%;
+        // }
       }
     }
   }
 }
-

@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, EventEmitter, Output  } from '@angular/core';
+import { Component, inject, EventEmitter, Output } from '@angular/core';
 import { ChannelService } from '../../../core/services/channel.service';
 import { DirectMessagingService } from '../../../core/services/direct-messaging.service';
 import { Observable } from 'rxjs';
 import { ChatUser } from '../../../core/interfaces/chat-user';
 import { Channel } from '../../../core/interfaces/channel';
 import { RouterModule } from '@angular/router';
+import { SharedService } from '../../../core/services/shared.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -15,6 +16,8 @@ import { RouterModule } from '@angular/router';
   styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent {
+  constructor(private sharedService: SharedService) {}
+
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
   showDMs = true;
@@ -38,12 +41,15 @@ export class SidenavComponent {
 
   selectUser(userName: string) {
     this.users$.subscribe((usersArray) => {
-      const selectedUser = usersArray.find((user) => (user.name = userName));
+      const selectedUser = usersArray.find((user) => user.name === userName);
+      if (selectedUser) {
+        this.sharedService.setData(selectedUser);
+        console.log(selectedUser);
+      }
     });
   }
 
   emitOpenDialog() {
     this.openAddChannelDialog.emit();
   }
-
 }
