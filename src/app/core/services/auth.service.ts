@@ -1,6 +1,14 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, User, UserCredential, updatePassword as firebaseUpdatePassword } from '@angular/fire/auth';
-import { BehaviorSubject } from 'rxjs';
+import { Auth, createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, UserCredential, updatePassword as firebaseUpdatePassword } from '@angular/fire/auth';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import {
+  getAuth,
+  signInAnonymously,
+  setPersistence,
+  browserLocalPersistence,
+  updateProfile,
+  User
+} from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +44,30 @@ export class AuthService {
 
   getCurrentUser() {
     return this.userSubject.value;
+  }
+
+  signInAsGuest(): Observable<User> {
+    const auth = getAuth();
+
+    return from(
+      setPersistence(auth, browserLocalPersistence) // ensures session survives browser restarts
+        .then(() => signInAnonymously(auth))        // then do the anonymous sign-in
+        .then(async userCredential => {
+          const user = userCredential.user;
+          const guestName = 'Guest' + Math.floor(1000 + Math.random() * 9000);
+
+          try {
+            await updateProfile(user, {
+              displayName: guestName,
+              photoURL: 'assets/images/register/default-profile-img.svg'
+            });
+            return user;
+          } catch (error) {
+            console.error('Failed to update guest profile:', error);
+            return user; // Return the user even if updateProfile fails
+          }
+        })
+    );
   }
 
   async loginWithGoogle(): Promise<UserCredential | null> {

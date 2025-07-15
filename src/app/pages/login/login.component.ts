@@ -19,9 +19,6 @@ export class LoginComponent {
   loginForm!: FormGroup;
   showErrorToast: boolean = false;
   showSuccessToast: boolean = false;
-  avatarPath: string = '';
-  displayName: string = '';
-  displayEmail: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private userService: UserService) { }
 
@@ -40,16 +37,30 @@ export class LoginComponent {
   }
 
   onGuestLogin(): void {
-    //Handle guest login logic
+    this.authService.signInAsGuest().subscribe({
+      next: async user => {
+        console.log('Signed in as guest:', user.displayName, user.uid);
+        await this.userService.setOnlineStatus(user.uid, true);
+        if (user.photoURL && user.displayName) {
+          await this.userService.createUserDocument(user.uid, user.photoURL, user.displayName);
+        }
+        this.proceedToDashboard(0);
+      },
+      error: err => {
+        console.error('Guest login failed:', err);
+        // Optional: Show toast/snackbar feedback to user
+      }
+    });
   }
+
 
   async onGoogleLogin(): Promise<void> {
     const result = await this.authService.loginWithGoogle();
     if (result && result.user.displayName && result.user.photoURL && result.user.email) {
       console.log('Angemeldet als:', result.user.displayName);
-      this.router.navigateByUrl('/dashboard');
       await this.userService.createUserDocument(result.user.uid, result.user.photoURL, result.user.displayName);
       await this.userService.setOnlineStatus(result.user.uid, true)
+      this.proceedToDashboard(0);
     }
   }
 
@@ -76,7 +87,7 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value.email, this.loginForm.value.password)
         .then(async userCredential => {
           this.showSuccessFeedback()
-          this.proceedToDashboard();
+          this.proceedToDashboard(2000);
           await this.userService.setOnlineStatus(userCredential.user.uid, true)
         })
         .catch(error => {
@@ -96,9 +107,9 @@ export class LoginComponent {
     this.showErrorToast = true;
   }
 
-  proceedToDashboard(): void {
+  proceedToDashboard(delayTime: number): void {
     setTimeout(() => {
       this.router.navigateByUrl('/dashboard')
-    }, 2000);
+    }, delayTime);
   }
 }

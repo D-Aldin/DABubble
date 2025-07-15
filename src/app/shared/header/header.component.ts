@@ -68,13 +68,23 @@ export class HeaderComponent {
 
   logout(): void {
     const user = this.userAuthService.getCurrentUser();
+
+    // Prevent logout for guest users
+    if (user?.isAnonymous) {
+      console.log('Guest user – not logging out');
+      this.setUserOnlineStatus(user.uid, false);
+      this.router.navigate(['/login']); // Or wherever you want to redirect
+      return;
+    }
+
     this.userAuthService.logout().then(() => {
       if (user) {
-        this.setUserOnlineStatus(user.uid, false)
+        this.setUserOnlineStatus(user.uid, false);
       }
       this.router.navigate(['/login']);
     });
   }
+
 
   ngOnInit(): void {
     this.loadUserData();
