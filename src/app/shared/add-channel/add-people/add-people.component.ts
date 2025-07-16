@@ -21,6 +21,8 @@ export class AddPeopleComponent {
   addAllMembers = true;
   selectedUsers: string[] = [];
   searchTerm = '';
+  searchResults: typeof this.users = [];
+  selectedUserObjects: typeof this.users = [];
 
    constructor(private userService: UserService) {}
 
@@ -31,26 +33,33 @@ export class AddPeopleComponent {
     });
   }
 
-  onUserSelectionChange(userId: string, event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      this.selectedUsers.push(userId);
-    } else {
-      this.selectedUsers = this.selectedUsers.filter(id => id !== userId);
-    }
+  onSearchTermChange() {
+    const term = this.searchTerm.trim().toLowerCase();
+    this.searchResults = this.users
+      .filter(user =>
+        user.name.toLowerCase().includes(term) &&
+        !this.selectedUserObjects.some(u => u.id === user.id)
+      )
+      .slice(0, 5); // limit result length
+  }
+  
+  selectUser(user: { id: string; name: string; avatarPath: string }) {
+    this.selectedUserObjects.push(user);
+    this.selectedUsers.push(user.id);
+    this.searchTerm = '';
+    this.searchResults = [];
   }
 
-  onSearchTermChange() {
-    this.filteredUsers = this.users.filter(user =>
-      user.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+  removeUser(userId: string) {
+    this.selectedUserObjects = this.selectedUserObjects.filter(u => u.id !== userId);
+    this.selectedUsers = this.selectedUsers.filter(id => id !== userId);
   }
 
   finish() {
     if (this.addAllMembers) {
       this.confirm.emit(['ALL']);
     } else {
-      this.confirm.emit(this.selectedUsers); // or [this.searchTerm] if only one user
+      this.confirm.emit(this.selectedUsers); 
     }
   }
 

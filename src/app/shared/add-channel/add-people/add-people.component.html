@@ -15,25 +15,32 @@
   </label>
 
   @if (!addAllMembers) {
-  <div class="search-container">
-    <input type="text" [(ngModel)]="searchTerm" (input)="onSearchTermChange()" placeholder="Name eingeben" />
-  </div>
+    <div class="user-selection">
+      <div class="token-input-wrapper" (click)="inputField.focus()">
+        @for (user of selectedUserObjects; track user.id) {
+          <div class="user-token">
+            <img [src]="user.avatarPath" class="avatar" />
+            <span>{{ user.name }}</span>
+            <button type="button" class="remove-btn" (click)="removeUser(user.id)">×</button>
+          </div>
+        }
+        <input #inputField type="text" [(ngModel)]="searchTerm" (input)="onSearchTermChange()" [placeholder]="selectedUserObjects.length === 0 ? 'Name eingeben' : ''" />
+      </div>
 
-  <ul class="user-list">
-    @for (user of filteredUsers; track user.id) {
-      <li>
-        <label>
-          <input type="checkbox" [value]="user.id" (change)="onUserSelectionChange(user.id, $event)" />
-          {{ user.name }}
-        </label>
-      </li>
-    }
-  </ul>
-}
-
+      @if (searchResults.length > 0) {
+        <ul class="dropdown-list">
+          @for (user of searchResults; track user.id) {
+            <li (click)="selectUser(user)">
+              <img [src]="user.avatarPath" class="avatar" />
+              <span>{{ user.name }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
 
   <div class="btn-wrapper">
     <button class="submit-btn" (click)="finish()">Erstellen</button>
   </div>
 </div>
-
