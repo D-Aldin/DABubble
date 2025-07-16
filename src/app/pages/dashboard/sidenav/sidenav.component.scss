@@ -241,3 +241,15 @@
 .rotate-img {
   transform: rotate(-90deg);
 }
+.scroll-container-channels {
+  max-height: 100px; 
+  overflow-y: auto;
+  padding-right: 6px; 
+  scrollbar-width: thin;
+}
+.scroll-container-dm {
+  max-height: 300px; 
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+}
