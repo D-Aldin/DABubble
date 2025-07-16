@@ -21,7 +21,7 @@ export class SidenavComponent implements OnInit {
   selectedUserId: string | null = null;
   selectedChannel: string | null = null;
   usersArray: ChatUser[] = [];
-  constructor(private sharedService: SharedService) { }
+  constructor(private sharedService: SharedService) {}
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
@@ -52,13 +52,13 @@ export class SidenavComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.users$.subscribe(users => {
+    this.users$.subscribe((users) => {
       this.usersArray = users;
     });
   }
 
   selectUser(userName: string): void {
-    const selectedUser = this.usersArray.find(user => user.name === userName);
+    const selectedUser = this.usersArray.find((user) => user.name === userName);
     if (selectedUser) {
       this.selectedUserId = selectedUser.uid; // ✅ used for styling
       this.sharedService.setData(selectedUser);
