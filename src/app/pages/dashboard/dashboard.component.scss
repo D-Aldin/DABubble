@@ -163,14 +163,20 @@ app-message-field {
     }
 
     .add-user-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
+      background-color: #f0f2ff; 
+        border-radius: 50%;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
 
       img {
         width: 20px;
         height: 20px;
+        transition: filter 0.3s;
+        &:hover {
+          color: #0057ff;
+        }
       }
     }
   }
