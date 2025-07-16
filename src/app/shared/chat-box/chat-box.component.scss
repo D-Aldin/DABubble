@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: 90px min-content auto;
   grid-template-rows: auto auto;
-  margin: 30px 0 30px 0;
+  padding: 30px 14px;
 
   &.other-user {
     transform: scaleX(-1);
@@ -23,6 +23,14 @@
     .message {
       transform: scaleX(-1);
       border-radius: 20px 0px 20px 20px;
+    }
+  }
+
+  &:hover {
+    background-color: $secondary-color;
+
+    .message {
+      background-color: white;
     }
   }
 }

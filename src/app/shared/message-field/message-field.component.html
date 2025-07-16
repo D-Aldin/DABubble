@@ -1,17 +1,15 @@
 <div class="message-box">
-   <textarea name="message-box" placeholder="Antworten..." [(ngModel)]="message"></textarea>
-   <div class="button-container">
-      <div class="left-side">
-         <button (click)="toggleEmojiPicker()">
-            <img src="./../../../assets/icons/emoji.png" alt="emoji">
-         </button>
-         <button>
-            <img src="./../../../assets/icons/tag.png" alt="@">
+   <div class="message-wrapper">
+      <textarea name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"></textarea>
+      <div class="button-bar">
+         <div class="left-side">
+            <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
+            <button class="tag-button"></button>
+         </div>
+         <button class="send-button" (click)="captureMessage()">
+            <img src="./../../../assets/icons/send.png" alt="send" class="send-img" />
          </button>
       </div>
-      <button (click)="captureMessage()">
-         <img src="./../../../assets/icons/send.png" alt="send">
-      </button>
    </div>
 </div>
 <div class="emoji-wrapper">

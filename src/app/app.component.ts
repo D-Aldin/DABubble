@@ -29,9 +29,7 @@ export class AppComponent implements OnInit {
         this.router.url !== '/privacy-policy'
       ) {
         if (!this.userAuthService.loggedOutManually) {
-          setTimeout(() => {
-            this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
-          }, 2000);
+          this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
         }
         this.userAuthService.loggedOutManually = false;
       }
