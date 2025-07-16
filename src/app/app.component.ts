@@ -15,9 +15,9 @@ export class AppComponent implements OnInit {
   title = 'dabubble';
   showToast: boolean = false;
   toastMessage: string = '';
-  successCondition = true;
+  successCondition: boolean = true;
 
-  constructor(private userAuthService: AuthService, private router: Router) {}
+  constructor(private userAuthService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.userAuthService.user$.subscribe((user) => {
@@ -25,10 +25,13 @@ export class AppComponent implements OnInit {
         !user &&
         this.router.url !== '/login' &&
         this.router.url !== '/reset-request' &&
-        this.router.url !== '/reset-password'
+        this.router.url !== '/reset-password' &&
+        this.router.url !== '/privacy-policy'
       ) {
         if (!this.userAuthService.loggedOutManually) {
-          this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
+          setTimeout(() => {
+            this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
+          }, 2000);
         }
         this.userAuthService.loggedOutManually = false;
       }

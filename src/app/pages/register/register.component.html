@@ -1,81 +1,83 @@
-<app-header></app-header>
-<div class="register-container">
-  <div class="register-card" *ngIf="!registerFormStatus">
-    <div class="heading-container">
-      <button class="back-button" [routerLink]="['/login']">
-        <div class="back-button-img" role="img" aria-label="Zurück"></div>
-      </button>
-      <h1 class="title">Konto erstellen</h1>
+<section>
+  <app-header></app-header>
+  <div class="register-container">
+    <div class="register-card" *ngIf="!registerFormStatus">
+      <div class="heading-container">
+        <button class="back-button" [routerLink]="['/login']">
+          <div class="back-button-img" role="img" aria-label="Zurück"></div>
+        </button>
+        <h1 class="title">Konto erstellen</h1>
+      </div>
+
+      <p class="subtitle">
+        Mit deinem Namen und deiner E-Mail-Adresse hast<br />
+        du dein neues DABubble-Konto.
+      </p>
+
+      <form [formGroup]="form">
+        <!-- Name field -->
+        <app-input-field formControlName="name" [placeholder]="'Name und Nachname'" (input)="onNameChange($event)"
+          [src]="'assets/icons/person_filled.svg'" [errorMsg]="nameValidation()" [maxlength]="20">
+        </app-input-field>
+
+        <!-- E-Mail field -->
+        <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
+          [errorMsg]="emailValidation()">
+        </app-input-field>
+
+        <!-- Passwort field -->
+        <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
+          [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
+        </app-input-field>
+
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="privacy" required />
+          <span>
+            Ich stimme der
+            <a [routerLink]="['/privacy-policy']" target="_blank">Datenschutzerklärung</a> zu.
+          </span>
+        </label>
+
+        <div class="button-container">
+          <button class="submit-button button-style" [disabled]="form.invalid"
+            (click)="toggleAvatarChoosing()">Weiter</button>
+        </div>
+      </form>
     </div>
 
-    <p class="subtitle">
-      Mit deinem Namen und deiner E-Mail-Adresse hast<br />
-      du dein neues DABubble-Konto.
-    </p>
+    <div class="avatar-selection" *ngIf="registerFormStatus">
+      <div class="heading-container">
+        <button class="back-button" (click)="toggleAvatarChoosing()">
+          <div class="back-button-img" role="img" aria-label="Zurück"></div>
+        </button>
+        <h1>Wähle deinen Avatar</h1>
+      </div>
 
-    <form [formGroup]="form">
-      <!-- Name field -->
-      <app-input-field formControlName="name" [placeholder]="'Name und Nachname'" (input)="onNameChange($event)"
-        [src]="'assets/icons/person_filled.svg'" [errorMsg]="nameValidation()" [maxlength]="20">
-      </app-input-field>
+      <div class="avatar-preview">
+        <img [src]="selectedAvatar" alt="Ausgewählter Avatar" class="selected-avatar" />
+        <h2>Frederik Beck</h2>
+      </div>
 
-      <!-- E-Mail field -->
-      <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
-        [errorMsg]="emailValidation()">
-      </app-input-field>
+      <p class="select-label">Aus der Liste wählen</p>
 
-      <!-- Passwort field -->
-      <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
-        [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
-      </app-input-field>
-
-      <label class="checkbox-container">
-        <input type="checkbox" formControlName="privacy" required />
-        <span>
-          Ich stimme der
-          <a [routerLink]="['/privacy-policy']" target="_blank">Datenschutzerklärung</a> zu.
-        </span>
-      </label>
+      <div class="avatar-list">
+        <img *ngFor="let avatar of avatarImgPaths" [src]="avatar" alt="Avatar" class="avatar-option"
+          [class.selected]="avatar === selectedAvatar" (click)="selectAvatar(avatar)" />
+      </div>
 
       <div class="button-container">
-        <button class="submit-button button-style" [disabled]="form.invalid"
-          (click)="toggleAvatarChoosing()">Weiter</button>
+        <button class="submit-button button-style" [disabled]="isButtonDisabled" (click)="onRegister()" type="button">
+          Weiter
+        </button>
       </div>
-    </form>
-  </div>
-
-  <div class="avatar-selection" *ngIf="registerFormStatus">
-    <div class="heading-container">
-      <button class="back-button" (click)="toggleAvatarChoosing()">
-        <div class="back-button-img" role="img" aria-label="Zurück"></div>
-      </button>
-      <h1>Wähle deinen Avatar</h1>
     </div>
 
-    <div class="avatar-preview">
-      <img [src]="selectedAvatar" alt="Ausgewählter Avatar" class="selected-avatar" />
-      <h2>Frederik Beck</h2>
-    </div>
-
-    <p class="select-label">Aus der Liste wählen</p>
-
-    <div class="avatar-list">
-      <img *ngFor="let avatar of avatarImgPaths" [src]="avatar" alt="Avatar" class="avatar-option"
-        [class.selected]="avatar === selectedAvatar" (click)="selectAvatar(avatar)" />
-    </div>
-
-    <div class="button-container">
-      <button class="submit-button button-style" [disabled]="isButtonDisabled" (click)="onRegister()" type="button">
-        Weiter
-      </button>
+    <div class="privacy-policy-legal-notice-container">
+      <span [routerLink]="['/legal-notice']">Impressum</span>
+      <span [routerLink]="['/privacy-policy']">Datenschutz</span>
     </div>
   </div>
-
-  <div class="privacy-policy-legal-notice-container">
-    <span [routerLink]="['/legal-notice']">Impressum</span>
-    <span [routerLink]="['/privacy-policy']">Datenschutz</span>
-  </div>
-</div>
+</section>
 
 <app-success-toast message="Konto erfolgreich erstellt!" [hasIcon]="false" *ngIf="showSuccessToast"
   [success]="true"></app-success-toast>

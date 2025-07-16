@@ -1,33 +1,38 @@
-<app-header></app-header>
-<div class="register-container">
-    <div class="reset-container">
-        <div class="heading-container">
-            <button class="back-button" [routerLink]="['/login']">
-                <div class="back-button-img" role="img" aria-label="Zurück"></div>
-            </button>
-            <h2 class="title">Passwort zurücksetzen</h2>
-        </div>
-        <p class="subtitle">Bitte geben Sie Ihre E-Mail-Adresse ein.</p>
-
-        <form [formGroup]="form" (ngSubmit)="sendResetEmail()">
-            <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
-                [errorMsg]="emailValidation()" [required]="true">
-            </app-input-field>
-
-            <p class="info-text">
-                Wir senden Ihnen eine E-Mail, über die Sie Ihr Passwort ändern können.
-            </p>
-
-            <div class="button-container">
-                <button type="submit" class="button-style submit-button" [disabled]="form.invalid">E-Mail
-                    senden</button>
+<section>
+    <app-header></app-header>
+    <div class="register-container">
+        <div class="reset-container">
+            <div class="heading-container">
+                <button class="back-button" [routerLink]="['/login']">
+                    <div class="back-button-img" role="img" aria-label="Zurück"></div>
+                </button>
+                <h2 class="title">Passwort zurücksetzen</h2>
             </div>
-        </form>
+            <p class="subtitle">Bitte geben Sie Ihre E-Mail-Adresse ein.</p>
+
+            <form [formGroup]="form" (ngSubmit)="sendResetEmail(form.value.email)">
+                <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
+                    [errorMsg]="emailValidation()" [required]="true">
+                </app-input-field>
+
+                <p class="info-text">
+                    Wir senden Ihnen eine E-Mail, über die Sie Ihr Passwort ändern können.
+                </p>
+
+                <div class="button-container">
+                    <button type="submit" class="button-style submit-button" [disabled]="form.invalid">E-Mail
+                        senden</button>
+                </div>
+            </form>
+        </div>
+        <div class="privacy-policy-legal-notice-container">
+            <span [routerLink]="['/legal-notice']">Impressum</span>
+            <span [routerLink]="['/privacy-policy']">Datenschutz</span>
+        </div>
     </div>
-</div>
+</section>
 
 <app-success-toast *ngIf="showSuccessToast" message="E-mail gesendet" [success]="true" [hasIcon]="true">
 </app-success-toast>
 
-<app-success-toast *ngIf="showErrorToast" [message]="errorMsg" [hasIcon]="false"
-  [success]="false"></app-success-toast>
+<app-success-toast *ngIf="showErrorToast" [message]="errorMsg" [hasIcon]="false" [success]="false"></app-success-toast>

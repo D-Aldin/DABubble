@@ -81,3 +81,28 @@ body {
   border: 2px solid #fff;
   border-radius: 50%;
 }
+
+.privacy-policy-legal-notice-container {
+  display: flex;
+  gap: 16px;
+  padding: 14px 34px;
+
+  span {
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 18px;
+    line-height: 120%;
+    letter-spacing: 0%;
+    color: $primary-color;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: 125ms ease-in-out;
+    padding: 6px 10px;
+    border-radius: 25px;
+
+    &:hover {
+      color: $primary-button-color;
+      border: 1px solid $primary-color;
+    }
+  }
+}

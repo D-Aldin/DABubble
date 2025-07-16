@@ -8,6 +8,7 @@ import { UserService } from '../../core/services/user.service';
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { CommonModule } from '@angular/common';
 import { FirebaseError } from 'firebase/app';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 @Component({
   selector: 'app-reset-request',
@@ -39,16 +40,23 @@ export class ResetRequestComponent {
     return '';
   }
 
-  sendResetEmail(): void {
-    if (this.ifFormValid()) {
-      const email = this.form.value.email;
-      this.authService.requestPasswordReset(email).then(() => {
-        this.showSuccessToast = true;
-        this.form.reset();
-      }).catch((error) => {
-        this.errorMsg = 'Ein Fehler ist aufgetreten. Bitte erneut versuchen.';
+  sendResetEmail(email: string): void {
+    const auth = getAuth();
+    const actionCodeSettings = {
+      url: 'http://localhost:4200/reset-password',
+      handleCodeInApp: true,
+      dynamicLinkDomain: 'dabubble-64746.firebaseapp.com'
+    };
+    sendPasswordResetEmail(auth, email, actionCodeSettings)
+      .then(() => {
+        this.showSuccessToast = true; // optional feedback
+        this.showErrorToast = false;
+      })
+      .catch((error) => {
+        console.error('Error sending reset email:', error.message);
+        this.showSuccessToast = false;
+        this.showErrorToast = true;
       });
-    }
   }
 
   ifFormValid(): boolean {

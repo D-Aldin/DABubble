@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InputFieldComponent } from "../../shared/input-field/input-field.component";
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { HeaderComponent } from "../../shared/header/header.component";
 import { passwordMatchValidator } from './password-match.validator';
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { CommonModule } from '@angular/common';
+import { getAuth, confirmPasswordReset } from 'firebase/auth';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,18 +17,54 @@ import { CommonModule } from '@angular/common';
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   form: any = new FormControl('', [Validators.required, Validators.minLength(2)]);
   passwordValidator = passwordMatchValidator;
   showSuccessToast: boolean = false;
   showErrorToast: boolean = false;
+  oobCode: string = '';
+  oobCodeError: string = '';
+  passwordResetSuccess: boolean = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService, private router: Router) {
+  actionCodeSettings: object = {
+    url: 'http://localhost:4200/reset-password', //will be changed when uploaded on FTP
+    handleCodeInApp: true,
+  };
+
+  constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService, private router: Router, private route: ActivatedRoute) {
     this.form = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
     }, { validators: passwordMatchValidator() });
   }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.oobCode = params['oobCode'];
+      if (!this.oobCode) {
+        this.oobCodeError = 'Invalid or missing code.';
+      }
+    });
+  }
+
+  resetPassword(newPassword: string): void {
+    if (!this.oobCode) {
+      this.oobCodeError = 'Reset code not found.';
+      return;
+    }
+
+    const auth = getAuth();
+    confirmPasswordReset(auth, this.oobCode, newPassword)
+      .then(() => {
+        this.passwordResetSuccess = true;
+        this.oobCodeError = '';
+      })
+      .catch((error) => {
+        this.passwordResetSuccess = false;
+        this.oobCodeError = error.message;
+      });
+  }
+
 
   passwordValidation(): string {
     const control = this.form.get('password');
@@ -61,24 +98,10 @@ export class ResetPasswordComponent {
   changePassword(): void {
     if (this.confirmPasswordValidation() == '') {
       console.log('changed');
-      this.setNewPasswordInFirebase()
+      this.resetPassword(this.form.value.password)
+      console.log(this.form.value.password);
     } else {
       return
-    }
-  }
-
-  setNewPasswordInFirebase() {
-    const currentUser = this.authService.getCurrentUser();
-    if (!currentUser) {
-      return
-    } else {
-      this.authService.updatePassword(currentUser, this.form.value.password)
-        .then(() => {
-          this.showSuccessToast = true;
-        })
-        .catch((error) => {
-          this.showErrorToast = true;
-        });
     }
   }
 }
