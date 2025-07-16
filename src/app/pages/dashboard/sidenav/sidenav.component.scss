@@ -149,7 +149,9 @@
         gap: 17px;
 
         &.selected {
-          font-weight: 600;
+          color: $input-field-focus-color;
+          background-color: $secondary-color;
+          font-weight: 700;
         }
 
         &:hover {
@@ -209,6 +211,12 @@
           left: 57px;
           bottom: 4px;
         }
+
+        &.selected {
+          color: $input-field-focus-color;
+          background-color: $secondary-color;
+          font-weight: 700;
+        }
       }
     }
   }
@@ -241,14 +249,16 @@
 .rotate-img {
   transform: rotate(-90deg);
 }
+
 .scroll-container-channels {
-  max-height: 100px; 
+  max-height: 100px;
   overflow-y: auto;
-  padding-right: 6px; 
+  padding-right: 6px;
   scrollbar-width: thin;
 }
+
 .scroll-container-dm {
-  max-height: 300px; 
+  max-height: 300px;
   overflow-y: auto;
   padding-right: 6px;
   scrollbar-width: thin;

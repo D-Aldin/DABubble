@@ -1,112 +1,109 @@
-
-  <app-header></app-header>
+<app-header></app-header>
 
 <section>
-<div class="dashboard-wrapper">
-  <!-- Sidenav -->
-  @if (showSidenav) {
-    <app-sidenav class="sidenav" 
-      (openAddChannelDialog)="openAddChannelDialog()"
+  <div class="dashboard-wrapper">
+    <!-- Sidenav -->
+    @if (showSidenav) {
+    <app-sidenav class="sidenav" (openAddChannelDialog)="openAddChannelDialog()"
       (channelSelected)="selectChannel($event)">
     </app-sidenav>
-  }
+    }
 
-  <!-- Main content container -->
-  <div class="main-container" [class.expanded]="!showSidenav">
+    <!-- Main content container -->
+    <div class="main-container" [class.expanded]="!showSidenav">
 
-    <!-- Toggle Button  -->
-    <button class="sidenav-toggle-btn" (click)="toggleSidenav()" (mouseenter)="hovered = true" (mouseleave)="hovered = false">
-      <div class="btn-content" [class.hover-blue]="hovered">
-        @if (showSidenav) {
+      <!-- Toggle Button  -->
+      <button class="sidenav-toggle-btn" (click)="toggleSidenav()" (mouseenter)="hovered = true"
+        (mouseleave)="hovered = false">
+        <div class="btn-content" [class.hover-blue]="hovered">
+          @if (showSidenav) {
           <div class="icon-box">
-            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16"
+              fill="currentColor">
+              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </div>
           <span class="label">Workspace-Menü schließen</span>
-        } @else {
+          } @else {
           <div class="icon-box">
-            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 16 16"
+              fill="currentColor">
+              <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </div>
           <span class="label">Workspace-Menü öffnen</span>
-        }
-      </div>
-    </button>
-    
-    <!-- Add-Channel-Dialog & Add-People-dialog-->
-    @if (showAddChannelDialog) {
+          }
+        </div>
+      </button>
+
+      <!-- Add-Channel-Dialog & Add-People-dialog-->
+      @if (showAddChannelDialog) {
       <div class="overlay" (click)="closeAddChannelDialog()">
         <div class="dialog-container" (click)="$event.stopPropagation()">
-          <app-add-channel 
-            (close)="closeAddChannelDialog()" 
-            (openAddPeopleDialog)="openAddPeopleDialog()"
-            (complete)="handleChannelCreation($event)"
-            (proceedToPeople)="handleProceedToPeople($event)">
+          <app-add-channel (close)="closeAddChannelDialog()" (openAddPeopleDialog)="openAddPeopleDialog()"
+            (complete)="handleChannelCreation($event)" (proceedToPeople)="handleProceedToPeople($event)">
           </app-add-channel>
         </div>
       </div>
-    }
-    @if (showPeopleDialog) {
+      }
+      @if (showPeopleDialog) {
       <div class="overlay" (click)="closePeopleDialog()">
         <div class="dialog-container" (click)="$event.stopPropagation()">
-          <app-add-people
-            [channelName]="createdChannelName"
-            (cancel)="closePeopleDialog()"
+          <app-add-people [channelName]="createdChannelName" (cancel)="closePeopleDialog()"
             (confirm)="handlePeopleConfirmed($event)">
           </app-add-people>
         </div>
       </div>
-    }
-    <!--Dashboard Main Content -->
-    <div class="main-content">
-
-      <!-- Channel-Header in Dashboard  -->
-@if (selectedChannel) {
-  <div class="channel-header">
-    <!-- Left side: Channel avatar + name -->
-    <div class="channel-info">
-      <span class="channel-name">  <b>#</b> {{ selectedChannel.title }}</span>
-    </div>
-
-    <!-- Right side: User avatars + count + add-users button -->
-    <div class="channel-users">
-      @if (selectedChannel.members.length > 0) {
-        <div class="user-avatars">
-          @for (user of selectedChannelPreviewUsers; track user.id) {
-            <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
-          }
-        </div>
-        <span class="user-count">{{ selectedChannel.members.length }}</span>
       }
+      <!--Dashboard Main Content -->
+      <div class="main-content">
 
-      <button
-        class="add-user-btn"
-        (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
-        title="Mitglieder hinzufügen">
-        <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
-      </button>
+        <!-- Channel-Header in Dashboard  -->
+        @if (selectedChannel && currentUrl !== '/dashboard/direct-message') {
+        <div class="channel-header">
+          <!-- Left side: Channel avatar + name -->
+          <div class="channel-info">
+            <span class="channel-name"> <b>#</b> {{ selectedChannel.title }}</span>
+          </div>
+
+          <!-- Right side: User avatars + count + add-users button -->
+          <div class="channel-users">
+            @if (selectedChannel.members.length > 0) {
+            <div class="user-avatars">
+              @for (user of selectedChannelPreviewUsers; track user.id) {
+              <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+              }
+            </div>
+            <span class="user-count">{{ selectedChannel.members.length }}</span>
+            }
+
+            <button class="add-user-btn"
+              (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
+              title="Mitglieder hinzufügen">
+              <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
+            </button>
+          </div>
+        </div>
+        }
+
+        <router-outlet></router-outlet>
+
+      </div>
+
     </div>
+
+
+
+
+    <!--Dashboard Thread Content -->
+    <app-thread>
+      @for (item of chatMessages; track $index) {
+      <app-chat-box [src]="item.src" [userName]="item.userName" [time]="item.time" [message]="item.message"
+        [userMe]="item.userMe">></app-chat-box>
+      }
+    </app-thread>
+
   </div>
-}
-
-      <router-outlet></router-outlet>
-      
-    </div>
-      
-  </div>
-
-
-
-
-  <!--Dashboard Thread Content -->
-  <app-thread>
-    @for (item of chatMessages; track $index) {
-      <app-chat-box [src]="item.src" [userName]="item.userName" [time]="item.time" [message]="item.message" [userMe]="item.userMe">></app-chat-box>
-    }
-  </app-thread>
-  
-</div>
 </section>
-

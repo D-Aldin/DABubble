@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, EventEmitter, Output } from '@angular/core';
+import { Component, inject, EventEmitter, Output, OnInit } from '@angular/core';
 import { ChannelService } from '../../../core/services/channel.service';
 import { DirectMessagingService } from '../../../core/services/direct-messaging.service';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { Channel } from '../../../core/interfaces/channel';
 import { RouterModule } from '@angular/router';
 import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 import { SharedService } from '../../../core/services/shared.service';
+import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-sidenav',
@@ -16,8 +17,11 @@ import { SharedService } from '../../../core/services/shared.service';
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })
-export class SidenavComponent {
-  constructor(private sharedService: SharedService) {}
+export class SidenavComponent implements OnInit {
+  selectedUserId: string | null = null;
+  selectedChannel: string | null = null;
+  usersArray: ChatUser[] = [];
+  constructor(private sharedService: SharedService) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
@@ -30,28 +34,35 @@ export class SidenavComponent {
   users$: Observable<ChatUser[]> = this.dmService.getAllUsersExceptCurrent();
 
   selectChannel(channel: Channel) {
+    this.selectedChannel = channel.id;
     this.channelSelected.emit(channel); // Sending to parent
   }
 
   toggleChannels() {
     this.showChannels = !this.showChannels;
-    this.channels$.subscribe((channels) => {
-      console.log('Channels from Firebase:', channels);
-    });
+    // No need to load channels on toggle; subscribing now happens in ngOnInit()
+
+    // this.channels$.subscribe((channels) => {
+    //   console.log('Channels from Firebase:', channels);
+    // });
   }
 
   toggleDMs() {
     this.showDMs = !this.showDMs;
   }
 
-  selectUser(userName: string) {
-    this.users$.subscribe((usersArray) => {
-      const selectedUser = usersArray.find((user) => user.name === userName);
-      if (selectedUser) {
-        this.sharedService.setData(selectedUser);
-        console.log(selectedUser);
-      }
+  ngOnInit(): void {
+    this.users$.subscribe(users => {
+      this.usersArray = users;
     });
+  }
+
+  selectUser(userName: string): void {
+    const selectedUser = this.usersArray.find(user => user.name === userName);
+    if (selectedUser) {
+      this.selectedUserId = selectedUser.uid; // ✅ used for styling
+      this.sharedService.setData(selectedUser);
+    }
   }
 
   emitOpenDialog() {

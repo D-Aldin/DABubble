@@ -23,6 +23,11 @@ export const routes: Routes = [
         path: 'direct-message',
         component: DirectMessageComponent,
       },
+      // {
+      //   path: 'dashboard/channel/:id',
+      //   component: ChannelComponent
+      // }
+      // Create route for channel showing as defined above with direct-message
     ],
   },
   { path: 'register', component: RegisterComponent },

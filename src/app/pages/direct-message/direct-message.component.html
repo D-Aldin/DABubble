@@ -1,35 +1,38 @@
-@if(selectedUser) {
-<section>
-   <div class="headline">
-    
+<!-- Show nothing unless a user is selected -->
+<ng-container *ngIf="hasSelectedUser">
+   <!-- Spinner shown while selectedUser is loading -->
+   <div *ngIf="!selectedUser; else showChat" class="spinner-container">
+      <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
+   </div>
+</ng-container>
+
+<ng-template #showChat>
+   <section>
+      <div class="headline">
          <div class="main-avatar">
             <img [src]="selectedUser.avatarPath" alt="">
-            <h3>{{selectedUser.name}}</h3>
-              <span class="online-dot"
-               [ngStyle]="{ 'background-color': selectedUser.online ? 'rgba(146, 200, 62, 1)' : 'grey' }">
-            </span>
-         </div>
-       
-    
-   </div>
-
-   <div class="message">
-
-      <div class="you-talk-to">
-         <div class="secondary-avatar">
-            <img [src]="selectedUser.avatarPath" alt="">
-            <h3>{{selectedUser.name}}</h3>
-            <h4>Diese Unterhaltung findet nur zwischen <span>&#64;<a>{{selectedUser.name}}</a></span> und dir statt.</h4>
+            <h3>{{ selectedUser.name }}</h3>
+            <span class="online-dot" [ngStyle]="{
+            'background-color': selectedUser.online ? 'rgba(146, 200, 62, 1)' : 'grey'
+          }"></span>
          </div>
       </div>
 
+      <div class="message">
+         <div class="you-talk-to">
+            <div class="secondary-avatar">
+               <img [src]="selectedUser.avatarPath" alt="">
+               <h3>{{ selectedUser.name }}</h3>
+               <h4>
+                  Diese Unterhaltung findet nur zwischen
+                  <span>&#64;<a>{{ selectedUser.name }}</a></span> und dir statt.
+               </h4>
+            </div>
+         </div>
+      </div>
 
-
-   </div>
-
-   <div class="message-field-wrapper">
-      <app-message-field></app-message-field>
-   </div>
-   
-</section>
-}
+      <div class="message-field-wrapper">
+         <app-message-field></app-message-field>
+      </div>
+   </section>
+</ng-template>

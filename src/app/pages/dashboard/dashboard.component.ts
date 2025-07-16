@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
 import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
 import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
@@ -12,6 +12,7 @@ import { Channel } from '../../core/interfaces/channel';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { UserService } from '../../core/services/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,7 @@ import { UserService } from '../../core/services/user.service';
     HeaderComponent,
     ThreadComponent,
     ChatBoxComponent,
-
+    CommonModule,
     RouterModule,
     RouterOutlet,
     AddChannelComponent,
@@ -30,7 +31,7 @@ import { UserService } from '../../core/services/user.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   showSidenav = true;
   hovered = false;
   showAddChannelDialog = false;
@@ -41,13 +42,15 @@ export class DashboardComponent {
   channelDescription = '';
   selectedChannel: Channel | null = null;
   selectedChannelPreviewUsers: ChatUser[] = [];
+  currentUrl: string = ''; // use this to keep track of current URL, which is tracked in onInit()
 
 
   constructor(
     private channelService: ChannelService,
     private firestore: Firestore,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private router: Router
+  ) { }
 
   chatMessages = [
     {
@@ -73,13 +76,27 @@ export class DashboardComponent {
     },
   ];
 
+  ngOnInit(): void {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.currentUrl = event.urlAfterRedirects;
+        console.log(this.currentUrl);
+
+        // ✅ Clear selectedChannel when navigating to direct-messages
+        if (this.currentUrl === '/dashboard/direct-message') {
+          this.selectedChannel = null;
+        }
+      }
+    });
+  }
+
   handleProceedToPeople(data: { name: string; description: string }) {
     this.channelDataBuffer = {
       title: data.name,
       description: data.description,
       createdAt: new Date(),
     };
-    this.createdChannelName = data.name; 
+    this.createdChannelName = data.name;
     this.closeAddChannelDialog();
     this.openAddPeopleDialog({
       name: data.name,
@@ -88,14 +105,17 @@ export class DashboardComponent {
 
   }
 
-  selectChannel(channel: Channel) {
-  this.selectedChannel = channel;
-  const previewIds = channel.members.slice(0, 3);
-  
-  this.userService.getUsersByIds(previewIds).subscribe(users => {
-    this.selectedChannelPreviewUsers = users;
-  });
-}
+  selectChannel(channel: Channel): void {
+    this.selectedChannel = channel;
+    // Load preview users
+    const previewIds = channel.members.slice(0, 3);
+    this.userService.getUsersByIds(previewIds).subscribe(users => {
+      this.selectedChannelPreviewUsers = users;
+    });
+    // ✅ Navigate away from /dashboard/direct-messages
+    this.router.navigate(['/dashboard']);
+  }
+
 
 
   get selectedChannelPreviewMembers(): string[] {
@@ -156,7 +176,7 @@ export class DashboardComponent {
   handleChannelCreation(channelData: Channel) {
     this.channelName = channelData.title;
     this.channelDescription = channelData.description;
-    this.createdChannelName = channelData.title; 
+    this.createdChannelName = channelData.title;
     this.openAddPeopleDialog({
       name: channelData.title,
       description: channelData.description,
