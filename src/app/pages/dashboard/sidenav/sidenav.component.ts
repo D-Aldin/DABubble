@@ -31,8 +31,6 @@ export class SidenavComponent {
 
   selectChannel(channel: Channel) {
     this.channelSelected.emit(channel); // Sending to parent
-    console.log('Channel Selected: ', channel);
-    
   }
 
   toggleChannels() {

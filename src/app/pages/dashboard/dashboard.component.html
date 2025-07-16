@@ -67,20 +67,15 @@
   <div class="channel-header">
     <!-- Left side: Channel avatar + name -->
     <div class="channel-info">
-      <img src="/assets/images/sidenav-img/workspaces.svg" class="channel-avatar" alt="Channel Avatar" />
-      <span class="channel-name">#{{ selectedChannel.title }}</span>
+      <span class="channel-name">  <b>#</b> {{ selectedChannel.title }}</span>
     </div>
 
     <!-- Right side: User avatars + count + add-users button -->
     <div class="channel-users">
       @if (selectedChannel.members.length > 0) {
         <div class="user-avatars">
-          @for (userId of selectedChannelPreviewMembers; track userId) {
-            <img
-              src="/assets/images/profile-placeholder.png"
-              class="user-avatar"
-              alt="User Avatar"
-            />
+          @for (user of selectedChannelPreviewUsers; track user.id) {
+            <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
           }
         </div>
         <span class="user-count">{{ selectedChannel.members.length }}</span>
