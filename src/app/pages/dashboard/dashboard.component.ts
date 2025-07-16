@@ -37,6 +37,7 @@ export class DashboardComponent {
   channelDataBuffer: Partial<Channel> = {};
   channelName = '';
   channelDescription = '';
+  selectedChannel: Channel | null = null;
 
   constructor(
     private channelService: ChannelService,
@@ -81,6 +82,16 @@ export class DashboardComponent {
     });
 
   }
+
+  selectChannel(channel: Channel) {
+    console.log('Selected in Dashboard:', channel);
+    this.selectedChannel = channel;
+  }
+
+  get selectedChannelPreviewMembers(): string[] {
+    return this.selectedChannel?.members?.slice(0, 3) || [];
+  }
+
 
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;

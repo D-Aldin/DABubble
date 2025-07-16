@@ -33,7 +33,7 @@
 
         <ng-template #usersLoaded>
           @for (channel of channels$ | async; track channel.id) {
-            <div class="channel-item">
+            <div class="channel-item" (click)="selectChannel(channel)">
               <b>#</b>
               <span>{{ channel.title }}</span>
             </div>

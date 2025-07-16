@@ -31,7 +31,6 @@ export class AddPeopleComponent {
       this.users = users;
       this.filteredUsers = users;
     });
-     console.log('AddPeopleDialog → channelName received:', this.channelName);
   }
 
   onSearchTermChange() {
