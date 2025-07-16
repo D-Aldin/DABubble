@@ -10,6 +10,8 @@ import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-peop
 import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { ChatUser } from '../../core/interfaces/chat-user';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,10 +39,14 @@ export class DashboardComponent {
   channelDataBuffer: Partial<Channel> = {};
   channelName = '';
   channelDescription = '';
+  selectedChannel: Channel | null = null;
+  selectedChannelPreviewUsers: ChatUser[] = [];
+
 
   constructor(
     private channelService: ChannelService,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private userService: UserService
   ) {}
 
   chatMessages = [
@@ -81,6 +87,21 @@ export class DashboardComponent {
     });
 
   }
+
+  selectChannel(channel: Channel) {
+  this.selectedChannel = channel;
+  const previewIds = channel.members.slice(0, 3);
+  
+  this.userService.getUsersByIds(previewIds).subscribe(users => {
+    this.selectedChannelPreviewUsers = users;
+  });
+}
+
+
+  get selectedChannelPreviewMembers(): string[] {
+    return this.selectedChannel?.members?.slice(0, 3) || [];
+  }
+
 
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;

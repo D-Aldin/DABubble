@@ -22,12 +22,16 @@ export class SidenavComponent {
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
   showDMs = true;
-
+  @Output() channelSelected = new EventEmitter<Channel>();
   private channelService = inject(ChannelService);
   private dmService = inject(DirectMessagingService);
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
   users$: Observable<ChatUser[]> = this.dmService.getAllUsersExceptCurrent();
+
+  selectChannel(channel: Channel) {
+    this.channelSelected.emit(channel); // Sending to parent
+  }
 
   toggleChannels() {
     this.showChannels = !this.showChannels;

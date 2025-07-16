@@ -5,7 +5,10 @@
 <div class="dashboard-wrapper">
   <!-- Sidenav -->
   @if (showSidenav) {
-    <app-sidenav class="sidenav" (openAddChannelDialog)="openAddChannelDialog()"></app-sidenav>
+    <app-sidenav class="sidenav" 
+      (openAddChannelDialog)="openAddChannelDialog()"
+      (channelSelected)="selectChannel($event)">
+    </app-sidenav>
   }
 
   <!-- Main content container -->
@@ -56,15 +59,45 @@
         </div>
       </div>
     }
-
-
     <!--Dashboard Main Content -->
     <div class="main-content">
+
+      <!-- Channel-Header in Dashboard  -->
+@if (selectedChannel) {
+  <div class="channel-header">
+    <!-- Left side: Channel avatar + name -->
+    <div class="channel-info">
+      <span class="channel-name">  <b>#</b> {{ selectedChannel.title }}</span>
+    </div>
+
+    <!-- Right side: User avatars + count + add-users button -->
+    <div class="channel-users">
+      @if (selectedChannel.members.length > 0) {
+        <div class="user-avatars">
+          @for (user of selectedChannelPreviewUsers; track user.id) {
+            <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+          }
+        </div>
+        <span class="user-count">{{ selectedChannel.members.length }}</span>
+      }
+
+      <button
+        class="add-user-btn"
+        (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
+        title="Mitglieder hinzufügen"
+      >
+        <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
+      </button>
+    </div>
+  </div>
+}
+
       <router-outlet></router-outlet>
       
     </div>
       
   </div>
+
 
 
 
