@@ -73,8 +73,13 @@ export class DashboardComponent {
       description: data.description,
       createdAt: new Date(),
     };
+    this.createdChannelName = data.name; 
     this.closeAddChannelDialog();
-    this.openAddPeopleDialog();
+    this.openAddPeopleDialog({
+      name: data.name,
+      description: data.description,
+    });
+
   }
 
   toggleSidenav() {
@@ -94,6 +99,7 @@ export class DashboardComponent {
     if (data) {
       this.channelName = data.name;
       this.channelDescription = data.description;
+      this.createdChannelName = data.name;
     }
 
     this.showAddChannelDialog = false;
@@ -129,6 +135,7 @@ export class DashboardComponent {
   handleChannelCreation(channelData: Channel) {
     this.channelName = channelData.title;
     this.channelDescription = channelData.description;
+    this.createdChannelName = channelData.title; 
     this.openAddPeopleDialog({
       name: channelData.title,
       description: channelData.description,
