@@ -99,6 +99,6 @@ export class SidenavComponent implements OnInit {
   }
 
   emitOpenDialog() {
-    this.openAddChannelDialog.emit();
+    this.channelService.triggerAddChannelDialog();
   }
 }

@@ -50,18 +50,6 @@ export class ChannelComponent {
     private authService: AuthService
   ) { }
 
-  // ngOnInit(): void {
-  //   this.router.events.subscribe(event => {
-  //     if (event instanceof NavigationEnd) {
-  //       this.currentUrl = event.urlAfterRedirects;
-  //       // Clear selectedChannel when navigating to direct-messages
-  //       if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
-  //         this.selectedChannel = null;
-  //       }
-  //     }
-  //   });
-  // }
-
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const channelId = params.get('id');
@@ -81,8 +69,10 @@ export class ChannelComponent {
         });
       }
     });
+    this.channelService.openAddChannelDialog$.subscribe(() => {
+      this.showAddChannelDialog = true;
+    });
   }
-
 
   selectChannel(channel: Channel): void {
     this.selectedChannel = channel;
@@ -203,7 +193,7 @@ export class ChannelComponent {
     this.showChannelOptionsPopup = false;
   }
 
-    handleChannelCreation(channelData: Channel) {
+  handleChannelCreation(channelData: Channel) {
     this.channelName = channelData.title;
     this.channelDescription = channelData.description;
     this.createdChannelName = channelData.title;

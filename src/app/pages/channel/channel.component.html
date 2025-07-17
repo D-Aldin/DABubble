@@ -88,7 +88,7 @@
 
 <!-- Dialog Overlays -->
 @if (showAddChannelDialog) {
-<div class="overlay" (click)="closeAddChannelDialog()">
+<div class="overlayAddChannelDialog" (click)="closeAddChannelDialog()">
     <div class="dialog-container" (click)="$event.stopPropagation()">
         <app-add-channel (close)="closeAddChannelDialog()" (openAddPeopleDialog)="openAddPeopleDialog()"
             (complete)="handleChannelCreation($event)" (proceedToPeople)="handleProceedToPeople($event)">

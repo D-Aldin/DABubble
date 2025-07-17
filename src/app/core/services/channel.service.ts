@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, updateDoc, arrayUnion, doc, docData } from '@angular/fire/firestore';
-import { Observable, } from 'rxjs';
+import { Observable, Subject, } from 'rxjs';
 import { Channel } from '../interfaces/channel';
 
 @Injectable({
@@ -8,6 +8,8 @@ import { Channel } from '../interfaces/channel';
 })
 export class ChannelService {
   private firestore = inject(Firestore);
+  private openAddChannelDialogSubject = new Subject<void>();
+  openAddChannelDialog$ = this.openAddChannelDialogSubject.asObservable();
 
   getChannels(): Observable<Channel[]> {
     const channelsRef = collection(this.firestore, 'channels');
@@ -29,5 +31,9 @@ export class ChannelService {
   getChannelById(id: string): Observable<Channel> {
     const channelRef = doc(this.firestore, 'channels', id);
     return docData(channelRef, { idField: 'id' }) as Observable<Channel>;
+  }
+
+  triggerAddChannelDialog() {
+    this.openAddChannelDialogSubject.next();
   }
 }

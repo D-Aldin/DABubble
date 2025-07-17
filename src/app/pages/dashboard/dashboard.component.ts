@@ -22,14 +22,10 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
   imports: [
     SidenavComponent,
     HeaderComponent,
-    ThreadComponent,
-    ChatBoxComponent,
     CommonModule,
     RouterModule,
-    RouterOutlet,
-    AddChannelComponent,
-    AddPeopleComponent,
-  ],
+    RouterOutlet
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -52,6 +48,7 @@ export class DashboardComponent {
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
+  
   // Comments will be removed after confirming if everything functions corerctly
   // until then please dont remove them
 
