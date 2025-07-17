@@ -33,7 +33,7 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   showSidenav = true;
   hovered = false;
   showAddChannelDialog = false;
@@ -42,17 +42,18 @@ export class DashboardComponent implements OnInit {
   channelDataBuffer: Partial<Channel> = {};
   channelName = '';
   channelDescription = '';
-  selectedChannel: Channel | null = null;
-  selectedChannelPreviewUsers: ChatUser[] = [];
   currentUrl: string = ''; // use this to keep track of current URL, which is tracked in onInit()
-  showChannelOptionsPopup = false;
-  creatorName: string = '';
-  creatorOnline: boolean = false;
+  // selectedChannelPreviewUsers: ChatUser[] = [];
+  // selectedChannel: Channel | null = null;
+  // showChannelOptionsPopup = false;
+  // creatorName: string = '';
+  // creatorOnline: boolean = false;
   showAddUserToChannelPopup = false;
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
-
+  // Comments will be removed after confirming if everything functions corerctly
+  // until then please dont remove them
 
   constructor(
     private channelService: ChannelService,
@@ -86,69 +87,6 @@ export class DashboardComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.currentUrl = event.urlAfterRedirects;
-        // Clear selectedChannel when navigating to direct-messages
-        if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
-          this.selectedChannel = null;
-        }
-      }
-    });
-  }
-
-  toggleChannelOptionsPopup() {
-    this.showChannelOptionsPopup = !this.showChannelOptionsPopup;
-
-    if (this.showChannelOptionsPopup && this.selectedChannel?.creatorId) {
-      this.userService.getUserById(this.selectedChannel.creatorId).subscribe(user => {
-        this.creatorName = user.name;
-        this.creatorOnline = user.online;
-      });
-    }
-  }
-
-  editChannelName() {
-    // You can show a dialog or input to change the name
-    console.log('Edit channel name');
-  }
-
-  editChannelDescription() {
-    // You can show a dialog or input to change the description
-    console.log('Edit channel description');
-  }
-
-  handleProceedToPeople(data: { name: string; description: string }) {
-    this.channelDataBuffer = {
-      title: data.name,
-      description: data.description,
-      createdAt: new Date(),
-    };
-    this.createdChannelName = data.name;
-    this.closeAddChannelDialog();
-    this.openAddPeopleDialog({
-      name: data.name,
-      description: data.description,
-    });
-
-  }
-
-  selectChannel(channel: Channel): void {
-    this.selectedChannel = channel;
-    // Load preview users
-    const previewIds = channel.members.slice(0, 3);
-    this.userService.getUsersByIds(previewIds).subscribe(users => {
-      this.selectedChannelPreviewUsers = users;
-    });
-    // ✅ Navigate away from /dashboard/direct-messages
-    this.router.navigate(['/dashboard']);
-  }
-
-  get selectedChannelPreviewMembers(): string[] {
-    return this.selectedChannel?.members?.slice(0, 3) || [];
-  }
-
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
   }
@@ -178,72 +116,160 @@ export class DashboardComponent implements OnInit {
     this.showPeopleDialog = false;
   }
 
-  async handlePeopleConfirmed(selectedUsers: string[]) {
-    let finalMembers: string[] = [];
+  // ngOnInit(): void {
+  //   this.router.events.subscribe(event => {
+  //     if (event instanceof NavigationEnd) {
+  //       this.currentUrl = event.urlAfterRedirects;
+  //       // Clear selectedChannel when navigating to direct-messages
+  //       if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
+  //         this.selectedChannel = null;
+  //       }
+  //     }
+  //   });
+  // }
 
-    if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
-      const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
-      finalMembers = usersSnapshot.docs.map((doc) => doc.id);
-    } else {
-      finalMembers = selectedUsers;
-    }
+  // toggleChannelOptionsPopup() {
+  //   this.showChannelOptionsPopup = !this.showChannelOptionsPopup;
 
-    const finalChannel = {
-      ...this.channelDataBuffer,
-      members: finalMembers,
-      creatorId: this.authService.currentUserId, 
-    } as Channel;
+  //   if (this.showChannelOptionsPopup && this.selectedChannel?.creatorId) {
+  //     this.userService.getUserById(this.selectedChannel.creatorId).subscribe(user => {
+  //       this.creatorName = user.name;
+  //       this.creatorOnline = user.online;
+  //     });
+  //   }
+  // }
+
+  // editChannelName() {
+  //   // You can show a dialog or input to change the name
+  //   console.log('Edit channel name');
+  // }
+
+  // editChannelDescription() {
+  //   // You can show a dialog or input to change the description
+  //   console.log('Edit channel description');
+  // }
+
+  // handleProceedToPeople(data: { name: string; description: string }) {
+  //   this.channelDataBuffer = {
+  //     title: data.name,
+  //     description: data.description,
+  //     createdAt: new Date(),
+  //   };
+  //   this.createdChannelName = data.name;
+  //   this.closeAddChannelDialog();
+  //   this.openAddPeopleDialog({
+  //     name: data.name,
+  //     description: data.description,
+  //   });
+
+  // }
+
+  // selectChannel(channel: Channel): void {
+  //   this.selectedChannel = channel;
+  //   // Load preview users
+  //   const previewIds = channel.members.slice(0, 3);
+  //   this.userService.getUsersByIds(previewIds).subscribe(users => {
+  //     this.selectedChannelPreviewUsers = users;
+  //   });
+  //   // ✅ Navigate away from /dashboard/direct-messages
+  //   this.router.navigate(['/dashboard']);
+  // }
+
+  // get selectedChannelPreviewMembers(): string[] {
+  //   return this.selectedChannel?.members?.slice(0, 3) || [];
+  // }
+
+  // async handlePeopleConfirmed(selectedUsers: string[]) {
+  //   let finalMembers: string[] = [];
+
+  //   if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
+  //     const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+  //     finalMembers = usersSnapshot.docs.map((doc) => doc.id);
+  //   } else {
+  //     finalMembers = selectedUsers;
+  //   }
+
+  //   const finalChannel = {
+  //     ...this.channelDataBuffer,
+  //     members: finalMembers,
+  //     creatorId: this.authService.currentUserId, 
+  //   } as Channel;
 
 
-    this.channelService.createChannel(finalChannel).then(() => {
-      console.log('Channel created with users:', finalMembers);
-      this.closePeopleDialog();
-    });
-  }
+  //   this.channelService.createChannel(finalChannel).then(() => {
+  //     console.log('Channel created with users:', finalMembers);
+  //     this.closePeopleDialog();
+  //   });
+  // }
 
-  openAddUserToChannelPopup() {//to add new user to current-channel
-      this.showPeopleDialog = true;
-    this.showAddUserToChannelPopup = true;
-    this.addUserMode = 'add-to-channel';
-    this.selectedChannelIdForUserAdd = this.selectedChannel?.id!;
-    this.selectedChannelTitleForUserAdd = this.selectedChannel?.title!;
-    console.log('Popup opens');
-    
-  }
+  // openAddUserToChannelPopup() {//to add new user to current-channel
+  //     this.showPeopleDialog = true;
+  //   this.showAddUserToChannelPopup = true;
+  //   this.addUserMode = 'add-to-channel';
+  //   this.selectedChannelIdForUserAdd = this.selectedChannel?.id!;
+  //   this.selectedChannelTitleForUserAdd = this.selectedChannel?.title!;
+  //   console.log('Popup opens');
 
-  handleUserAddConfirm(userIds: string[]) {
-    this.channelService.addUsersToChannel(this.selectedChannelIdForUserAdd, userIds).then(() => {
-      // Merge new user IDs into selectedChannel
-      if (this.selectedChannel) {
-        this.selectedChannel.members.push(...userIds.filter(id => !this.selectedChannel!.members.includes(id)));
-      }
-      // Close dialog
-      this.showAddUserToChannelPopup = false;
-      this.showPeopleDialog = false;
-      // Refresh user preview avatars
-      const previewIds = this.selectedChannel!.members.slice(0, 3);
-      this.userService.getUsersByIds(previewIds).subscribe(users => {
-        this.selectedChannelPreviewUsers = users;
-      });
-    });
-  }
+  // }
 
-  handleUserAddCancel() {
-    this.showAddUserToChannelPopup = false;
-  }
+  // handleUserAddConfirm(userIds: string[]) {
+  //   this.channelService.addUsersToChannel(this.selectedChannelIdForUserAdd, userIds).then(() => {
+  //     // Merge new user IDs into selectedChannel
+  //     if (this.selectedChannel) {
+  //       this.selectedChannel.members.push(...userIds.filter(id => !this.selectedChannel!.members.includes(id)));
+  //     }
+  //     // Close dialog
+  //     this.showAddUserToChannelPopup = false;
+  //     this.showPeopleDialog = false;
+  //     // Refresh user preview avatars
+  //     const previewIds = this.selectedChannel!.members.slice(0, 3);
+  //     this.userService.getUsersByIds(previewIds).subscribe(users => {
+  //       this.selectedChannelPreviewUsers = users;
+  //     });
+  //   });
+  // }
 
-  handleChannelCreation(channelData: Channel) {
-    this.channelName = channelData.title;
-    this.channelDescription = channelData.description;
-    this.createdChannelName = channelData.title;
-    this.openAddPeopleDialog({
-      name: channelData.title,
-      description: channelData.description,
-    });
-  }
+  // handleUserAddCancel() {
+  //   this.showAddUserToChannelPopup = false;
+  // }
 
-  @HostListener('document:click')
-    closePopupOnOutsideClick() {
-      this.showChannelOptionsPopup = false;
-    }
+  // handleChannelCreation(channelData: Channel) {
+  //   this.channelName = channelData.title;
+  //   this.channelDescription = channelData.description;
+  //   this.createdChannelName = channelData.title;
+  //   this.openAddPeopleDialog({
+  //     name: channelData.title,
+  //     description: channelData.description,
+  //   });
+  // }
+
+  // @HostListener('document:click')
+  //   closePopupOnOutsideClick() {
+  //     this.showChannelOptionsPopup = false;
+  //   }
+
+  // handleChannelCreation(channelData: Channel) {
+  //   this.channelName = channelData.title;
+  //   this.channelDescription = channelData.description;
+  //   this.createdChannelName = channelData.title;
+  //   this.openAddPeopleDialog({
+  //     name: channelData.title,
+  //     description: channelData.description,
+  //   });
+  // }
+
+  // handleProceedToPeople(data: { name: string; description: string }) {
+  //   this.channelDataBuffer = {
+  //     title: data.name,
+  //     description: data.description,
+  //     createdAt: new Date(),
+  //   };
+  //   this.createdChannelName = data.name;
+  //   this.closeAddChannelDialog();
+  //   this.openAddPeopleDialog({
+  //     name: data.name,
+  //     description: data.description,
+  //   });
+
+  // }
 }
