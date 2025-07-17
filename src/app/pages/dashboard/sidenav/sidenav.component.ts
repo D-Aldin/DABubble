@@ -5,10 +5,11 @@ import { DirectMessagingService } from '../../../core/services/direct-messaging.
 import { Observable } from 'rxjs';
 import { ChatUser } from '../../../core/interfaces/chat-user';
 import { Channel } from '../../../core/interfaces/channel';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 import { SharedService } from '../../../core/services/shared.service';
 import { User } from 'firebase/auth';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-sidenav',
@@ -21,7 +22,8 @@ export class SidenavComponent implements OnInit {
   selectedUserId: string | null = null;
   selectedChannel: string | null = null;
   usersArray: ChatUser[] = [];
-  constructor(private sharedService: SharedService) {}
+  currentURL: string = '';
+  constructor(private sharedService: SharedService, private router: Router) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
@@ -52,6 +54,20 @@ export class SidenavComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subscribeToUsers()
+    //keep track of URL for the selection of channels or users
+    this.keepTrackOfCurrentURL()
+  }
+  
+  keepTrackOfCurrentURL(): void {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.currentURL = event.urlAfterRedirects;
+      }
+    });
+  }
+
+  subscribeToUsers(): void {
     this.users$.subscribe((users) => {
       this.usersArray = users;
     });
@@ -62,6 +78,7 @@ export class SidenavComponent implements OnInit {
     if (selectedUser) {
       this.selectedUserId = selectedUser.uid; // ✅ used for styling
       this.sharedService.setData(selectedUser);
+      this.router.navigate(['/dashboard/direct-message', this.selectedUserId]);
     }
   }
 

@@ -8,6 +8,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ResetRequestComponent } from './pages/reset-request/reset-request.component';
 import { DirectMessageComponent } from './pages/direct-message/direct-message.component';
+import { ChannelComponent } from './pages/channel/channel.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -20,13 +21,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'direct-message',
+        path: 'direct-message/:uid', // 🧑 DM route with user ID
         component: DirectMessageComponent,
       },
-      // {
-      //   path: 'dashboard/channel/:id',
-      //   component: ChannelComponent
-      // }
+      {
+        path: 'channel/:id', // #️⃣ Channel route with channel ID
+        component: ChannelComponent
+      },
       // Create route for channel showing as defined above with direct-message
     ],
   },

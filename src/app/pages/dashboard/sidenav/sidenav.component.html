@@ -33,7 +33,7 @@
 
         <ng-template #usersLoaded>
           @for (channel of channels$ | async; track channel.id) {
-          <div class="channel-item" (click)="selectChannel(channel)" [class.selected]="channel.id == selectedChannel">
+          <div class="channel-item" (click)="selectChannel(channel)" [class.selected]="channel.id == selectedChannel && currentURL == '/dashboard'">
             <b>#</b>
             <span>{{ channel.title }}</span>
           </div>
@@ -71,7 +71,7 @@
 
         <ng-template #usersLoaded>
           @for (user of users$ | async; track user.uid) {
-          <div class="dm-item" [class.selected]="user.uid == selectedUserId" [routerLink]="'direct-message'"
+          <div class="dm-item" [class.selected]="user.uid == selectedUserId && currentURL !== '/dashboard'" [routerLink]="'direct-message'"
             (click)="selectUser(user.name)">
             <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
             <span>{{ user.name }}</span>

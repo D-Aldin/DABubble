@@ -29,6 +29,10 @@ export class HeaderComponent {
   public onlineStatus: boolean | any;
   public isProfileAvatarLoading: boolean = true;
 
+  DASHBOARD_PREFIX: string = '/dashboard';
+  DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
+  CHANNEL_PREFIX: string = '/dashboard/channel';
+
   constructor(
     public router: Router,
     private userAuthService: AuthService,
@@ -39,13 +43,25 @@ export class HeaderComponent {
 
   handleHeaderAppearancesForRoutes() {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        this.showSignUpLink = event.urlAfterRedirects === '/login';
-        this.showProfileAvatar = ['/dashboard', '/dashboard/direct-message'].includes(event.urlAfterRedirects)
-        this.showSearchBar = ['/dashboard', '/dashboard/direct-message'].includes(event.urlAfterRedirects)
-        this.showProfileMenu = ['/dashboard', '/dashboard/direct-message'].includes(event.urlAfterRedirects)
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const url = (event as NavigationEnd).urlAfterRedirects;
+        this.handleLoginAppearance(url);
+        this.handleDashboardAppearance(url);
       });
+  }
+
+  handleDashboardAppearance(url: string): void {
+    const isDashboardRoute =
+      url.startsWith(this.DASHBOARD_PREFIX) ||
+      (url.startsWith(this.DIRECT_MESSAGE_PREFIX) || url.startsWith(this.CHANNEL_PREFIX));
+    this.showProfileAvatar = isDashboardRoute;
+    this.showSearchBar = isDashboardRoute;
+    this.showProfileMenu = isDashboardRoute;
+  }
+
+  handleLoginAppearance(url: string): void {
+    this.showSignUpLink = url === '/login';
   }
 
   toggleProfileMenu(): void {

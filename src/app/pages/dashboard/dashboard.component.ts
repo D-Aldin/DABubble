@@ -85,10 +85,8 @@ export class DashboardComponent implements OnInit {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.currentUrl = event.urlAfterRedirects;
-        console.log(this.currentUrl);
-
         // Clear selectedChannel when navigating to direct-messages
-        if (this.currentUrl === '/dashboard/direct-message') {
+        if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
           this.selectedChannel = null;
         }
       }
@@ -106,7 +104,6 @@ export class DashboardComponent implements OnInit {
     }
     console.log(this.selectedChannel);
   }
-
 
   editChannelName() {
     // You can show a dialog or input to change the name
@@ -149,7 +146,6 @@ export class DashboardComponent implements OnInit {
   get selectedChannelPreviewMembers(): string[] {
     return this.selectedChannel?.members?.slice(0, 3) || [];
   }
-
 
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
