@@ -181,3 +181,54 @@ app-message-field {
     }
   }
 }
+.channel-popup {
+  position: absolute;
+  top: 60px;
+  right: 1rem;
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  z-index: 1000;
+
+  h3 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .popup-section {
+    margin-bottom: 1rem;
+
+    span {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    p {
+      margin: 0.25rem 0;
+      font-weight: 500;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: #4c6ef5;
+      cursor: pointer;
+    }
+
+    p.online {
+      color: green;
+    }
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+}

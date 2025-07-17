@@ -60,33 +60,63 @@
       <!--Dashboard Main Content -->
       <div class="main-content">
 
-        <!-- Channel-Header in Dashboard  -->
-        @if (selectedChannel && currentUrl !== '/dashboard/direct-message') {
-        <div class="channel-header">
-          <!-- Left side: Channel avatar + name -->
-          <div class="channel-info">
-            <span class="channel-name"> <b>#</b> {{ selectedChannel.title }}</span>
-          </div>
+      <!-- Channel-Header in Dashboard -->
+@if (selectedChannel && currentUrl !== '/dashboard/direct-message') {
+  <div class="channel-header">
+    <!-- Left side: Channel avatar + name -->
+    <div class="channel-info">
+      <span class="channel-name"> <b>#</b> {{ selectedChannel.title }}</span>
+      <button class="dropdown-btn" (click)="toggleChannelOptionsPopup()">
+        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="Dropdown" />
+      </button>
+    </div>
 
-          <!-- Right side: User avatars + count + add-users button -->
-          <div class="channel-users">
-            @if (selectedChannel.members.length > 0) {
-            <div class="user-avatars">
-              @for (user of selectedChannelPreviewUsers; track user.id) {
-              <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
-              }
-            </div>
-            <span class="user-count">{{ selectedChannel.members.length }}</span>
-            }
-
-            <button class="add-user-btn"
-              (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
-              title="Mitglieder hinzufügen">
-              <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
-            </button>
-          </div>
+    <!-- Right side: User avatars + count + add-users button -->
+    <div class="channel-users">
+      @if (selectedChannel.members.length > 0) {
+        <div class="user-avatars">
+          @for (user of selectedChannelPreviewUsers; track user.id) {
+            <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+          }
         </div>
-        }
+        <span class="user-count">{{ selectedChannel.members.length }}</span>
+      }
+
+      <button class="add-user-btn"
+        (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
+        title="Mitglieder hinzufügen">
+        <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
+      </button>
+    </div>
+
+    <!-- Channel Options Popup -->
+    @if (showChannelOptionsPopup) {
+      <div class="channel-popup">
+        <h3># {{ selectedChannel.title }}</h3>
+
+        <div class="popup-section">
+          <span>Channel-Name</span>
+          <p>{{ selectedChannel.title }}</p>
+          <button (click)="editChannelName()">Bearbeiten</button>
+        </div>
+
+        <div class="popup-section">
+          <span>Beschreibung</span>
+          <p>{{ selectedChannel.description }}</p>
+          <button (click)="editChannelDescription()">Bearbeiten</button>
+        </div>
+
+        <div class="popup-section">
+          <span>Erstellt von</span>
+          <p [class.online]="creatorOnline">{{ creatorName }}</p>
+        </div>
+
+        <button class="popup-close" (click)="toggleChannelOptionsPopup()">×</button>
+      </div>
+    }
+  </div>
+}
+
 
         <router-outlet></router-outlet>
 

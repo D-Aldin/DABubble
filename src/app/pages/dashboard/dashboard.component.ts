@@ -13,6 +13,7 @@ import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { UserService } from '../../core/services/user.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,13 +44,17 @@ export class DashboardComponent implements OnInit {
   selectedChannel: Channel | null = null;
   selectedChannelPreviewUsers: ChatUser[] = [];
   currentUrl: string = ''; // use this to keep track of current URL, which is tracked in onInit()
+  showChannelOptionsPopup = false;
+  creatorName: string = '';
+  creatorOnline: boolean = false;
 
 
   constructor(
     private channelService: ChannelService,
     private firestore: Firestore,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   chatMessages = [
@@ -82,12 +87,35 @@ export class DashboardComponent implements OnInit {
         this.currentUrl = event.urlAfterRedirects;
         console.log(this.currentUrl);
 
-        // ✅ Clear selectedChannel when navigating to direct-messages
+        // Clear selectedChannel when navigating to direct-messages
         if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
           this.selectedChannel = null;
         }
       }
     });
+  }
+
+  toggleChannelOptionsPopup() {
+    this.showChannelOptionsPopup = !this.showChannelOptionsPopup;
+
+    if (this.showChannelOptionsPopup && this.selectedChannel?.creatorId) {
+      this.userService.getUserById(this.selectedChannel.creatorId).subscribe(user => {
+        this.creatorName = user.name;
+        this.creatorOnline = user.online;
+      });
+    }
+    console.log(this.selectedChannel);
+  }
+
+
+  editChannelName() {
+    // You can show a dialog or input to change the name
+    console.log('Edit channel name');
+  }
+
+  editChannelDescription() {
+    // You can show a dialog or input to change the description
+    console.log('Edit channel description');
   }
 
   handleProceedToPeople(data: { name: string; description: string }) {
@@ -165,7 +193,9 @@ export class DashboardComponent implements OnInit {
     const finalChannel = {
       ...this.channelDataBuffer,
       members: finalMembers,
+      creatorId: this.authService.currentUserId, 
     } as Channel;
+
 
     this.channelService.createChannel(finalChannel).then(() => {
       console.log('Channel created with users:', finalMembers);

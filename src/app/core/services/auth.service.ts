@@ -46,6 +46,11 @@ export class AuthService {
     return this.userSubject.value;
   }
 
+  get currentUserId(): string {
+    return this.auth.currentUser?.uid || '';
+  }
+
+
   signInAsGuest(): Observable<User> {
     const auth = getAuth();
 
