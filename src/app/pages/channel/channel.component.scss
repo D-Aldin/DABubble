@@ -67,13 +67,33 @@
     .user-avatars {
         display: flex;
         align-items: center;
+        padding-top: 3px;
+        padding-right: 10px;
+        padding-bottom: 3px;
+        padding-left: 10px;
+        border-radius: 30px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $secondary-color;
+            color: $input-field-focus-color;
+        }
 
         .user-avatar {
-            width: 28px;
-            height: 28px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            margin-left: -8px;
+            margin-right: -8px;
             border: 2px solid #fff;
+        }
+
+        span {
+            font-weight: 600;
+            font-style: SemiBold;
+            font-size: 20px;
+            line-height: 100%;
+            letter-spacing: 0%;
+            padding-left: 8px;
         }
     }
 
@@ -95,8 +115,8 @@
             height: 20px;
         }
 
-        &:hover img {
-            filter: brightness(0.7);
+        &:hover {
+            filter: brightness(0.9);
         }
     }
 }
@@ -181,10 +201,19 @@
         position: absolute;
         top: 1rem;
         right: 1.5rem;
-        background: none;
-        border: none;
-        font-size: 1.6rem;
         cursor: pointer;
+        background-color: white;
+        width: 35px;
+        height: 35px;
+        border: none;
+        background-image: url("../../../assets/icons/close.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        cursor: pointer;
+
+        &:hover {
+            background-image: url("../../../assets/icons/close-hover.png");
+        }
     }
 }
 
@@ -232,8 +261,38 @@
     justify-content: center;
     align-items: center;
 
-    .dialog-container{
+    .dialog-container {
         top: unset;
         right: unset;
+        border-radius: 30px;
+        max-width: unset;
     }
+}
+
+.message-field-wrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 10px;
+}
+
+.message {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+}
+
+h3 {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }

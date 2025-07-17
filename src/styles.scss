@@ -71,6 +71,16 @@ body {
   scrollbar-color: $button transparent;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-internal-autofill-selected {
+  background-color: transparent !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important; // match to your background
+  -webkit-text-fill-color: inherit !important;
+  transition: background-color 9999s ease-out, color 9999s ease-out;
+}
+
 .online-dot {
   position: absolute;
   left: 43px;

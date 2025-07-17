@@ -1,10 +1,15 @@
+@use '../../../styles/variables' as *;
+
 .add-channel-dialog {
   background-color: white;
-  border-radius: 2rem;
   padding: 2rem;
   width: 100%;
-  max-width: 600px;
+  width: 872px;
+  height: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 30px;
+  padding: 40px;
+  gap: 20px;
 
   .dialog-header {
     display: flex;
@@ -12,21 +17,44 @@
     align-items: center;
 
     h2 {
-      margin: 0;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 100%;
     }
 
     .close-btn {
-      background: none;
+      background-color: white;
+      width: 35px;
+      height: 35px;
       border: none;
-      font-size: 1.5rem;
+      background-image: url("../../../assets/icons/close.png");
+      background-repeat: no-repeat;
+      background-size: cover;
       cursor: pointer;
+
+      &:hover {
+        background-image: url("../../../assets/icons/close-hover.png");
+      }
     }
   }
 
   .description {
     margin-top: 1rem;
     font-size: 0.95rem;
-    color: #333;
+    color: rgba(0, 0, 0, 1);
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+    span {
+      font-weight: 700;
+      font-style: Bold;
+      font-size: 18px;
+      line-height: 100%;
+      letter-spacing: 0%;
+    }
   }
 
   form {
@@ -73,20 +101,56 @@
     }
 
     .submit-wrapper {
-      margin-top: 2rem;
       text-align: right;
 
       button {
-        padding: 0.8rem 2rem;
         border: none;
-        border-radius: 2rem;
-        background-color: #4361ee;
+        background-color: $button;
         color: white;
-        font-weight: bold;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 18px;
+        line-height: 100%;
+        letter-spacing: 0%;
         cursor: pointer;
+        width: 125px;
+        height: 49px;
+        border-radius: 25px;
+        gap: 10px;
+        opacity: 1;
+        padding-top: 12px;
+        padding-right: 25px;
+        padding-bottom: 12px;
+        padding-left: 25px;
+
 
         &:hover {
           background-color: #3a52d1;
+        }
+      }
+    }
+  }
+}
+
+.close {}
+
+app-input-field {
+  ::ng-deep .input-wrapper {
+    max-width: unset;
+
+    .custom-input {
+      width: 100% !important;
+      background-color: rgb(255, 255, 255) !important;
+      border: 1px solid $input-border-color !important;
+
+      input {
+        ::placeholder {
+          color: rgba(104, 104, 104, 1) !important;
+          font-weight: 400 !important;
+          font-style: Regular !important;
+          font-size: 18px !important;
+          line-height: 100% !important;
+          letter-spacing: 0% !important;
         }
       }
     }

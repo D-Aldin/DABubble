@@ -1,60 +1,55 @@
 <div class="people-dialog">
   <div class="dialog-header">
     <h2>Leute hinzufügen</h2>
-    <button class="close-btn" (click)="cancelDialog()">&times;</button>
+    <button class="close-btn" (click)="cancelDialog()"></button>
   </div>
 
   <!-- Channel name header only for add-to-channel mode -->
   @if (mode === 'add-to-channel') {
-    <p class="channel-reference">
-      <span>#</span> {{ channelName }}
-    </p>
+  <p class="channel-reference">
+    <span>#</span> {{ channelName }}
+  </p>
   }
 
   <!-- Show radio options only in create-channel mode -->
   @if (mode === 'create-channel') {
-    <label class="radio-option">
-      <input type="radio" [(ngModel)]="addAllMembers" [value]="true" />
-      Alle Mitglieder von <span class="highlight">{{ channelName }}</span> hinzufügen
-    </label>
+  <label class="radio-option">
+    <input type="radio" [(ngModel)]="addAllMembers" [value]="true" />
+    Alle Mitglieder von <span class="highlight">{{ channelName }}</span> hinzufügen
+  </label>
 
-    <label class="radio-option">
-      <input type="radio" [(ngModel)]="addAllMembers" [value]="false" />
-      Bestimmte Leute hinzufügen
-    </label>
+  <label class="radio-option">
+    <input type="radio" [(ngModel)]="addAllMembers" [value]="false" />
+    Bestimmte Leute hinzufügen
+  </label>
   }
 
   <!-- Show user search if specific users should be added -->
   @if (mode === 'add-to-channel' || !addAllMembers) {
-    <div class="user-selection">
-      <div class="token-input-wrapper" (click)="inputField.focus()">
-        @for (user of selectedUserObjects; track user.id) {
-          <div class="user-token">
-            <img [src]="user.avatarPath" class="avatar" />
-            <span>{{ user.name }}</span>
-            <button type="button" class="remove-btn" (click)="removeUser(user.id)">×</button>
-          </div>
-        }
-        <input
-          #inputField
-          type="text"
-          [(ngModel)]="searchTerm"
-          (input)="onSearchTermChange()"
-          [placeholder]="selectedUserObjects.length === 0 ? 'Name eingeben' : ''"
-        />
+  <div class="user-selection">
+    <div class="token-input-wrapper" (click)="inputField.focus()">
+      @for (user of selectedUserObjects; track user.id) {
+      <div class="user-token">
+        <img [src]="user.avatarPath" class="avatar" />
+        <span>{{ user.name }}</span>
+        <button type="button" class="remove-btn" (click)="removeUser(user.id)">×</button>
       </div>
-
-      @if (searchResults.length > 0) {
-        <ul class="dropdown-list">
-          @for (user of searchResults; track user.id) {
-            <li (click)="selectUser(user)">
-              <img [src]="user.avatarPath" class="avatar" />
-              <span>{{ user.name }}</span>
-            </li>
-          }
-        </ul>
       }
+      <input #inputField type="text" [(ngModel)]="searchTerm" (input)="onSearchTermChange()"
+        [placeholder]="selectedUserObjects.length === 0 ? 'Name eingeben' : ''" />
     </div>
+
+    @if (searchResults.length > 0) {
+    <ul class="dropdown-list">
+      @for (user of searchResults; track user.id) {
+      <li (click)="selectUser(user)">
+        <img [src]="user.avatarPath" class="avatar" />
+        <span>{{ user.name }}</span>
+      </li>
+      }
+    </ul>
+    }
+  </div>
   }
 
   <div class="btn-wrapper">

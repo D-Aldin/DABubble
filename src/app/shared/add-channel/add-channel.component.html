@@ -1,42 +1,41 @@
 <div class="add-channel-dialog">
 
   @if (!showPeopleStep) {
-    <!-- Step 1: Create channel -->
-    <div class="dialog-header">
-      <h2>Channel erstellen</h2>
-      <button class="close-btn" (click)="close.emit()">&times;</button>
+  <!-- Step 1: Create channel -->
+  <div class="dialog-header">
+    <h2>Channel erstellen</h2>
+    <button class="close-btn" (click)="close.emit()">&times;</button>
+  </div>
+
+  <p class="description">
+    Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein
+    #marketing zum Beispiel.
+  </p>
+
+  <form [formGroup]="form">
+    <label for="channel-name">Channel-Name</label>
+    <div class="input-wrapper">
+      <span class="hashtag"></span>
+      <app-input-field [placeholder]="'# z.B. Kooperationsprojekte'" [maxlength]="50" [minlength]="4"
+        formControlName="channelname" name="channel-name" [errorMsg]="channelNameValidation()">
+      </app-input-field>
     </div>
 
-    <p class="description">
-      Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein
-      <strong>#marketing</strong> zum Beispiel.
-    </p>
-
-    <form>
-      <label for="channel-name">Channel-Name</label>
-      <div class="input-wrapper">
-        <span class="hashtag">#</span>
-        <input id="channel-name" type="text" placeholder="z.B. Kooperationsprojekte"
-               [(ngModel)]="channelName" name="channelName">
-      </div>
-
-      <label for="description">Beschreibung <span class="optional">(optional)</span></label>
-      <input id="description" type="text" placeholder="Dein Text hier"
-             [(ngModel)]="channelDescription" name="channelDescription">
-
-      <div class="submit-wrapper">
-        <button type="button" (click)="proceedToAddPeople()">Erstellen</button>
-      </div>
-    </form>
+    <label for="description">Beschreibung <span class="optional">(optional)</span></label>
+    <app-input-field [placeholder]="'Dein Text hier'" [maxlength]="200" formControlName="channeldescription"
+      name="description">
+    </app-input-field>
+    <div class="submit-wrapper">
+      <button class="button-style" type="button" (click)="proceedToAddPeople()"
+        [disabled]="form.invalid">Erstellen</button>
+    </div>
+  </form>
   }
 
   @else {
-    <!-- Step 2: Add people -->
-    <app-add-people
-      [channelName]="channelName"
-      (complete)="handlePeopleAdded($event)"
-      (cancel)="cancelAddPeople()"
-    ></app-add-people>
+  <!-- Step 2: Add people -->
+  <app-add-people [channelName]="channelName" (complete)="handlePeopleAdded($event)"
+    (cancel)="cancelAddPeople()"></app-add-people>
   }
 
 </div>

@@ -17,7 +17,7 @@ export class AddPeopleComponent {
   @Output() cancel = new EventEmitter<void>();
   users: { id: string, avatarPath: string, name: string }[] = [];
   filteredUsers: typeof this.users = [];
-  
+
   addAllMembers = true;
   selectedUsers: string[] = [];
   searchTerm = '';
@@ -27,7 +27,7 @@ export class AddPeopleComponent {
   @Input() channelId?: string; // used only for 'add-to-channel'
 
 
-   constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
     this.userService.getAllUsers().subscribe(users => {
@@ -45,7 +45,7 @@ export class AddPeopleComponent {
       )
       .slice(0, 5); // limit result length
   }
-  
+
   selectUser(user: { id: string; name: string; avatarPath: string }) {
     this.selectedUserObjects.push(user);
     this.selectedUsers.push(user.id);
@@ -59,19 +59,18 @@ export class AddPeopleComponent {
   }
 
   finish() {
-  if (this.mode === 'add-to-channel') {
-    this.confirm.emit(this.selectedUsers);
-    return;
-  }
+    if (this.mode === 'add-to-channel') {
+      this.confirm.emit(this.selectedUsers);
+      return;
+    }
 
-  // default: create-channel
-  if (this.addAllMembers) {
-    this.confirm.emit(['ALL']);
-  } else {
-    this.confirm.emit(this.selectedUsers); 
+    // default: create-channel
+    if (this.addAllMembers) {
+      this.confirm.emit(['ALL']);
+    } else {
+      this.confirm.emit(this.selectedUsers);
+    }
   }
-}
-
 
   cancelDialog() {
     this.cancel.emit();

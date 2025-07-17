@@ -11,21 +11,23 @@ import { ChatBoxComponent } from "../../shared/chat-box/chat-box.component";
 import { AddChannelComponent } from "../../shared/add-channel/add-channel.component";
 import { AddPeopleComponent } from "../../shared/add-channel/add-people/add-people.component";
 import { CommonModule } from '@angular/common';
+import { MessageFieldComponent } from "../../shared/message-field/message-field.component";
+import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [ThreadComponent, ChatBoxComponent, AddChannelComponent, AddPeopleComponent, CommonModule],
+  imports: [ThreadComponent, ChatBoxComponent, AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
 export class ChannelComponent {
   selectedChannelPreviewUsers: ChatUser[] = [];
-  selectedChannel: Channel | null = null;
+  selectedChannel: undefined | Channel = undefined;
   showChannelOptionsPopup = false;
   creatorName: string = '';
   creatorOnline: boolean = false;
-
+  isLoadingChannel: boolean = true
   showSidenav = true;
   hovered = false;
   showAddChannelDialog = false;
@@ -54,6 +56,7 @@ export class ChannelComponent {
     this.route.paramMap.subscribe(params => {
       const channelId = params.get('id');
       if (channelId) {
+        this.isLoadingChannel = true;
         this.channelService.getChannelById(channelId).subscribe(channel => {
           this.selectedChannel = channel;
 
@@ -66,6 +69,8 @@ export class ChannelComponent {
             this.creatorName = user.name;
             this.creatorOnline = user.online;
           });
+
+          this.isLoadingChannel = false;
         });
       }
     });
@@ -82,7 +87,7 @@ export class ChannelComponent {
       this.selectedChannelPreviewUsers = users;
     });
     // ✅ Navigate away from /dashboard/direct-messages
-    this.router.navigate(['/dashboard']);
+    // this.router.navigate(['/dashboard']);
   }
 
   toggleChannelOptionsPopup() {

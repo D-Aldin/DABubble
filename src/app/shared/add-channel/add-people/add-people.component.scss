@@ -21,10 +21,18 @@
     }
 
     .close-btn {
-      background: none;
+      background-color: white;
+      width: 35px;
+      height: 35px;
       border: none;
-      font-size: 1.5rem;
+      background-image: url("../../../../assets/icons/close.png");
+      background-repeat: no-repeat;
+      background-size: cover;
       cursor: pointer;
+
+      &:hover {
+        background-image: url("../../../../assets/icons/close-hover.png");
+      }
     }
   }
 
@@ -78,55 +86,57 @@
       }
     }
   }
+
   .user-selection {
-  position: relative;
-  .token-input-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    min-height: 44px;
-    align-items: center;
-    cursor: text;
+    position: relative;
 
-    input {
-      border: none;
-      outline: none;
-      flex: 1;
-      min-width: 100px;
-      padding: 4px 6px;
-      font-size: 14px;
-    }
-  }
+    .token-input-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      min-height: 44px;
+      align-items: center;
+      cursor: text;
 
-  .user-token {
-    display: flex;
-    align-items: center;
-    background: #f1f1f1;
-    border-radius: 20px;
-    padding: 4px 8px;
-    font-size: 13px;
-
-    img.avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      margin-right: 6px;
+      input {
+        border: none;
+        outline: none;
+        flex: 1;
+        min-width: 100px;
+        padding: 4px 6px;
+        font-size: 14px;
+      }
     }
 
-    .remove-btn {
-      background: none;
-      border: none;
-      font-size: 16px;
-      line-height: 1;
-      margin-left: 4px;
-      cursor: pointer;
-    }
-  }
+    .user-token {
+      display: flex;
+      align-items: center;
+      background: #f1f1f1;
+      border-radius: 20px;
+      padding: 4px 8px;
+      font-size: 13px;
 
-  .dropdown-list {
+      img.avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 6px;
+      }
+
+      .remove-btn {
+        background: none;
+        border: none;
+        font-size: 16px;
+        line-height: 1;
+        margin-left: 4px;
+        cursor: pointer;
+      }
+    }
+
+    .dropdown-list {
       position: absolute;
       top: 100%;
       left: 0;
