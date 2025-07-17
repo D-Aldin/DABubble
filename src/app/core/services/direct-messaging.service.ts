@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+
 import {
   Firestore,
   doc,
@@ -10,8 +11,10 @@ import {
 } from '@angular/fire/firestore';
 
 import { AuthService } from './auth.service';
-import { Observable, map } from 'rxjs';
+import { Observable, map, timestamp } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
+import { addDoc, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { Message } from '../interfaces/message';
 
 @Injectable({
   providedIn: 'root',
@@ -47,12 +50,47 @@ export class DirectMessagingService {
     if (!conversationDoc.exists()) {
       await setDoc(directMessagesRef, {
         participants: userIds,
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(),
       });
     }
   }
 
   generateConversationId(uid1: string, uid2: string): string {
     return [uid1, uid2].sort().join('_');
+  }
+
+  async sendDirectMsg(
+    conversationId: string,
+    from: string,
+    to: string,
+    message: string
+  ) {
+    const refDirectMessages = doc(
+      this.firestore,
+      'directMessages',
+      conversationId
+    );
+    const refMessages = collection(refDirectMessages, 'messages');
+
+    await addDoc(refMessages, {
+      messageFrom: from,
+      messageTo: to,
+      message: message,
+      timestamp: serverTimestamp(),
+    });
+  }
+
+  getMessages(conversationId: string) {
+    const refMessages = collection(
+      this.firestore,
+      'directMessages',
+      conversationId,
+      'messages'
+    );
+
+    const sortByTime = query(refMessages, orderBy('timestamp', 'asc'));
+    return collectionData(sortByTime, { idField: 'id' }) as Observable<
+      Message[]
+    >;
   }
 }

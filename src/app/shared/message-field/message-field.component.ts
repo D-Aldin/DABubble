@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
@@ -13,12 +13,15 @@ import { CommonModule } from '@angular/common';
 })
 export class MessageFieldComponent {
   @Input() customClass: string = '';
-  message: string = '';
+  @Output() messageSend = new EventEmitter<string>();
   emojiPicker: boolean = false;
+  message: string = '';
 
   captureMessage() {
-    console.log(this.message);
-    this.message = '';
+    if (this.message.trim()) {
+      this.messageSend.emit(this.message);
+      this.message = '';
+    }
   }
 
   toggleEmojiPicker() {
