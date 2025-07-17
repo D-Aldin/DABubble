@@ -61,61 +61,78 @@
       <div class="main-content">
 
       <!-- Channel-Header in Dashboard -->
-@if (selectedChannel && currentUrl !== '/dashboard/direct-message') {
-  <div class="channel-header">
-    <!-- Left side: Channel avatar + name -->
-    <div class="channel-info">
-      <span class="channel-name"> <b>#</b> {{ selectedChannel.title }}</span>
-      <button class="dropdown-btn" (click)="toggleChannelOptionsPopup()">
-        <img src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="Dropdown" />
-      </button>
-    </div>
+      @if (selectedChannel && currentUrl !== '/dashboard/direct-message') {
+        <div class="channel-header">
+          <!-- Left side: Channel avatar + name -->
+          <div class="channel-info">
+           <button class="channel-dropdown" (click)="toggleChannelOptionsPopup()">
+            <span><b>#</b> {{ selectedChannel.title }}</span>
+            <span class="arrow">▾</span>
+          </button>
 
-    <!-- Right side: User avatars + count + add-users button -->
-    <div class="channel-users">
-      @if (selectedChannel.members.length > 0) {
-        <div class="user-avatars">
-          @for (user of selectedChannelPreviewUsers; track user.id) {
-            <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
-          }
+            <!-- Channel Popup -->
+             @if (showChannelOptionsPopup) {
+              <div class="channel-popup">
+                <h3># {{ selectedChannel.title }}</h3>
+
+                <!-- Channel Name Section -->
+                <div class="popup-section boxed">
+                  <div class="popup-section-header">
+                    <span>Channel-Name</span>
+                    <button (click)="editChannelName()">Bearbeiten</button>
+                  </div>
+                  <p><b>#</b> {{ selectedChannel.title }}</p>
+                </div>
+
+                <!-- Description Section -->
+                <div class="popup-section boxed">
+                  <div class="popup-section-header">
+                    <span>Beschreibung</span>
+                    <button (click)="editChannelDescription()">Bearbeiten</button>
+                  </div>
+                  <p>{{ selectedChannel.description }}</p>
+                </div>
+
+                <!-- Created By -->
+                <div class="popup-section">
+                  <span>Erstellt von</span>
+                  <p class="creator-name" [ngClass]="{ 'online': creatorOnline }">
+                    {{ creatorName }}
+                  </p>
+                </div>
+
+                <div class="popup-actions">
+                  <button class="leave-btn" (click)="toggleChannelOptionsPopup()">Channel verlassen</button>
+                </div>
+
+                <button class="popup-close" (click)="toggleChannelOptionsPopup()">×</button>
+              </div>
+            }
+
+          </div>
+
+          <!-- Right side: User avatars + count + add-users button -->
+          <div class="channel-users">
+            @if (selectedChannel.members.length > 0) {
+              <div class="user-avatars">
+                @for (user of selectedChannelPreviewUsers; track user.id) {
+                  <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+                }
+              </div>
+              <span class="user-count">{{ selectedChannel.members.length }}</span>
+            }
+
+            <button class="add-user-btn"
+              (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
+              title="Mitglieder hinzufügen">
+              <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
+            </button>
+          </div>
+
+          <!-- Channel Options Popup -->
+         
         </div>
-        <span class="user-count">{{ selectedChannel.members.length }}</span>
       }
-
-      <button class="add-user-btn"
-        (click)="openAddPeopleDialog({ name: selectedChannel.title, description: selectedChannel.description })"
-        title="Mitglieder hinzufügen">
-        <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
-      </button>
-    </div>
-
-    <!-- Channel Options Popup -->
-    @if (showChannelOptionsPopup) {
-      <div class="channel-popup">
-        <h3># {{ selectedChannel.title }}</h3>
-
-        <div class="popup-section">
-          <span>Channel-Name</span>
-          <p>{{ selectedChannel.title }}</p>
-          <button (click)="editChannelName()">Bearbeiten</button>
-        </div>
-
-        <div class="popup-section">
-          <span>Beschreibung</span>
-          <p>{{ selectedChannel.description }}</p>
-          <button (click)="editChannelDescription()">Bearbeiten</button>
-        </div>
-
-        <div class="popup-section">
-          <span>Erstellt von</span>
-          <p [class.online]="creatorOnline">{{ creatorName }}</p>
-        </div>
-
-        <button class="popup-close" (click)="toggleChannelOptionsPopup()">×</button>
-      </div>
-    }
-  </div>
-}
 
 
         <router-outlet></router-outlet>
