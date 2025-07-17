@@ -80,15 +80,6 @@ export class DirectMessagingService {
     });
   }
 
-  loadMessages(conversationId: string) {
-    const refMessages = collection(
-      this.firestore,
-      'directMessages',
-      conversationId,
-      'messages'
-    );
-  }
-
   getMessages(conversationId: string) {
     const refMessages = collection(
       this.firestore,

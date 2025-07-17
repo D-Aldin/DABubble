@@ -84,7 +84,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     ]);
 
     this.conversation = conversationId;
-    this.messagingService.loadMessages(conversationId);
+    this.loadMessages(conversationId);
   }
 
   onMessageSend(msg: string) {
@@ -97,8 +97,12 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
       console.error('User IDs are missing. Cannot send message.');
     }
 
+    this.loadMessages(this.conversation);
+  }
+
+  loadMessages(id: string) {
     this.subscription = this.messagingService
-      .getMessages(this.conversation)
+      .getMessages(id)
       .subscribe((msg) => {
         this.messages = msg;
         console.log(this.messages);
