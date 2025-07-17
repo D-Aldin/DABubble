@@ -18,7 +18,13 @@
          </div>
       </div>
 
+    
+
       <div class="message">
+         <div *ngFor="let msg of messages" class="div">
+            <h2>{{msg.message}}</h2> 
+      </div>
+         
          <div class="you-talk-to">
             <div class="secondary-avatar">
                <img [src]="selectedUser.avatarPath" alt="">
@@ -31,8 +37,10 @@
          </div>
       </div>
 
+    
+
       <div class="message-field-wrapper">
-         <app-message-field></app-message-field>
+         <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>
       </div>
    </section>
 </ng-template>

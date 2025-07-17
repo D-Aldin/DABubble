@@ -6,8 +6,7 @@ import { MessageFieldComponent } from '../../shared/message-field/message-field.
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { ActivatedRoute } from '@angular/router';
-import { UserService } from '../../core/services/user.service';
+import { Message } from '../../core/interfaces/message';
 
 interface CurrentUserId {
   userId: string;
@@ -21,41 +20,39 @@ interface CurrentUserId {
   styleUrl: './direct-message.component.scss',
 })
 export class DirectMessageComponent implements OnInit, OnDestroy {
+  messages: Message[] = [];
   selectedUser: any = null;
   currentUser: CurrentUserId | null = null;
   hasSelectedUser: boolean = false;
   private subscription?: Subscription;
+  conversation!: string;
 
   constructor(
     private sharedService: SharedService,
     private authService: AuthService,
-    private messagingService: DirectMessagingService,
-    private route: ActivatedRoute,
-    private userService: UserService
-  ) { }
+    private messagingService: DirectMessagingService
+  ) {}
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const uid = params.get('uid');
-
-      if (uid) {
+  ngOnInit() {
+    this.sharedService.sharedData$.subscribe((user) => {
+      if (user) {
         this.hasSelectedUser = true;
-
-        // ✅ Fetch selected user by ID from your service
-        this.userService.getUsersByIds([uid]).subscribe(users => {
-          this.selectedUser = users[0];
-
-          // Load current logged-in user
-          this.loadCurrentUserId();
-          const currentUserId = this.currentUser?.userId;
-          const selectedUserId = this.selectedUser?.uid;
-
-          if (currentUserId && selectedUserId) {
-            this.createConversation(currentUserId, selectedUserId);
-          }
-        });
+        this.selectedUser = user;
+        this.loadCurrentUserId();
+        const currentUserId = this.currentUser?.userId;
+        const selectedUserId = this.selectedUser?.uid;
+        if (currentUserId && selectedUserId) {
+          this.createConversation(currentUserId, selectedUserId);
+        }
       }
     });
+    this.subscription = this.messagingService
+      .getMessages(this.conversation)
+      .subscribe((msg) => {
+        console.log('Message recevid', msg);
+
+        this.messages = msg;
+      });
   }
 
   ngOnDestroy() {
@@ -85,5 +82,26 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
       currentUserId,
       selectedUserId,
     ]);
+
+    this.conversation = conversationId;
+    this.messagingService.loadMessages(conversationId);
+  }
+
+  onMessageSend(msg: string) {
+    const from = this.currentUser?.userId;
+    const to = this.selectedUser?.uid;
+
+    if (from && to) {
+      this.messagingService.sendDirectMsg(this.conversation, from, to, msg);
+    } else {
+      console.error('User IDs are missing. Cannot send message.');
+    }
+
+    this.subscription = this.messagingService
+      .getMessages(this.conversation)
+      .subscribe((msg) => {
+        this.messages = msg;
+        console.log(this.messages);
+      });
   }
 }

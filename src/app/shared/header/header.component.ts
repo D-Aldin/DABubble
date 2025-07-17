@@ -5,7 +5,7 @@ import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
-import { SpinnerComponent } from "../spinner/spinner.component";
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-header',
@@ -43,7 +43,7 @@ export class HeaderComponent {
 
   handleHeaderAppearancesForRoutes() {
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
         const url = (event as NavigationEnd).urlAfterRedirects;
         this.handleLoginAppearance(url);
@@ -54,7 +54,8 @@ export class HeaderComponent {
   handleDashboardAppearance(url: string): void {
     const isDashboardRoute =
       url.startsWith(this.DASHBOARD_PREFIX) ||
-      (url.startsWith(this.DIRECT_MESSAGE_PREFIX) || url.startsWith(this.CHANNEL_PREFIX));
+      url.startsWith(this.DIRECT_MESSAGE_PREFIX) ||
+      url.startsWith(this.CHANNEL_PREFIX);
     this.showProfileAvatar = isDashboardRoute;
     this.showSearchBar = isDashboardRoute;
     this.showProfileMenu = isDashboardRoute;
@@ -103,7 +104,6 @@ export class HeaderComponent {
     });
   }
 
-
   ngOnInit(): void {
     this.loadUserData();
   }
@@ -135,13 +135,12 @@ export class HeaderComponent {
     if (userDoc && userDoc.name && userDoc.avatarPath) {
       this.userName = userDoc.name;
       this.avatarPath = userDoc.avatarPath;
-      console.log(this.userName);
-      console.log(this.avatarPath);
-
+      // console.log(this.userName);
+      // console.log(this.avatarPath);
     } else {
       this.userName = 'Unbekannt';
-      console.log(this.userName);
-      console.log(this.avatarPath);
+      // console.log(this.userName);
+      // console.log(this.avatarPath);
     }
   }
 
@@ -165,7 +164,7 @@ export class HeaderComponent {
   }
 
   async setUserOnlineStatus(uid: string, online: boolean) {
-    await this.userService.setOnlineStatus(uid, online)
+    await this.userService.setOnlineStatus(uid, online);
     this.onlineStatus = online;
   }
 }

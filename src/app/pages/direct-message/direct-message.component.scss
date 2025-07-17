@@ -1,4 +1,4 @@
-@use '../../../styles/variables' as *;
+@use "../../../styles/variables" as *;
 
 section {
   display: flex;
@@ -91,7 +91,7 @@ section {
 .message {
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
 }
 
 h3 {
