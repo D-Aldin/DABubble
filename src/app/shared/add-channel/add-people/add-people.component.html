@@ -4,17 +4,28 @@
     <button class="close-btn" (click)="cancelDialog()">&times;</button>
   </div>
 
-  <label class="radio-option">
-    <input type="radio" [(ngModel)]="addAllMembers" [value]="true" />
-    Alle Mitglieder von <span class="highlight">{{ channelName }}</span> hinzufügen
-  </label>
+  <!-- Channel name header only for add-to-channel mode -->
+  @if (mode === 'add-to-channel') {
+    <p class="channel-reference">
+      <span>#</span> {{ channelName }}
+    </p>
+  }
 
-  <label class="radio-option">
-    <input type="radio" [(ngModel)]="addAllMembers" [value]="false" />
-    Bestimmte Leute hinzufügen
-  </label>
+  <!-- Show radio options only in create-channel mode -->
+  @if (mode === 'create-channel') {
+    <label class="radio-option">
+      <input type="radio" [(ngModel)]="addAllMembers" [value]="true" />
+      Alle Mitglieder von <span class="highlight">{{ channelName }}</span> hinzufügen
+    </label>
 
-  @if (!addAllMembers) {
+    <label class="radio-option">
+      <input type="radio" [(ngModel)]="addAllMembers" [value]="false" />
+      Bestimmte Leute hinzufügen
+    </label>
+  }
+
+  <!-- Show user search if specific users should be added -->
+  @if (mode === 'add-to-channel' || !addAllMembers) {
     <div class="user-selection">
       <div class="token-input-wrapper" (click)="inputField.focus()">
         @for (user of selectedUserObjects; track user.id) {
@@ -24,7 +35,13 @@
             <button type="button" class="remove-btn" (click)="removeUser(user.id)">×</button>
           </div>
         }
-        <input #inputField type="text" [(ngModel)]="searchTerm" (input)="onSearchTermChange()" [placeholder]="selectedUserObjects.length === 0 ? 'Name eingeben' : ''" />
+        <input
+          #inputField
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchTermChange()"
+          [placeholder]="selectedUserObjects.length === 0 ? 'Name eingeben' : ''"
+        />
       </div>
 
       @if (searchResults.length > 0) {
@@ -41,6 +58,8 @@
   }
 
   <div class="btn-wrapper">
-    <button class="submit-btn" (click)="finish()">Erstellen</button>
+    <button class="submit-btn" (click)="finish()">
+      @if (mode === 'add-to-channel') { Hinzufügen } @else { Erstellen }
+    </button>
   </div>
 </div>

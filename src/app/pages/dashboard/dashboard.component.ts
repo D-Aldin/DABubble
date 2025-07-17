@@ -14,6 +14,7 @@ import { ChatUser } from '../../core/interfaces/chat-user';
 import { UserService } from '../../core/services/user.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { ElementRef, HostListener, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -47,6 +48,10 @@ export class DashboardComponent implements OnInit {
   showChannelOptionsPopup = false;
   creatorName: string = '';
   creatorOnline: boolean = false;
+  showAddUserToChannelPopup = false;
+  addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
+  selectedChannelIdForUserAdd: string = '';
+  selectedChannelTitleForUserAdd: string = '';
 
 
   constructor(
@@ -102,7 +107,6 @@ export class DashboardComponent implements OnInit {
         this.creatorOnline = user.online;
       });
     }
-    console.log(this.selectedChannel);
   }
 
   editChannelName() {
@@ -141,8 +145,6 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-
-
   get selectedChannelPreviewMembers(): string[] {
     return this.selectedChannel?.members?.slice(0, 3) || [];
   }
@@ -166,7 +168,7 @@ export class DashboardComponent implements OnInit {
       this.channelDescription = data.description;
       this.createdChannelName = data.name;
     }
-
+    this.addUserMode = 'create-channel'; //Needed for correct dialog mode
     this.showAddChannelDialog = false;
     this.showPeopleDialog = true;
   }
@@ -199,6 +201,37 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  openAddUserToChannelPopup() {//to add new user to current-channel
+      this.showPeopleDialog = true;
+    this.showAddUserToChannelPopup = true;
+    this.addUserMode = 'add-to-channel';
+    this.selectedChannelIdForUserAdd = this.selectedChannel?.id!;
+    this.selectedChannelTitleForUserAdd = this.selectedChannel?.title!;
+    console.log('Popup opens');
+    
+  }
+
+  handleUserAddConfirm(userIds: string[]) {
+    this.channelService.addUsersToChannel(this.selectedChannelIdForUserAdd, userIds).then(() => {
+      // Merge new user IDs into selectedChannel
+      if (this.selectedChannel) {
+        this.selectedChannel.members.push(...userIds.filter(id => !this.selectedChannel!.members.includes(id)));
+      }
+      // Close dialog
+      this.showAddUserToChannelPopup = false;
+      this.showPeopleDialog = false;
+      // Refresh user preview avatars
+      const previewIds = this.selectedChannel!.members.slice(0, 3);
+      this.userService.getUsersByIds(previewIds).subscribe(users => {
+        this.selectedChannelPreviewUsers = users;
+      });
+    });
+  }
+
+  handleUserAddCancel() {
+    this.showAddUserToChannelPopup = false;
+  }
+
   handleChannelCreation(channelData: Channel) {
     this.channelName = channelData.title;
     this.channelDescription = channelData.description;
@@ -208,4 +241,9 @@ export class DashboardComponent implements OnInit {
       description: channelData.description,
     });
   }
+
+  @HostListener('document:click')
+    closePopupOnOutsideClick() {
+      this.showChannelOptionsPopup = false;
+    }
 }

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc  } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, collection, collectionData, addDoc, updateDoc, arrayUnion, doc  } from '@angular/fire/firestore';
+import { Observable, } from 'rxjs';
 import { Channel } from '../interfaces/channel';
 
 @Injectable({
@@ -18,4 +18,12 @@ export class ChannelService {
     const channelsRef = collection(this.firestore, 'channels');
     return addDoc(channelsRef, channel).then(() => {});
   }
+
+  addUsersToChannel(channelId: string, userIds: string[]) { 
+    const channelRef = doc(this.firestore, 'channels', channelId);
+    return updateDoc(channelRef, {
+      members: arrayUnion(...userIds)
+    });
+  }
+
 }

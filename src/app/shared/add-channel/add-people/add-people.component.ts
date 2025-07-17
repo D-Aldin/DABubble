@@ -23,6 +23,9 @@ export class AddPeopleComponent {
   searchTerm = '';
   searchResults: typeof this.users = [];
   selectedUserObjects: typeof this.users = [];
+  @Input() mode: 'create-channel' | 'add-to-channel' = 'create-channel';
+  @Input() channelId?: string; // used only for 'add-to-channel'
+
 
    constructor(private userService: UserService) {}
 
@@ -56,12 +59,19 @@ export class AddPeopleComponent {
   }
 
   finish() {
-    if (this.addAllMembers) {
-      this.confirm.emit(['ALL']);
-    } else {
-      this.confirm.emit(this.selectedUsers); 
-    }
+  if (this.mode === 'add-to-channel') {
+    this.confirm.emit(this.selectedUsers);
+    return;
   }
+
+  // default: create-channel
+  if (this.addAllMembers) {
+    this.confirm.emit(['ALL']);
+  } else {
+    this.confirm.emit(this.selectedUsers); 
+  }
+}
+
 
   cancelDialog() {
     this.cancel.emit();
