@@ -23,22 +23,29 @@ export class SidenavComponent implements OnInit {
   selectedChannel: string | null = null;
   usersArray: ChatUser[] = [];
   currentURL: string = '';
+  isURLChannel: boolean | null = null;
   constructor(private sharedService: SharedService, private router: Router) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
   showDMs = true;
-  @Output() channelSelected = new EventEmitter<Channel>();
+  // @Output() channelSelected = new EventEmitter<Channel>();
   private channelService = inject(ChannelService);
   private dmService = inject(DirectMessagingService);
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
   users$: Observable<ChatUser[]> = this.dmService.getAllUsersExceptCurrent();
 
+  // selectChannel(channel: Channel) {
+  //   this.selectedChannel = channel.id;
+  //   this.channelSelected.emit(channel); // Sending to parent
+  // }
+
   selectChannel(channel: Channel) {
     this.selectedChannel = channel.id;
-    this.channelSelected.emit(channel); // Sending to parent
+    this.router.navigate(['/dashboard/channel', channel.id]);
   }
+
 
   toggleChannels() {
     this.showChannels = !this.showChannels;
@@ -58,13 +65,22 @@ export class SidenavComponent implements OnInit {
     //keep track of URL for the selection of channels or users
     this.keepTrackOfCurrentURL()
   }
-  
+
   keepTrackOfCurrentURL(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.currentURL = event.urlAfterRedirects;
+        this.checkGivenURL();
       }
     });
+  }
+
+  checkGivenURL(): void {
+    if (this.currentURL.includes('/dashboard/channel')) {
+      this.isURLChannel = true
+    } else {
+      this.isURLChannel = false;
+    }
   }
 
   subscribeToUsers(): void {
@@ -83,6 +99,6 @@ export class SidenavComponent implements OnInit {
   }
 
   emitOpenDialog() {
-    this.openAddChannelDialog.emit();
+    this.channelService.triggerAddChannelDialog();
   }
 }

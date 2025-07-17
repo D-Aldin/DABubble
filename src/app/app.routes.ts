@@ -21,14 +21,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'direct-message/:uid', // 🧑 DM route with user ID
+        path: 'direct-message/:uid', // DM route with user ID
         component: DirectMessageComponent,
       },
       {
-        path: 'channel/:id', // #️⃣ Channel route with channel ID
+        path: 'channel/:id', //  Channel route with channel ID
         component: ChannelComponent
       },
-      // Create route for channel showing as defined above with direct-message
+      // Created route for channel showing as defined above like direct-message route
     ],
   },
   { path: 'register', component: RegisterComponent },
