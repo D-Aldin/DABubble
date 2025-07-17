@@ -6,6 +6,8 @@ import { MessageFieldComponent } from '../../shared/message-field/message-field.
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../../core/services/user.service';
 
 interface CurrentUserId {
   userId: string;
@@ -27,20 +29,31 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   constructor(
     private sharedService: SharedService,
     private authService: AuthService,
-    private messagingService: DirectMessagingService
-  ) {}
+    private messagingService: DirectMessagingService,
+    private route: ActivatedRoute,
+    private userService: UserService
+  ) { }
 
-  ngOnInit() {
-    this.sharedService.sharedData$.subscribe((user) => {
-      if (user) {
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const uid = params.get('uid');
+
+      if (uid) {
         this.hasSelectedUser = true;
-        this.selectedUser = user;
-        this.loadCurrentUserId();
-        const currentUserId = this.currentUser?.userId;
-        const selectedUserId = this.selectedUser?.uid;
-        if (currentUserId && selectedUserId) {
-          this.createConversation(currentUserId, selectedUserId);
-        }
+
+        // ✅ Fetch selected user by ID from your service
+        this.userService.getUsersByIds([uid]).subscribe(users => {
+          this.selectedUser = users[0];
+
+          // Load current logged-in user
+          this.loadCurrentUserId();
+          const currentUserId = this.currentUser?.userId;
+          const selectedUserId = this.selectedUser?.uid;
+
+          if (currentUserId && selectedUserId) {
+            this.createConversation(currentUserId, selectedUserId);
+          }
+        });
       }
     });
   }

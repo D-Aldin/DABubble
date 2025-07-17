@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit {
         console.log(this.currentUrl);
 
         // ✅ Clear selectedChannel when navigating to direct-messages
-        if (this.currentUrl === '/dashboard/direct-message') {
+        if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
           this.selectedChannel = null;
         }
       }
