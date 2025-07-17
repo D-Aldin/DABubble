@@ -6,4 +6,5 @@ export interface Channel {
   participants?: string[];
   createdAt?: any;
   members: string[];
+  creatorId: string;
 }
