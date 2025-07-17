@@ -128,7 +128,7 @@
 
 
     <!--Dashboard Thread Content -->
-    <app-thread>
+    <app-thread *ngIf="selectedChannel">
       @for (item of chatMessages; track $index) {
       <app-chat-box [src]="item.src" [userName]="item.userName" [time]="item.time" [message]="item.message"
         [userMe]="item.userMe">></app-chat-box>
