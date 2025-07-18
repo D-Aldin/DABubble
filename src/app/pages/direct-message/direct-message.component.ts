@@ -1,7 +1,6 @@
 import {
   Component,
   ElementRef,
-  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -48,6 +47,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
+  count: number = 0;
 
   constructor(
     private sharedService: SharedService,
@@ -185,6 +185,20 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
       this.isMessagesArrayEmpty = false;
     } else {
       this.isMessagesArrayEmpty = true;
+    }
+  }
+
+  handlingDateTime(timestamp: Timestamp): string {
+    const dateTimestampMonth = timestamp.toDate().getMonth();
+    const dateTimestampDay = timestamp.toDate().getDay();
+    const currentMonth = new Date().getMonth();
+    const currentDay = new Date().getDay();
+    let displayTime = '';
+
+    if (dateTimestampMonth == currentMonth && dateTimestampDay == currentDay) {
+      return 'today';
+    } else {
+      return timestamp.toDate().toDateString();
     }
   }
 }

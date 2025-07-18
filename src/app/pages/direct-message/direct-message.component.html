@@ -22,9 +22,15 @@
 
       <div class="message" #scrollContainer>
          <ng-container *ngFor="let item of messages; let i = index;">
-                 <div class="line-wrapper">
-               <app-timestamp-line [date]="convertTimestampToString(item.timestamp)"></app-timestamp-line>
+         
+            <div class="line-wrapper">
+               <app-timestamp-line #date [date]="handlingDateTime(item.timestamp)"></app-timestamp-line>
             </div>
+
+            
+          
+          
+
             <app-chat-box [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
                [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
                [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
