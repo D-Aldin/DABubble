@@ -5,7 +5,6 @@
       <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
    </div>
 </ng-container>
-
 <ng-template #showChat>
    <section>
       <div class="headline">
@@ -13,45 +12,32 @@
             <img [src]="selectedUser.avatarPath" alt="">
             <h3>{{ selectedUser.name }}</h3>
             <span class="online-dot" [ngStyle]="{
-            'background-color': selectedUser.online ? 'rgba(146, 200, 62, 1)' : 'grey'
-          }"></span>
+               'background-color': selectedUser.online ? 'rgba(146, 200, 62, 1)' : 'grey'
+               }"></span>
          </div>
       </div>
-
-
-
       <div class="message" #scrollContainer>
          <ng-container *ngFor="let item of messages; let i = index;">
-         
-            <div class="line-wrapper">
-               <app-timestamp-line #date [date]="handlingDateTime(item.timestamp)"></app-timestamp-line>
+            <div class="line-wrapper" >
+               <app-timestamp-line [date]="handlingDateTime(item.timestamp)" ></app-timestamp-line>
             </div>
-
-            
-          
-          
-
             <app-chat-box [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
-               [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
-               [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
-               [userMe]="checkIfMessageIsFromLoggedInUser(i)">
+            [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
+            [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
+            [userMe]="checkIfMessageIsFromLoggedInUser(i)">
             </app-chat-box>
-       
-            
          </ng-container>
-         
       </div>
-            <div class="you-talk-to" [ngStyle]="{'visibility': isMessagesArrayEmpty == true ? 'hidden' : 'visible' }">
-            <div class="secondary-avatar">
-               <img [src]="selectedUser.avatarPath" alt="">
-               <h3>{{ selectedUser.name }}</h3>
-               <h4>
-                  Diese Unterhaltung findet nur zwischen
-                  <span>&#64;<a>{{ selectedUser.name }}</a></span> und dir statt.
-               </h4>
-            </div>
+      <div class="you-talk-to" [ngStyle]="{'visibility': isMessagesArrayEmpty == true ? 'hidden' : 'visible' }">
+         <div class="secondary-avatar">
+            <img [src]="selectedUser.avatarPath" alt="">
+            <h3>{{ selectedUser.name }}</h3>
+            <h4>
+               Diese Unterhaltung findet nur zwischen
+               <span>&#64;<a>{{ selectedUser.name }}</a></span> und dir statt.
+            </h4>
          </div>
-
+      </div>
       <div class="message-field-wrapper">
          <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>
       </div>

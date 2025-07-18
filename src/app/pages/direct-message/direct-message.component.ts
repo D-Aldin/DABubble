@@ -3,6 +3,7 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
+  QueryList,
   ViewChild,
 } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
@@ -17,6 +18,7 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
+import { ViewChildren } from '@angular/core';
 
 interface CurrentUserId {
   userId: string;
@@ -47,7 +49,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
-  count: number = 0;
+  @ViewChildren('.date') dateElements!: QueryList<ElementRef>;
 
   constructor(
     private sharedService: SharedService,
@@ -193,7 +195,6 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     const dateTimestampDay = timestamp.toDate().getDay();
     const currentMonth = new Date().getMonth();
     const currentDay = new Date().getDay();
-    let displayTime = '';
 
     if (dateTimestampMonth == currentMonth && dateTimestampDay == currentDay) {
       return 'today';
