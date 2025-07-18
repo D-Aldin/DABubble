@@ -1,5 +1,5 @@
 <!-- Show nothing unless a user is selected -->
-<ng-container *ngIf="hasSelectedUser">
+<ng-container *ngIf="hasSelectedUser && areMessagesLoaded">
    <!-- Spinner shown while selectedUser is loading -->
    <div *ngIf="!selectedUser; else showChat" class="spinner-container">
       <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
@@ -37,7 +37,7 @@
          </div>
 
          <ng-container *ngFor="let item of messages; let i = index;">
-            <app-chat-box [src]="'assets/images/register/default-profile-img.svg'"
+            <app-chat-box [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
                [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
                [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
                [userMe]="checkIfMessageIsFromLoggedInUser(i)">

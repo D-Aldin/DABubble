@@ -30,7 +30,9 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
   conversation!: string;
   userNamesMap: { [userId: string]: string } = {};
+  userAvatarsMap: { [userId: string]: string } = {};
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  areMessagesLoaded: boolean = false;
 
   constructor(
     private sharedService: SharedService,
@@ -112,7 +114,11 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         if (!this.userNamesMap[uid]) {
           this.userNamesMap[uid] = await this.getCurrentUserName(uid);
         }
+        if (!this.userAvatarsMap[uid]) {
+          this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
+        }
       }
+      this.areMessagesLoaded = true;
       setTimeout(() => this.scrollToBottom(), 0);
     });
   }
@@ -135,6 +141,14 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     const userDoc = await this.userService.getUserDocument(id);
     if (userDoc && userDoc.name) {
       return userDoc.name;
+    }
+    return '';
+  }
+
+  async getCurrentUserAvatar(id: string): Promise<string> {
+    const userDoc = await this.userService.getUserDocument(id);
+    if (userDoc && userDoc.avatarPath) {
+      return userDoc.avatarPath;
     }
     return '';
   }
