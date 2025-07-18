@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,9 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { Message } from '../../core/interfaces/message';
+import { ChatBoxComponent } from "../../shared/chat-box/chat-box.component";
+import { Timestamp } from '@angular/fire/firestore';
+import { UserService } from '../../core/services/user.service';
 
 interface CurrentUserId {
   userId: string;
@@ -15,7 +18,7 @@ interface CurrentUserId {
 @Component({
   selector: 'app-direct-message',
   standalone: true,
-  imports: [CommonModule, MessageFieldComponent, SpinnerComponent],
+  imports: [CommonModule, MessageFieldComponent, SpinnerComponent, ChatBoxComponent],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
 })
@@ -26,12 +29,17 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   hasSelectedUser: boolean = false;
   private subscription?: Subscription;
   conversation!: string;
+  userNamesMap: { [userId: string]: string } = {};
+  userAvatarsMap: { [userId: string]: string } = {};
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  areMessagesLoaded: boolean = false;
 
   constructor(
     private sharedService: SharedService,
     private authService: AuthService,
-    private messagingService: DirectMessagingService
-  ) {}
+    private messagingService: DirectMessagingService,
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
     this.sharedService.sharedData$.subscribe((user) => {
@@ -49,8 +57,6 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     this.subscription = this.messagingService
       .getMessages(this.conversation)
       .subscribe((msg) => {
-        console.log('Message recevid', msg);
-
         this.messages = msg;
       });
   }
@@ -101,11 +107,58 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   }
 
   loadMessages(id: string) {
-    this.subscription = this.messagingService
-      .getMessages(id)
-      .subscribe((msg) => {
-        this.messages = msg;
-        console.log(this.messages);
-      });
+    this.subscription = this.messagingService.getMessages(id).subscribe(async (msg) => {
+      this.messages = msg;
+      const senderIds = [...new Set(msg.map(m => m.messageFrom))];
+      for (const uid of senderIds) {
+        if (!this.userNamesMap[uid]) {
+          this.userNamesMap[uid] = await this.getCurrentUserName(uid);
+        }
+        if (!this.userAvatarsMap[uid]) {
+          this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
+        }
+      }
+      this.areMessagesLoaded = true;
+      setTimeout(() => this.scrollToBottom(), 0);
+    });
+  }
+
+  checkIfMessageIsFromLoggedInUser(index: number): boolean {
+    const userFromAuthService = this.authService.getCurrentUser();
+    const messageSender = this.messages[index]?.messageFrom;
+    return userFromAuthService?.uid !== messageSender;
+  }
+
+  convertTimestampToString(timestamp: Timestamp): string {
+    if (!timestamp) return '';
+    const date = timestamp.toDate();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  async getCurrentUserName(id: string): Promise<string> {
+    const userDoc = await this.userService.getUserDocument(id);
+    if (userDoc && userDoc.name) {
+      return userDoc.name;
+    }
+    return '';
+  }
+
+  async getCurrentUserAvatar(id: string): Promise<string> {
+    const userDoc = await this.userService.getUserDocument(id);
+    if (userDoc && userDoc.avatarPath) {
+      return userDoc.avatarPath;
+    }
+    return '';
+  }
+
+  scrollToBottom(): void {
+    try {
+      const el = this.scrollContainer.nativeElement;
+      el.scrollTop = el.scrollHeight;
+    } catch (err) {
+      console.error('Failed to scroll container:', err);
+    }
   }
 }

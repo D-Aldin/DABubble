@@ -1,6 +1,8 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Message {
-  from: string;
+  messageFrom: string;
   to: string;
   message: string;
-  timestamp: Date;
+  timestamp: Timestamp;
 }

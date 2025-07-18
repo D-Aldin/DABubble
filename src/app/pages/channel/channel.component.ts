@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [ThreadComponent, ChatBoxComponent, AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule],
+  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
