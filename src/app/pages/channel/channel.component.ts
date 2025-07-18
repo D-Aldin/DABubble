@@ -14,12 +14,11 @@ import { MessageFieldComponent } from "../../shared/message-field/message-field.
 import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
 import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
-import { ChannelMessageInputComponent } from '../../shared/channel-message-input/channel-message-input.component';
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent, ChannelMessageInputComponent],
+  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
@@ -153,7 +152,6 @@ export class ChannelComponent {
     }
   }
 
-
   editChannelName() {
     // You can show a dialog or input to change the name
     console.log('Edit channel name');
@@ -275,4 +273,12 @@ export class ChannelComponent {
     });
 
   }
+
+  handleSendChannelMessage(messageText: string) {
+    const senderId = this.authService.getCurrentUser()?.uid;
+    if (this.selectedChannelId && senderId && messageText.trim()) {
+      this.channelService.sendChannelMessage(this.selectedChannelId, senderId, messageText.trim());
+    }
+  }
+
 }

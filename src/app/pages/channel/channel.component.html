@@ -117,7 +117,7 @@
         </div>
 
         <div class="message-field-wrapper">
-            <app-channel-message-input [channelId]="selectedChannelId"></app-channel-message-input>
+            <app-message-field (messageSend)="handleSendChannelMessage($event)"></app-message-field>
         </div>
 
         <!-- Thread -->
