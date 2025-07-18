@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
@@ -15,6 +15,8 @@ export class ThreadComponent {
   isClose: boolean = false;
   message: string = '';
   emojiPicker: boolean = false;
+  @Input() messageId!: string;
+  @Input() channelId!: string;
 
   close(event: Event) {
     this.isClose = true;

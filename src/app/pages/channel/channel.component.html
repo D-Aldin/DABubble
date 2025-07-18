@@ -102,10 +102,22 @@
 
         <div class="messages-container">
             <!-- This is the container where all messages will be inserted -->
+             @if(openedThreadMessageId) {
+             <app-thread
+                [channelId]="selectedChannelId"
+                [messageId]="openedThreadMessageId"
+                (close)="closeThread()">
+              </app-thread>
+              }
+              <app-channel-messages
+                [channelId]="selectedChannelId"
+                (replyToMessage)="onReplyToMessage($event)">
+              </app-channel-messages>
+
         </div>
 
         <div class="message-field-wrapper">
-            <app-message-field></app-message-field>
+            <app-channel-message-input [channelId]="selectedChannelId"></app-channel-message-input>
         </div>
 
         <!-- Thread -->

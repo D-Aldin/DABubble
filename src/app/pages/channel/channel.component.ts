@@ -7,18 +7,19 @@ import { UserService } from '../../core/services/user.service';
 import { Channel } from '../../core/interfaces/channel';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { ThreadComponent } from "../../shared/thread/thread.component";
-import { ChatBoxComponent } from "../../shared/chat-box/chat-box.component";
 import { AddChannelComponent } from "../../shared/add-channel/add-channel.component";
 import { AddPeopleComponent } from "../../shared/add-channel/add-people/add-people.component";
 import { CommonModule } from '@angular/common';
 import { MessageFieldComponent } from "../../shared/message-field/message-field.component";
 import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
+import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
+import { ChannelMessageInputComponent } from '../../shared/channel-message-input/channel-message-input.component';
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule],
+  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent, ChannelMessageInputComponent],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
@@ -46,6 +47,8 @@ export class ChannelComponent {
   isEditingDescription = false;
   editedChannelName = '';
   editedDescription = '';
+  openedThreadMessageId: string | null = null;
+  selectedChannelId!: string;
 
   constructor(
     private channelService: ChannelService,
@@ -63,6 +66,7 @@ export class ChannelComponent {
         this.isLoadingChannel = true;
         this.channelService.getChannelById(channelId).subscribe(channel => {
           this.selectedChannel = channel;
+           this.selectedChannelId = channel.id;
 
           const previewIds = channel.members.slice(0, 3);
           this.userService.getUsersByIds(previewIds).subscribe(users => {
@@ -81,6 +85,14 @@ export class ChannelComponent {
     this.channelService.openAddChannelDialog$.subscribe(() => {
       this.showAddChannelDialog = true;
     });
+  }
+
+  onReplyToMessage(messageId: string) {
+    this.openedThreadMessageId = messageId;
+  }
+
+  closeThread() {
+    this.openedThreadMessageId = null;
   }
 
   saveChannelName() {

@@ -1,1 +1,16 @@
-<p>channel-messages works!</p>
+<div class="messages-wrapper">
+  <div class="messages-wrapper">
+  @for (msg of messages$ | async; track msg.id) {
+    <app-chat-box
+      [src]="getAvatarPath(msg.senderId)"
+      [userName]="getUserName(msg.senderId)"
+      [time]="(msg.timestamp.toDate() | date:'shortTime') || ''"
+      [message]="msg.text"
+      [userMe]="msg.senderId === currentUserId">
+    </app-chat-box>
+  }
+</div>
+
+
+</div>
+
