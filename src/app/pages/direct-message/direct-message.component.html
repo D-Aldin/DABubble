@@ -21,11 +21,21 @@
 
 
       <div class="message" #scrollContainer>
-         <!-- <div *ngFor="let msg of messages" class="div">
-            <h2>{{msg.message}}</h2>
-         </div> -->
-
-         <div class="you-talk-to">
+         <ng-container *ngFor="let item of messages; let i = index;">
+                 <div class="line-wrapper">
+               <app-timestamp-line [date]="convertTimestampToString(item.timestamp)"></app-timestamp-line>
+            </div>
+            <app-chat-box [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
+               [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
+               [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
+               [userMe]="checkIfMessageIsFromLoggedInUser(i)">
+            </app-chat-box>
+       
+            
+         </ng-container>
+         
+      </div>
+            <div class="you-talk-to" [ngStyle]="{'visibility': isMessagesArrayEmpty == true ? 'hidden' : 'visible' }">
             <div class="secondary-avatar">
                <img [src]="selectedUser.avatarPath" alt="">
                <h3>{{ selectedUser.name }}</h3>
@@ -35,15 +45,6 @@
                </h4>
             </div>
          </div>
-
-         <ng-container *ngFor="let item of messages; let i = index;">
-            <app-chat-box [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
-               [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
-               [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
-               [userMe]="checkIfMessageIsFromLoggedInUser(i)">
-            </app-chat-box>
-         </ng-container>
-      </div>
 
       <div class="message-field-wrapper">
          <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>

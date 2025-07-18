@@ -1,4 +1,11 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -7,9 +14,10 @@ import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { Message } from '../../core/interfaces/message';
-import { ChatBoxComponent } from "../../shared/chat-box/chat-box.component";
+import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
+import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
 
 interface CurrentUserId {
   userId: string;
@@ -18,7 +26,13 @@ interface CurrentUserId {
 @Component({
   selector: 'app-direct-message',
   standalone: true,
-  imports: [CommonModule, MessageFieldComponent, SpinnerComponent, ChatBoxComponent],
+  imports: [
+    CommonModule,
+    MessageFieldComponent,
+    SpinnerComponent,
+    ChatBoxComponent,
+    TimestampLineComponent,
+  ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
 })
@@ -33,13 +47,14 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   userAvatarsMap: { [userId: string]: string } = {};
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   areMessagesLoaded: boolean = false;
+  isMessagesArrayEmpty: boolean = false;
 
   constructor(
     private sharedService: SharedService,
     private authService: AuthService,
     private messagingService: DirectMessagingService,
     private userService: UserService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.sharedService.sharedData$.subscribe((user) => {
@@ -107,20 +122,23 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   }
 
   loadMessages(id: string) {
-    this.subscription = this.messagingService.getMessages(id).subscribe(async (msg) => {
-      this.messages = msg;
-      const senderIds = [...new Set(msg.map(m => m.messageFrom))];
-      for (const uid of senderIds) {
-        if (!this.userNamesMap[uid]) {
-          this.userNamesMap[uid] = await this.getCurrentUserName(uid);
+    this.subscription = this.messagingService
+      .getMessages(id)
+      .subscribe(async (msg) => {
+        this.messages = msg;
+        const senderIds = [...new Set(msg.map((m) => m.messageFrom))];
+        for (const uid of senderIds) {
+          if (!this.userNamesMap[uid]) {
+            this.userNamesMap[uid] = await this.getCurrentUserName(uid);
+          }
+          if (!this.userAvatarsMap[uid]) {
+            this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
+          }
         }
-        if (!this.userAvatarsMap[uid]) {
-          this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
-        }
-      }
-      this.areMessagesLoaded = true;
-      setTimeout(() => this.scrollToBottom(), 0);
-    });
+        this.checkArray(this.messages);
+        this.areMessagesLoaded = true;
+        setTimeout(() => this.scrollToBottom(), 0);
+      });
   }
 
   checkIfMessageIsFromLoggedInUser(index: number): boolean {
@@ -159,6 +177,14 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
       el.scrollTop = el.scrollHeight;
     } catch (err) {
       console.error('Failed to scroll container:', err);
+    }
+  }
+
+  checkArray(arr: Object[]) {
+    if (arr.length < 1) {
+      this.isMessagesArrayEmpty = false;
+    } else {
+      this.isMessagesArrayEmpty = true;
     }
   }
 }

@@ -4,6 +4,7 @@
 .section-wrapper {
   @include flex-setup();
   padding: 0 20px 0 20px;
+  width: auto;
 }
 
 .date {
@@ -21,5 +22,5 @@
   justify-content: center;
   border-bottom: 1px solid rgb(173, 176, 217, 1);
   height: 0.2px;
-  width: calc(100vw - 50px);
+  width: 100%;
 }

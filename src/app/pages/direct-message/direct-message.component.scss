@@ -1,5 +1,9 @@
 @use "../../../styles/variables" as *;
 
+.d-none {
+  display: none;
+}
+
 section {
   display: flex;
   flex-direction: column;
