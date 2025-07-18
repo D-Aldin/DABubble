@@ -17,7 +17,7 @@ import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [ThreadComponent, ChatBoxComponent, AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent],
+  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })

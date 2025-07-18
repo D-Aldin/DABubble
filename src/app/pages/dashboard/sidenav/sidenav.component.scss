@@ -147,6 +147,7 @@
         cursor: pointer;
         transition: 0.125s ease;
         gap: 17px;
+        margin-top: 12px;
 
         &.selected {
           color: $input-field-focus-color;
@@ -255,6 +256,10 @@
   overflow-y: auto;
   padding-right: 6px;
   scrollbar-width: thin;
+
+  > :first-child {
+    margin-top: 0 !important;
+  }
 }
 
 .scroll-container-dm {
