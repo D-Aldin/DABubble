@@ -1,16 +1,32 @@
-<div class="messages-wrapper">
-  <div class="messages-wrapper">
+<div class="message-wrapper">
   @for (msg of messages$ | async; track msg.id) {
-    <app-chat-box
-      [src]="getAvatarPath(msg.senderId)"
-      [userName]="getUserName(msg.senderId)"
-      [time]="(msg.timestamp.toDate() | date:'shortTime') || ''"
-      [message]="msg.text"
-      [userMe]="msg.senderId === currentUserId">
-    </app-chat-box>
+     <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null">
+      <app-chat-box
+        [src]="getAvatarPath(msg.senderId)"
+        [userName]="getUserName(msg.senderId)"
+        [time]="(msg.timestamp.toDate() | date:'shortTime') || ''"
+        [message]="msg.text"
+        [userMe]="msg.senderId === currentUserId">
+      </app-chat-box>
+
+      @if (hoveredMessageId === msg.id) {
+        <div class="message-toolbar">
+          <button (click)="reactToMessage(msg.id!, '👍')">👍</button>
+          <button (click)="toggleEmojiPicker(msg.id!)">😀</button>
+          <button (click)="openThread(msg.id!)">💬</button>
+
+        </div>
+      }
+       @if (showEmojiPickerFor === msg.id) {
+        <emoji-mart
+          set="apple"
+          (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">
+        </emoji-mart>
+      }
+    </div>
   }
 </div>
 
 
-</div>
 
+ 

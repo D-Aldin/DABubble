@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../core/services/channel.service'; 
 import { ChannelMessage } from '../../core/interfaces/channel-message';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { Output, EventEmitter } from '@angular/core';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
@@ -11,11 +11,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { combineLatest, map, switchMap } from 'rxjs';
 import { ChannelMessagingService } from '../../core/services/channel-messaging.service';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [CommonModule, NgFor, AsyncPipe, ChatBoxComponent],
+  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })
@@ -25,6 +26,9 @@ export class ChannelMessagesComponent implements OnInit {
   @Output() replyToMessage = new EventEmitter<string>();
   usersMap: { [userId: string]: ChatUser } = {};
   currentUserId: string = '';
+  hoveredMessageId: string | null | undefined = null;
+  @Output() openThreadRequest = new EventEmitter<ChannelMessage>();
+   showEmojiPickerFor: string | null = null;
 
   constructor(
     private channelService: ChannelService,
@@ -50,6 +54,15 @@ export class ChannelMessagesComponent implements OnInit {
       });
 
     });
+  }
+
+  reactToMessage(messageId: string, emoji: string) {
+    console.log('React to', messageId, emoji);
+    this.showEmojiPickerFor = null;
+  }
+
+  toggleEmojiPicker(messageId: string) {
+    this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
   }
 
   getUserName(uid: string): string {

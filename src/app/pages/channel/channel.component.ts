@@ -14,6 +14,7 @@ import { MessageFieldComponent } from "../../shared/message-field/message-field.
 import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
 import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
+import { ChannelMessage } from '../../core/interfaces/channel-message';
 
 @Component({
   selector: 'app-channel',
@@ -84,6 +85,10 @@ export class ChannelComponent {
     this.channelService.openAddChannelDialog$.subscribe(() => {
       this.showAddChannelDialog = true;
     });
+  }
+
+  openThread(msg: ChannelMessage) {
+    this.openedThreadMessageId = msg.id!;
   }
 
   onReplyToMessage(messageId: string) {
