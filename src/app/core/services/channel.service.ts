@@ -36,4 +36,10 @@ export class ChannelService {
   triggerAddChannelDialog() {
     this.openAddChannelDialogSubject.next();
   }
+
+  updateChannel(channelId: string, data: Partial<Channel>) {
+    const channelDoc = doc(this.firestore, 'channels', channelId);
+    return updateDoc(channelDoc, data);
+  }
+
 }

@@ -2,76 +2,103 @@
     @if (selectedChannel) {
     <div class="main-content">
         <!-- Channel Header -->
-        <div class="channel-header">
-            <div class="channel-info channel-popup-wrapper" (click)="$event.stopPropagation()">
-                <button class="channel-dropdown" (click)="toggleChannelOptionsPopup()">
-                    <span><b>#</b> {{ selectedChannel.title }}</span>
-                    <span class="arrow">▾</span>
-                </button>
+      <div class="channel-header">
+        <div class="channel-info channel-popup-wrapper" (click)="$event.stopPropagation()">
+          <button class="channel-dropdown" (click)="toggleChannelOptionsPopup()">
+            <span><b>#</b> {{ selectedChannel.title }}</span>
+            <span class="arrow">▾</span>
+          </button>
 
-                @if (showChannelOptionsPopup) {
-                <div class="channel-popup-overlay" (click)="toggleChannelOptionsPopup()">
-                    <div class="channel-popup" (click)="$event.stopPropagation()">
-                        <h3># {{ selectedChannel.title }}</h3>
+          @if (showChannelOptionsPopup) {
+            <div class="channel-popup-overlay" (click)="toggleChannelOptionsPopup()">
+              <div class="channel-popup" (click)="$event.stopPropagation()">
+                <h3># {{ selectedChannel.title }}</h3>
 
-                        <div class="popup-section boxed">
-                            <div class="popup-section-header">
-                                <span>Channel-Name</span>
-                                <button (click)="editChannelName()">Bearbeiten</button>
-                            </div>
-                            <p><b>#</b> {{ selectedChannel.title }}</p>
-                        </div>
-
-                        <div class="popup-section boxed">
-                            <div class="popup-section-header">
-                                <span>Beschreibung</span>
-                                <button (click)="editChannelDescription()">Bearbeiten</button>
-                            </div>
-                            <p>{{ selectedChannel.description }}</p>
-                        </div>
-
-                        <div class="popup-section">
-                            <span>Erstellt von</span>
-                            <p class="creator-name" [ngClass]="{ 'online': creatorOnline }">{{ creatorName }}</p>
-                        </div>
-
-                        <div class="popup-actions">
-                            <button class="leave-btn" (click)="toggleChannelOptionsPopup()">Channel verlassen</button>
-                        </div>
-
-                        <button class="popup-close" (click)="toggleChannelOptionsPopup()"></button>
-                    </div>
-                </div>
-                }
-            </div>
-
-            <div class="channel-users">
-                @if (selectedChannel.members.length > 0) {
-                <div class="user-avatars">
-                    @for (user of selectedChannelPreviewUsers; track user.id) {
-                    <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+                <!-- Channel Name -->
+                <div class="popup-section boxed">
+                  <div class="popup-section-header">
+                    <span>Channel-Name</span>
+                    @if (!isEditingChannelName) {
+                      <button class="edit-btn" (click)="isEditingChannelName = true">Bearbeiten</button>
                     }
-                    <span class="user-count">{{ selectedChannel.members.length }}</span>
-                </div>
-                }
+                  </div>
 
-                <button class="add-user-btn" (click)="openAddUserToChannelPopup()" title="Mitglieder hinzufügen">
-                    <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
-                </button>
-
-                @if (showPeopleDialog) {
-                <div class="channel-popup-overlay" (click)="closePeopleDialog()">
-                    <div class="dialog-container" (click)="$event.stopPropagation()">
-                        <app-add-people [channelId]="selectedChannelIdForUserAdd"
-                            [channelName]="createdChannelName || selectedChannelTitleForUserAdd" [mode]="addUserMode"
-                            (cancel)="addUserMode === 'add-to-channel' ? handleUserAddCancel() : closePeopleDialog()"
-                            (confirm)="addUserMode === 'add-to-channel' ? handleUserAddConfirm($event) : handlePeopleConfirmed($event)">
-                        </app-add-people>
+                  @if (isEditingChannelName) {
+                    <div class="edit-wrapper">
+                      <div class="input-prefix">#</div>
+                      <input class="popup-input" [(ngModel)]="editedChannelName" />
+                      <button class="save-btn" (click)="saveChannelName()">Speichern</button>
                     </div>
+                  } @else {
+                    <p><b>#</b> {{ selectedChannel.title }}</p>
+                  }
                 </div>
-                }
+
+                <!-- Channel Description -->
+                <div class="popup-section boxed">
+                  <div class="popup-section-header">
+                    <span>Beschreibung</span>
+                    @if (!isEditingDescription) {
+                      <button class="edit-btn" (click)="isEditingDescription = true">Bearbeiten</button>
+                    }
+                  </div>
+
+                  @if (isEditingDescription) {
+                    <textarea class="popup-textarea" [(ngModel)]="editedDescription"></textarea>
+                    <button class="save-btn" (click)="saveChannelDescription()">Speichern</button>
+                  } @else {
+                    <p>{{ selectedChannel.description }}</p>
+                  }
+                </div>
+
+                <!-- Created By -->
+                <div class="popup-section">
+                  <span>Erstellt von</span>
+                  <p class="creator-name" [ngClass]="{ 'online': creatorOnline }">{{ creatorName }}</p>
+                </div>
+
+                <!-- Actions -->
+                <div class="popup-actions">
+                  <button class="leave-btn" (click)="toggleChannelOptionsPopup()">Channel verlassen</button>
+                </div>
+
+                <button class="popup-close" (click)="toggleChannelOptionsPopup()"></button>
+              </div>
             </div>
+          }
         </div>
+
+        <!-- Avatars + Add Users -->
+        <div class="channel-users">
+          @if (selectedChannel.members.length > 0) {
+            <div class="user-avatars">
+              @for (user of selectedChannelPreviewUsers; track user.id) {
+                <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+              }
+              <span class="user-count">{{ selectedChannel.members.length }}</span>
+            </div>
+          }
+
+          <button class="add-user-btn" (click)="openAddUserToChannelPopup()" title="Mitglieder hinzufügen">
+            <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
+          </button>
+
+          @if (showPeopleDialog) {
+            <div class="channel-popup-overlay" (click)="closePeopleDialog()">
+              <div class="dialog-container" (click)="$event.stopPropagation()">
+                <app-add-people
+                  [channelId]="selectedChannelIdForUserAdd"
+                  [channelName]="createdChannelName || selectedChannelTitleForUserAdd"
+                  [mode]="addUserMode"
+                  (cancel)="addUserMode === 'add-to-channel' ? handleUserAddCancel() : closePeopleDialog()"
+                  (confirm)="addUserMode === 'add-to-channel' ? handleUserAddConfirm($event) : handlePeopleConfirmed($event)"
+                ></app-add-people>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
 
         <div class="messages-container">
             <!-- This is the container where all messages will be inserted -->

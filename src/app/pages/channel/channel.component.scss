@@ -180,6 +180,65 @@
             font-weight: 600;
         }
     }
+        .edit-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+    
+            .input-prefix {
+                font-weight: bold;
+                font-size: 1.1rem;
+                padding-right: 0.3rem;
+            }
+    
+            .popup-input {
+                flex: 1;
+                padding: 0.7rem 1rem;
+                font-size: 1rem;
+                border: 1px solid #cfd4e0;
+                border-radius: 999px;
+                outline: none;
+                transition: border-color 0.2s;
+                background: #fff;
+    
+                &:focus {
+                    border-color: #4c6ef5;
+                }
+            }
+        }
+    
+        .popup-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #cfd4e0;
+            border-radius: 999px;
+            outline: none;
+            resize: none;
+            margin-top: 0.5rem;
+            transition: border-color 0.2s;
+            background: #fff;
+    
+            &:focus {
+                border-color: #4c6ef5;
+            }
+        }
+    
+        .save-btn {
+            background: none;
+            border: none;
+            color: #4c6ef5;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+    
+            &:hover {
+                color: #3b5bdb;
+            }
+        }
 
     .popup-actions {
         display: flex;

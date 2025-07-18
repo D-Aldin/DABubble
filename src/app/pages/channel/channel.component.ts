@@ -13,11 +13,12 @@ import { AddPeopleComponent } from "../../shared/add-channel/add-people/add-peop
 import { CommonModule } from '@angular/common';
 import { MessageFieldComponent } from "../../shared/message-field/message-field.component";
 import { SpinnerComponent } from "../../shared/spinner/spinner.component";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [ThreadComponent, ChatBoxComponent, AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent],
+  imports: [ThreadComponent, ChatBoxComponent, AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
@@ -41,7 +42,10 @@ export class ChannelComponent {
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
   // channelDataBuffer: Partial<Channel> = {};
-
+  isEditingChannelName = false;
+  isEditingDescription = false;
+  editedChannelName = '';
+  editedDescription = '';
 
   constructor(
     private channelService: ChannelService,
@@ -79,6 +83,39 @@ export class ChannelComponent {
     });
   }
 
+  saveChannelName() {
+  if (this.selectedChannel && this.editedChannelName.trim()) {
+    this.channelService
+      .updateChannel(this.selectedChannel.id, { title: this.editedChannelName.trim() })
+      .then(() => {
+        this.selectedChannel!.title = this.editedChannelName.trim();
+        this.isEditingChannelName = false;
+      });
+  }
+}
+
+  cancelEditChannelName() {
+    this.isEditingChannelName = false;
+    this.editedChannelName = this.selectedChannel?.title || '';
+  }
+
+  saveChannelDescription() {
+  if (this.selectedChannel && this.editedDescription.trim()) {
+    this.channelService
+      .updateChannel(this.selectedChannel.id, { description: this.editedDescription.trim() })
+      .then(() => {
+        this.selectedChannel!.description = this.editedDescription.trim();
+        this.isEditingDescription = false;
+      });
+  }
+}
+
+  cancelEditDescription() {
+    this.isEditingDescription = false;
+    this.editedDescription = this.selectedChannel?.description || '';
+  }
+
+
   selectChannel(channel: Channel): void {
     this.selectedChannel = channel;
     // Load preview users
@@ -93,13 +130,17 @@ export class ChannelComponent {
   toggleChannelOptionsPopup() {
     this.showChannelOptionsPopup = !this.showChannelOptionsPopup;
 
-    if (this.showChannelOptionsPopup && this.selectedChannel?.creatorId) {
+    if (this.showChannelOptionsPopup && this.selectedChannel) {
+      this.editedChannelName = this.selectedChannel.title;
+      this.editedDescription = this.selectedChannel.description;
+
       this.userService.getUserById(this.selectedChannel.creatorId).subscribe(user => {
         this.creatorName = user.name;
         this.creatorOnline = user.online;
       });
     }
   }
+
 
   editChannelName() {
     // You can show a dialog or input to change the name
