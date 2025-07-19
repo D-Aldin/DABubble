@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { Observable } from 'rxjs';
+import { every, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-message-field',
@@ -19,9 +19,10 @@ export class MessageFieldComponent {
   @Output() messageSend = new EventEmitter<string>();
   emojiPicker: boolean = false;
   message: string = '';
+  input: string = '';
   addUserPopUp: boolean = false;
-
   userArr: ChatUser[] = [];
+  isOpen: boolean = false;
 
   constructor(private messagingService: DirectMessagingService) {}
 
@@ -53,5 +54,15 @@ export class MessageFieldComponent {
     this.users$.subscribe((users) => {
       this.userArr = users;
     });
+  }
+
+  toggleUserPopupOnAt(event: Event) {
+    // debugger;
+    if (this.message.includes('@')) {
+      this.addUserPopUp = true;
+      this.getTheUser();
+    } else if (!this.message.includes('@')) {
+      this.addUserPopUp = false;
+    }
   }
 }

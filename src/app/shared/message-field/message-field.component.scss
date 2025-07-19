@@ -133,11 +133,17 @@
     scrollbar-width: none;
   }
 
-  li {
+  .user-container {
     display: flex;
     align-items: center;
     list-style-type: none;
     padding: 2px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $secondary-color;
+      border-radius: 35px;
+    }
   }
 
   img {
@@ -146,4 +152,13 @@
     border-radius: 50%;
     margin: 10px;
   }
+}
+
+.avatar-container {
+  position: relative;
+}
+
+.position-dot {
+  top: 47px;
+  left: 48px;
 }
