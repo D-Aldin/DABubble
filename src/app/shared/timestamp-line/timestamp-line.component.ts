@@ -9,4 +9,8 @@ import { Component, Input } from '@angular/core';
 })
 export class TimestampLineComponent {
   @Input({ required: true }) date!: string;
+
+  get displayText(): string {
+    return this.date === 'today' ? 'Today' : this.date;
+  }
 }

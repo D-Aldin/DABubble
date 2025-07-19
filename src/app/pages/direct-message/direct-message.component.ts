@@ -3,7 +3,6 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
-  QueryList,
   ViewChild,
 } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
@@ -18,7 +17,6 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
-import { ViewChildren } from '@angular/core';
 
 interface CurrentUserId {
   userId: string;
@@ -49,7 +47,6 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
-  @ViewChildren('.date') dateElements!: QueryList<ElementRef>;
 
   constructor(
     private sharedService: SharedService,
@@ -191,15 +188,25 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   }
 
   handlingDateTime(timestamp: Timestamp): string {
-    const dateTimestampMonth = timestamp.toDate().getMonth();
-    const dateTimestampDay = timestamp.toDate().getDay();
-    const currentMonth = new Date().getMonth();
-    const currentDay = new Date().getDay();
+    if (!timestamp) return '';
 
-    if (dateTimestampMonth == currentMonth && dateTimestampDay == currentDay) {
+    const date = timestamp.toDate();
+    const today = new Date();
+
+    // Check if it's today
+    if (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    ) {
       return 'today';
-    } else {
-      return timestamp.toDate().toDateString();
     }
+
+    // Return full date string for other days
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    });
   }
 }
