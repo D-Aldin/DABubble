@@ -18,7 +18,6 @@
       </div>
 <div class="message" #scrollContainer>
   <ng-container *ngFor="let item of messages; let i = index;">
-    <!-- Show timestamp only for first message or when date changes -->
     <ng-container *ngIf="i === 0 || handlingDateTime(item.timestamp) !== handlingDateTime(messages[i-1].timestamp)">
       <div class="line-wrapper">
         <app-timestamp-line [date]="handlingDateTime(item.timestamp)"></app-timestamp-line>

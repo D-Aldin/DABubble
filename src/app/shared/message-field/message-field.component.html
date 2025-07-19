@@ -1,10 +1,22 @@
+
+
 <div class="message-box">
+   <div class="add-user" [ngStyle]="{'visibility': addUserPopUp == true ? 'visible' : 'hidden'}">
+      
+            @for (user of userArr; track $index) {
+      <li><img [src]="user.avatarPath" alt="avatar">{{user.name}} </li>
+       <span class="online-dot" [ngStyle]="{'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey'}"></span>
+   }
+
+  
+
+</div>
    <div class="message-wrapper">
       <textarea name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"></textarea>
       <div class="button-bar">
          <div class="left-side">
             <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
-            <button class="tag-button"></button>
+            <button class="tag-button" (click)="toggleAddUser()"></button>
          </div>
          <button class="send-button" (click)="captureMessage()">
             <img src="./../../../assets/icons/send.png" alt="send" class="send-img" />

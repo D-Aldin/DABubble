@@ -192,8 +192,6 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
 
     const date = timestamp.toDate();
     const today = new Date();
-
-    // Check if it's today
     if (
       date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
@@ -201,8 +199,6 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     ) {
       return 'today';
     }
-
-    // Return full date string for other days
     return date.toLocaleDateString('en-US', {
       weekday: 'long',
       day: 'numeric',

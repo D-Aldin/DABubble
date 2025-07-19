@@ -1,10 +1,11 @@
-@use '../../../styles/variables' as *;
+@use "../../../styles/variables" as *;
 @import "@ctrl/ngx-emoji-mart/picker";
 
 .message-box {
   width: 100%;
   font-family: "Nunito";
   padding: 0rem 2rem 1rem 2rem;
+  position: relative;
 }
 
 .message-wrapper {
@@ -91,22 +92,58 @@
 }
 
 .emoji-button {
-  background-image: url('./../../../assets/icons/emoji.png');
+  background-image: url("./../../../assets/icons/emoji.png");
 
   &:hover {
-    background-image: url('./../../../assets/icons/sentiment_satisfied.svg');
+    background-image: url("./../../../assets/icons/sentiment_satisfied.svg");
   }
 }
 
 .tag-button {
-  background-image: url('./../../../assets/icons/tag.png');
+  background-image: url("./../../../assets/icons/tag.png");
 
   &:hover {
-    background-image: url('./../../../assets/icons/alternate_email.svg');
+    background-image: url("./../../../assets/icons/alternate_email.svg");
   }
 }
 
 .emoji-wrapper {
   position: absolute;
   top: 120px;
+}
+
+.add-user {
+  border: 1px solid rgb(173, 176, 217);
+  border-radius: 20px 20px 20px 0;
+  background-color: white;
+  width: 350px;
+  height: 467px;
+  position: absolute;
+  left: 61px;
+  bottom: 149px;
+  padding: 15px;
+  overflow: scroll;
+
+  &::--webkit-scrollbar {
+    display: none;
+  }
+
+  & {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    padding: 2px;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 10px;
+  }
 }
