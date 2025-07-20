@@ -6,6 +6,7 @@ import { UserService } from '../../core/services/user.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { every, Observable } from 'rxjs';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-message-field',
@@ -22,7 +23,8 @@ export class MessageFieldComponent {
   input: string = '';
   addUserPopUp: boolean = false;
   userArr: ChatUser[] = [];
-  isOpen: boolean = false;
+  isVisible: boolean = false;
+  searchTerm: string = '';
 
   constructor(private messagingService: DirectMessagingService) {}
 
@@ -64,5 +66,9 @@ export class MessageFieldComponent {
     } else if (!this.message.includes('@')) {
       this.addUserPopUp = false;
     }
+    this.searchForUser();
+  }
+  searchForUser() {
+    this.searchTerm = this.message.replace('@', '').toLowerCase();
   }
 }
