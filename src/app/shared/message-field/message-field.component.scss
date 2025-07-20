@@ -37,8 +37,7 @@
     padding: 0;
     margin-bottom: 8px;
     width: 100%;
-    flex: 1; // ✅ Take up remaining vertical space
-
+    flex: 1;
     &::placeholder {
       color: rgba(104, 104, 104, 1);
       font-weight: 400;
@@ -53,7 +52,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 32px; // ✅ Fixed height for button row
+    height: 32px;
 
     .left-side {
       display: flex;
@@ -112,7 +111,7 @@
   top: 120px;
 }
 
-.add-user {
+.user-channel-list {
   border: 1px solid rgb(173, 176, 217);
   border-radius: 20px 20px 20px 0;
   background-color: white;
@@ -133,7 +132,8 @@
     scrollbar-width: none;
   }
 
-  .user-container {
+  .user-container,
+  .channel-container {
     display: flex;
     align-items: center;
     list-style-type: none;

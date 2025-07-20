@@ -2,11 +2,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../core/services/user.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { every, Observable } from 'rxjs';
-import { user } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+import { ChannelService } from '../../core/services/channel.service';
+import { Channel } from '../../core/interfaces/channel';
 
 @Component({
   selector: 'app-message-field',
@@ -21,15 +21,21 @@ export class MessageFieldComponent {
   emojiPicker: boolean = false;
   message: string = '';
   input: string = '';
-  addUserPopUp: boolean = false;
+  isUserMentionActive: boolean = false;
+  isChannelMentionActive: boolean = false;
   userArr: ChatUser[] = [];
+  channelArr: Channel[] = [];
   isVisible: boolean = false;
   searchTerm: string = '';
 
-  constructor(private messagingService: DirectMessagingService) {}
+  constructor(
+    private messagingService: DirectMessagingService,
+    private channelService: ChannelService
+  ) {}
 
   users$: Observable<ChatUser[]> =
     this.messagingService.getAllUsersExceptCurrent();
+  channel$: Observable<Channel[]> = this.channelService.getChannels();
 
   captureMessage() {
     if (this.message.trim()) {
@@ -48,8 +54,13 @@ export class MessageFieldComponent {
   }
 
   toggleAddUser() {
-    this.addUserPopUp = !this.addUserPopUp;
+    this.isUserMentionActive = !this.isUserMentionActive;
     this.getTheUser();
+    if (this.isUserMentionActive == true) {
+      this.message = '@';
+    } else {
+      this.message = '';
+    }
   }
 
   getTheUser() {
@@ -58,16 +69,33 @@ export class MessageFieldComponent {
     });
   }
 
-  toggleUserPopupOnAt(event: Event) {
+  getChannels() {
+    this.channel$.subscribe((channel) => {
+      this.channelArr = channel;
+    });
+  }
+
+  toggleUserMention() {
     // debugger;
     if (this.message.includes('@')) {
-      this.addUserPopUp = true;
+      this.isUserMentionActive = true;
       this.getTheUser();
     } else if (!this.message.includes('@')) {
-      this.addUserPopUp = false;
+      this.isUserMentionActive = false;
     }
     this.searchForUser();
   }
+
+  toggleChannelMention() {
+    if (this.message.includes('#')) {
+      this.isChannelMentionActive = true;
+      this.getChannels();
+    } else if (!this.message.includes('#')) {
+      this.isChannelMentionActive = false;
+    }
+    console.log(this.channelArr);
+  }
+
   searchForUser() {
     this.searchTerm = this.message.replace('@', '').toLowerCase();
   }

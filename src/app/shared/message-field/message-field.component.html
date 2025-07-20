@@ -1,5 +1,5 @@
 <div class="message-box">
-   <div class="add-user" [ngStyle]="{'visibility': addUserPopUp == true ? 'visible' : 'hidden'}">
+   <div class="user-channel-list" [ngStyle]="{'visibility': isUserMentionActive == true ? 'visible' : 'hidden'}">
       @for (user of userArr; track $index) {
       <div class="user-container" [class.hidden]="!user.name.toLowerCase().includes(searchTerm)">
          <div class="avatar-container">
@@ -10,8 +10,17 @@
       </div>
       }
    </div>
+   <div class="user-channel-list" [ngStyle]="{'visibility': isChannelMentionActive == true ? 'visible' : 'hidden'}">
+      @for (channel of channelArr; track $index) {
+      <div class="channel-container">
+         <div class="channel">
+            {{channel.title}}
+         </div>
+      </div>
+      }
+   </div>
    <div class="message-wrapper">
-      <textarea name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserPopupOnAt($event)"></textarea>
+      <textarea name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()"></textarea>
       <div class="button-bar">
          <div class="left-side">
             <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
