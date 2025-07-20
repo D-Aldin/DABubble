@@ -1,7 +1,7 @@
 <div class="message-box">
    <div class="add-user" [ngStyle]="{'visibility': addUserPopUp == true ? 'visible' : 'hidden'}">
       @for (user of userArr; track $index) {
-      <div class="user-container" class="user-container" [class.hidden]="!user.name.toLowerCase().includes(searchTerm)">
+      <div class="user-container" [class.hidden]="!user.name.toLowerCase().includes(searchTerm)">
          <div class="avatar-container">
             <img [src]="user.avatarPath" alt="avatar">
             <span class="online-dot position-dot" [ngStyle]="{'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey'}"></span>
