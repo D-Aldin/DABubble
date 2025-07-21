@@ -15,6 +15,8 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
+import { Timestamp } from 'firebase/firestore';
+
 
 @Component({
   selector: 'app-channel-messages',
@@ -105,6 +107,11 @@ export class ChannelMessagesComponent implements OnInit {
     await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
     this.showEmojiPickerFor = null;
   }
+
+  handlingDateTime(date: Date): string {
+  return date.toLocaleDateString(); // or any other formatting logic
+}
+
 
   groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
     const counts: { [emoji: string]: number } = {};
