@@ -56,10 +56,22 @@ export class ChannelMessagesComponent implements OnInit {
     });
   }
 
-  reactToMessage(messageId: string, emoji: string) {
-    console.log('React to', messageId, emoji);
+  async reactToMessage(messageId: string, emoji: string) {
+    if (!this.currentUserId || !this.channelId) return;
+
+    await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
     this.showEmojiPickerFor = null;
   }
+
+  groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
+    const counts: { [emoji: string]: number } = {};
+    Object.values(reactions).forEach(emoji => {
+      counts[emoji] = (counts[emoji] || 0) + 1;
+    });
+    return counts;
+  }
+
+
 
   toggleEmojiPicker(messageId: string) {
     this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
