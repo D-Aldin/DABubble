@@ -62,7 +62,16 @@ export class ChannelMessagesComponent implements OnInit {
     this.messages$.subscribe(msgs => this.groupedMessages = this.groupMessagesByDate(msgs));
 
     this.userService.getAllUsers().subscribe(users => {
-      this.usersMap = Object.fromEntries(users.map(u => [u.id, { ...u, uid: u.id, online: false }]));
+      // this.usersMap = Object.fromEntries(users.map(u => [u.id, { ...u, uid: u.id, online: false }]));
+      this.usersMap = {};
+      users.forEach(user => {
+        this.usersMap[user.id] = {
+          ...user,
+          uid: user.id,
+          online: false,
+          email: ''
+        };
+      });
     });
   }
 
@@ -99,15 +108,6 @@ export class ChannelMessagesComponent implements OnInit {
     if (msgDate === todayDate) return 'today';
 
     return date.toLocaleDateString('de-DE'); // or your preferred format
-    this.usersMap = {};
-    users.forEach(user => {
-      this.usersMap[user.id] = {
-        ...user,
-        uid: user.id,
-        online: false,
-        email: 'dummymail@gmail.com'
-      };
-    });
   };
 
 
