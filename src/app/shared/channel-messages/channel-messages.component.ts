@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChannelService } from '../../core/services/channel.service'; 
+import { ChannelService } from '../../core/services/channel.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -15,6 +15,8 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
+import { Timestamp } from 'firebase/firestore';
+
 
 @Component({
   selector: 'app-channel-messages',
@@ -34,7 +36,7 @@ export class ChannelMessagesComponent implements OnInit {
   showEmojiPickerFor: string | null = null;
   editingMessageId: string | null = null;
   editedMessageText: string = '';
- groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
+  groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
 
   constructor(
     private channelService: ChannelService,
@@ -66,7 +68,7 @@ export class ChannelMessagesComponent implements OnInit {
 
   groupMessagesByDate(messages: ChannelMessage[]): {
     date: Date;
-    dateString: string; 
+    dateString: string;
     messages: ChannelMessage[];
   }[] {
     const grouped: { [key: string]: ChannelMessage[] } = {};
@@ -81,8 +83,8 @@ export class ChannelMessagesComponent implements OnInit {
     return Object.entries(grouped).map(([key, messages]) => {
       const [year, month, day] = key.split('-').map(Number);
       return {
-        date: new Date(year, month - 1, day), 
-        dateString: key, 
+        date: new Date(year, month - 1, day),
+        dateString: key,
         messages
       };
     });
@@ -90,24 +92,24 @@ export class ChannelMessagesComponent implements OnInit {
 
   formatDate(date: Date): string {
     const today = new Date();
-    
+
     const msgDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
     const todayDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
 
     if (msgDate === todayDate) return 'today';
 
     return date.toLocaleDateString('de-DE'); // or your preferred format
-      this.usersMap = {};
-      users.forEach(user => {
-        this.usersMap[user.id] = {
-          ...user,
-          uid: user.id,
-          online: false,
-          email: 'dummymail@gmail.com'
-        };
-      });
+    this.usersMap = {};
+    users.forEach(user => {
+      this.usersMap[user.id] = {
+        ...user,
+        uid: user.id,
+        online: false,
+        email: 'dummymail@gmail.com'
+      };
     });
-  }
+  };
+
 
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
@@ -115,6 +117,11 @@ export class ChannelMessagesComponent implements OnInit {
     await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
     this.showEmojiPickerFor = null;
   }
+
+  handlingDateTime(date: Date): string {
+    return date.toLocaleDateString(); // or any other formatting logic
+  }
+
 
   groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
     const counts: { [emoji: string]: number } = {};
@@ -147,7 +154,7 @@ export class ChannelMessagesComponent implements OnInit {
   startEditing(msg: ChannelMessage) {
     this.editingMessageId = msg.id!;
     this.editedMessageText = msg.text;
-    this.showEmojiPickerFor = null; 
+    this.showEmojiPickerFor = null;
     this.hoveredMessageId = null;
   }
 
@@ -161,7 +168,7 @@ export class ChannelMessagesComponent implements OnInit {
     await this.messagingService.updateChannelMessageText(this.channelId, msgId, this.editedMessageText.trim());
     this.cancelEditing();
   }
-   
+
   appendEmojiToEdit(emoji: string) {
     this.editedMessageText += emoji;
   }
