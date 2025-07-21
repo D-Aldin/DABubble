@@ -3,10 +3,11 @@
 .main-content {
     background-color: #ffffff;
     border-radius: 36px;
-    overflow-y: auto;
     height: calc(100vh - 200px);
     padding: 0;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 // Channel Header styling
@@ -180,65 +181,66 @@
             font-weight: 600;
         }
     }
-        .edit-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-    
-            .input-prefix {
-                font-weight: bold;
-                font-size: 1.1rem;
-                padding-right: 0.3rem;
-            }
-    
-            .popup-input {
-                flex: 1;
-                padding: 0.7rem 1rem;
-                font-size: 1rem;
-                border: 1px solid #cfd4e0;
-                border-radius: 999px;
-                outline: none;
-                transition: border-color 0.2s;
-                background: #fff;
-    
-                &:focus {
-                    border-color: #4c6ef5;
-                }
-            }
+
+    .edit-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+
+        .input-prefix {
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding-right: 0.3rem;
         }
-    
-        .popup-textarea {
-            width: 100%;
-            min-height: 80px;
-            padding: 0.75rem 1rem;
+
+        .popup-input {
+            flex: 1;
+            padding: 0.7rem 1rem;
             font-size: 1rem;
             border: 1px solid #cfd4e0;
             border-radius: 999px;
             outline: none;
-            resize: none;
-            margin-top: 0.5rem;
             transition: border-color 0.2s;
             background: #fff;
-    
+
             &:focus {
                 border-color: #4c6ef5;
             }
         }
-    
-        .save-btn {
-            background: none;
-            border: none;
-            color: #4c6ef5;
-            font-weight: 500;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-top: 0.5rem;
-    
-            &:hover {
-                color: #3b5bdb;
-            }
+    }
+
+    .popup-textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #cfd4e0;
+        border-radius: 999px;
+        outline: none;
+        resize: none;
+        margin-top: 0.5rem;
+        transition: border-color 0.2s;
+        background: #fff;
+
+        &:focus {
+            border-color: #4c6ef5;
         }
+    }
+
+    .save-btn {
+        background: none;
+        border: none;
+        color: #4c6ef5;
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-top: 0.5rem;
+
+        &:hover {
+            color: #3b5bdb;
+        }
+    }
 
     .popup-actions {
         display: flex;
@@ -284,6 +286,15 @@
     align-items: center;
     justify-content: center;
     z-index: 2000;
+}
+
+.dialog-container-fullscreen {
+    position: absolute;
+    width: auto;
+    max-width: 720px;
+    background: white;
+    border-radius: 18px;
+    z-index: 200;
 }
 
 .channel-popup-overlay {
@@ -332,6 +343,13 @@
     width: 100%;
     // position: absolute;
     bottom: 10px;
+}
+
+.messages-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
 .message {

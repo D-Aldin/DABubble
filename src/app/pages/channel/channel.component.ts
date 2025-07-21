@@ -33,6 +33,8 @@ export class ChannelComponent {
   showSidenav = true;
   hovered = false;
   showAddChannelDialog = false;
+  showAddChannelDialogOnChannelCreation: boolean = false
+  showPeopleDialogOnChannelCreation: boolean = false
   showPeopleDialog = false;
   createdChannelName = '';
   channelDataBuffer: Partial<Channel> = {};
@@ -66,7 +68,7 @@ export class ChannelComponent {
         this.isLoadingChannel = true;
         this.channelService.getChannelById(channelId).subscribe(channel => {
           this.selectedChannel = channel;
-           this.selectedChannelId = channel.id;
+          this.selectedChannelId = channel.id;
 
           const previewIds = channel.members.slice(0, 3);
           this.userService.getUsersByIds(previewIds).subscribe(users => {
@@ -100,15 +102,15 @@ export class ChannelComponent {
   }
 
   saveChannelName() {
-  if (this.selectedChannel && this.editedChannelName.trim()) {
-    this.channelService
-      .updateChannel(this.selectedChannel.id, { title: this.editedChannelName.trim() })
-      .then(() => {
-        this.selectedChannel!.title = this.editedChannelName.trim();
-        this.isEditingChannelName = false;
-      });
+    if (this.selectedChannel && this.editedChannelName.trim()) {
+      this.channelService
+        .updateChannel(this.selectedChannel.id, { title: this.editedChannelName.trim() })
+        .then(() => {
+          this.selectedChannel!.title = this.editedChannelName.trim();
+          this.isEditingChannelName = false;
+        });
+    }
   }
-}
 
   cancelEditChannelName() {
     this.isEditingChannelName = false;
@@ -116,15 +118,15 @@ export class ChannelComponent {
   }
 
   saveChannelDescription() {
-  if (this.selectedChannel && this.editedDescription.trim()) {
-    this.channelService
-      .updateChannel(this.selectedChannel.id, { description: this.editedDescription.trim() })
-      .then(() => {
-        this.selectedChannel!.description = this.editedDescription.trim();
-        this.isEditingDescription = false;
-      });
+    if (this.selectedChannel && this.editedDescription.trim()) {
+      this.channelService
+        .updateChannel(this.selectedChannel.id, { description: this.editedDescription.trim() })
+        .then(() => {
+          this.selectedChannel!.description = this.editedDescription.trim();
+          this.isEditingDescription = false;
+        });
+    }
   }
-}
 
   cancelEditDescription() {
     this.isEditingDescription = false;
@@ -189,6 +191,7 @@ export class ChannelComponent {
       // Close dialog
       this.showAddUserToChannelPopup = false;
       this.showPeopleDialog = false;
+      this.showPeopleDialogOnChannelCreation = false;
       // Refresh user preview avatars
       const previewIds = this.selectedChannel!.members.slice(0, 3);
       this.userService.getUsersByIds(previewIds).subscribe(users => {
@@ -210,9 +213,14 @@ export class ChannelComponent {
     this.showAddChannelDialog = false;
   }
 
+  closePeopleDialogOnChannelCreation() {
+    this.showPeopleDialogOnChannelCreation = false
+  }
+
   closePeopleDialog() {
     this.createdChannelName = '';
     this.showPeopleDialog = false;
+    this.showPeopleDialogOnChannelCreation = false;
   }
 
   openAddPeopleDialog(data?: { name: string; description: string }) {
@@ -224,6 +232,18 @@ export class ChannelComponent {
     this.addUserMode = 'create-channel'; //Needed for correct dialog mode
     this.showAddChannelDialog = false;
     this.showPeopleDialog = true;
+  }
+
+  openAddPeopleDialogOnChannelCreation(data?: { name: string; description: string }) {
+    if (data) {
+      this.channelName = data.name;
+      this.channelDescription = data.description;
+      this.createdChannelName = data.name;
+    }
+    this.addUserMode = 'create-channel'; //Needed for correct dialog mode
+    this.showAddChannelDialog = false;
+    this.showPeopleDialogOnChannelCreation = true;
+    this.showPeopleDialog = false;
   }
 
   async handlePeopleConfirmed(selectedUsers: string[]) {
@@ -273,6 +293,21 @@ export class ChannelComponent {
     this.createdChannelName = data.name;
     this.closeAddChannelDialog();
     this.openAddPeopleDialog({
+      name: data.name,
+      description: data.description,
+    });
+
+  }
+
+  handleProceedToPeopleOnChannelCreation(data: { name: string; description: string }) {
+    this.channelDataBuffer = {
+      title: data.name,
+      description: data.description,
+      createdAt: new Date(),
+    };
+    this.createdChannelName = data.name;
+    this.closeAddChannelDialog();
+    this.openAddPeopleDialogOnChannelCreation({
       name: data.name,
       description: data.description,
     });
