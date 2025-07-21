@@ -205,22 +205,8 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
-  handlingDateTime(timestamp: Timestamp): string {
-    if (!timestamp) return '';
-
-    const date = timestamp.toDate();
-    const today = new Date();
-    if (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    ) {
-      return 'today';
-    }
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-    });
+  handlingDateTime(timestamp: Timestamp): Date {
+    return timestamp.toDate(); // real JS Date
   }
+
 }
