@@ -29,7 +29,7 @@
           [userName]="getUserName(msg.senderId)"
           [time]="(msg.timestamp.toDate() | date:'shortTime') || ''"
           [message]="msg.text"
-          [userMe]="msg.senderId === currentUserId">
+          [userMe]="msg.senderId !== currentUserId">
         </app-chat-box>
 
         @if (msg.reactions) {
@@ -46,7 +46,7 @@
         }
 
         @if (hoveredMessageId === msg.id) {
-          <div class="message-toolbar">
+          <div class="message-toolbar" [ngClass]="{ 'left': msg.senderId !== currentUserId, 'right': msg.senderId === currentUserId }">
             <button (click)="toggleEmojiPicker(msg.id!)">
               <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
             </button>
