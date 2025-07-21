@@ -6,7 +6,7 @@
             <img [src]="user.avatarPath" alt="avatar">
             <span class="online-dot position-dot" [ngStyle]="{'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey'}"></span>
          </div>
-         <span>{{user.name}}</span>
+         <span (click)="addUser(user.name)">{{user.name}}</span>
       </div>
       }
    </div>
@@ -20,13 +20,13 @@
       }
    </div>
    <div class="message-wrapper">
-      <textarea name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()"></textarea>
+      <textarea name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" ></textarea>
       <div class="button-bar">
          <div class="left-side">
             <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
             <button class="tag-button" (click)="toggleAddUser()"></button>
          </div>
-         <button class="send-button" (click)="captureMessage()">
+         <button class="send-button" (click)="captureMessage(); searchTerm = '' " >
          <img src="./../../../assets/icons/send.png" alt="send" class="send-img" />
          </button>
       </div>

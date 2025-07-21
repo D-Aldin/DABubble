@@ -4,7 +4,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { Observable } from 'rxjs';
+import { mergeScan, Observable } from 'rxjs';
 import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
 
@@ -55,11 +55,10 @@ export class MessageFieldComponent {
 
   toggleAddUser() {
     this.isUserMentionActive = !this.isUserMentionActive;
-    this.getTheUser();
+
     if (this.isUserMentionActive == true) {
-      this.message = '@';
-    } else {
-      this.message = '';
+      this.message += '@';
+      this.getTheUser();
     }
   }
 
@@ -76,14 +75,15 @@ export class MessageFieldComponent {
   }
 
   toggleUserMention() {
-    // debugger;
-    if (this.message.includes('@')) {
+    const match = this.message.match(/(^|\s)@(\w*)$/);
+    if (match) {
+      this.searchTerm = match[2].toLowerCase();
       this.isUserMentionActive = true;
       this.getTheUser();
-    } else if (!this.message.includes('@')) {
+    } else {
       this.isUserMentionActive = false;
+      this.searchTerm = '';
     }
-    this.searchForUser();
   }
 
   toggleChannelMention() {
@@ -93,10 +93,16 @@ export class MessageFieldComponent {
     } else if (!this.message.includes('#')) {
       this.isChannelMentionActive = false;
     }
-    console.log(this.channelArr);
   }
 
   searchForUser() {
     this.searchTerm = this.message.replace('@', '').toLowerCase();
+  }
+
+  addUser(userName: string) {
+    const regex = /(^|\s)@(\w*)$/;
+    this.message = this.message.replace(regex, `$1@${userName} `);
+    this.isUserMentionActive = false;
+    this.searchTerm = '';
   }
 }
