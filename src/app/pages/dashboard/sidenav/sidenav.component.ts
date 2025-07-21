@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, EventEmitter, Output, OnInit } from '@angular/core';
 import { ChannelService } from '../../../core/services/channel.service';
 import { DirectMessagingService } from '../../../core/services/direct-messaging.service';
-import { Observable } from 'rxjs';
+import { filter, Observable, take } from 'rxjs';
 import { ChatUser } from '../../../core/interfaces/chat-user';
 import { Channel } from '../../../core/interfaces/channel';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
@@ -24,69 +24,45 @@ export class SidenavComponent implements OnInit {
   usersArray: ChatUser[] = [];
   currentURL: string = '';
   isURLChannel: boolean | null = null;
+
   constructor(private sharedService: SharedService, private router: Router) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
   showDMs = true;
-  // @Output() channelSelected = new EventEmitter<Channel>();
+
   private channelService = inject(ChannelService);
   private dmService = inject(DirectMessagingService);
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
   users$: Observable<ChatUser[]> = this.dmService.getAllUsersExceptCurrent();
 
-  // selectChannel(channel: Channel) {
-  //   this.selectedChannel = channel.id;
-  //   this.channelSelected.emit(channel); // Sending to parent
-  // }
-
-  selectChannel(channel: Channel) {
-    this.selectedChannel = channel.id;
-    this.router.navigate(['/dashboard/channel', channel.id]);
-  }
-
-
-  toggleChannels() {
-    this.showChannels = !this.showChannels;
-    // No need to load channels on toggle; subscribing now happens in ngOnInit()
-
-    // this.channels$.subscribe((channels) => {
-    //   console.log('Channels from Firebase:', channels);
-    // });
-  }
-
-  toggleDMs() {
-    this.showDMs = !this.showDMs;
-  }
-
   ngOnInit(): void {
-    this.subscribeToUsers()
-    //keep track of URL for the selection of channels or users
-    this.keepTrackOfCurrentURL()
+    this.subscribeToUsers();
+    this.currentURL = this.router.url;
+    this.checkGivenURL();
+    this.handleRouteSelectionOnPageReload();
+    this.subscribeToRouterEvents();
   }
 
-  keepTrackOfCurrentURL(): void {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
+  subscribeToRouterEvents(): void {
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
         this.currentURL = event.urlAfterRedirects;
         this.checkGivenURL();
-      }
-    });
-  }
-
-  checkGivenURL(): void {
-    if (this.currentURL.includes('/dashboard/channel')) {
-      this.isURLChannel = true
-    } else {
-      this.isURLChannel = false;
-    }
+        this.handleRouteSelectionOnPageReload();
+      });
   }
 
   subscribeToUsers(): void {
     this.users$.subscribe((users) => {
       this.usersArray = users;
     });
+  }
+
+  checkGivenURL(): void {
+    this.isURLChannel = this.currentURL.includes('/dashboard/channel');
   }
 
   selectUser(userName: string): void {
@@ -98,7 +74,46 @@ export class SidenavComponent implements OnInit {
     }
   }
 
+  selectChannel(channel: Channel): void {
+    this.selectedChannel = channel.id;
+    this.router.navigate(['/dashboard/channel', channel.id]);
+  }
+
+  toggleChannels() {
+    this.showChannels = !this.showChannels;
+  }
+
+  toggleDMs() {
+    this.showDMs = !this.showDMs;
+  }
+
   emitOpenDialog() {
     this.channelService.triggerAddChannelDialog();
+  }
+
+  handleRouteSelectionOnPageReload(): void {
+    const match = this.currentURL.match(/\/direct-message\/([^\/]+)/);
+    const userIdFromURL = match ? match[1] : null;
+
+    if (userIdFromURL && !this.selectedUserId) {
+      // Already have users loaded
+      const user = this.usersArray.find(u => u.uid === userIdFromURL);
+      if (user) {
+        this.selectUser(user.name);
+      } else {
+        // Wait for users to load if not already
+        this.users$
+          .pipe(
+            filter(users => !!users && users.length > 0),
+            take(1)
+          )
+          .subscribe((users) => {
+            const user = users.find((u) => u.uid === userIdFromURL);
+            if (user) {
+              this.selectUser(user.name);
+            }
+          });
+      }
+    }
   }
 }

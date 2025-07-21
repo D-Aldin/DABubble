@@ -1,4 +1,13 @@
-<div class="thread-message" [class.other-user]="!userMe">
+<div class="thread-message" [class.other-user]="!userMe" (mouseenter)="onHover(true)" (mouseleave)="onHover(false)">
+   <!-- This is the hover overlay which shows the interaction options to a message -->
+   <div class="message-options" [class.visible]="showOptions">
+      <img src="../../../assets/icons/Answer.svg" alt="Mehr Optionen" />
+      <img src="../../../assets/icons/add_reaction.svg" alt="Reaktion" />
+      <span class="emoji-button">✅</span>
+      <span class="emoji-button">👍</span>
+   </div>
+
+
    <div class="avatar"><img [src]="src" alt="avatar"></div>
    <div class="user-name">{{userName}}</div>
    <div class="time">

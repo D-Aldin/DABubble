@@ -15,4 +15,10 @@ export class ChatBoxComponent {
   @Input({ required: true }) message!: string;
 
   @Input() userMe: boolean = true;
+
+  showOptions: boolean = false;
+
+  onHover(isHovering: boolean): void {
+    this.showOptions = isHovering;
+  }
 }

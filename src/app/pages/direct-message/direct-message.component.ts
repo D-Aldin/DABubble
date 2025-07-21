@@ -1,13 +1,16 @@
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -35,7 +38,7 @@ interface CurrentUserId {
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
 })
-export class DirectMessageComponent implements OnInit, OnDestroy {
+export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit {
   messages: Message[] = [];
   selectedUser: any = null;
   currentUser: CurrentUserId | null = null;
@@ -44,20 +47,25 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   conversation!: string;
   userNamesMap: { [userId: string]: string } = {};
   userAvatarsMap: { [userId: string]: string } = {};
-  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
+
+  @ViewChild('scrollContainer')
+  private scrollContainer?: ElementRef<HTMLElement>;
 
   constructor(
     private sharedService: SharedService,
     private authService: AuthService,
     private messagingService: DirectMessagingService,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.sharedService.sharedData$.subscribe((user) => {
       if (user) {
+        this.areMessagesLoaded = false;
         this.hasSelectedUser = true;
         this.selectedUser = user;
         this.loadCurrentUserId();
@@ -68,11 +76,18 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.subscription = this.messagingService
-      .getMessages(this.conversation)
-      .subscribe((msg) => {
-        this.messages = msg;
-      });
+    // this.subscription = this.messagingService
+    //   .getMessages(this.conversation)
+    //   .subscribe((msg) => {
+    //     this.messages = msg;
+    //   });
+  }
+
+  /** called once view is created; useful for initial deep‑link load */
+  ngAfterViewInit(): void {
+    /** if messages are already there (e.g. restored from cache),
+        wait until change‑detection settles, then scroll */
+    this.zone.onStable.pipe(take(1)).subscribe(() => this.scrollToBottom());
   }
 
   ngOnDestroy() {
@@ -104,6 +119,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     ]);
 
     this.conversation = conversationId;
+    this.areMessagesLoaded = false;
     this.loadMessages(conversationId);
   }
 
@@ -124,6 +140,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
     this.subscription = this.messagingService
       .getMessages(id)
       .subscribe(async (msg) => {
+        this.areMessagesLoaded = false;
         this.messages = msg;
         const senderIds = [...new Set(msg.map((m) => m.messageFrom))];
         for (const uid of senderIds) {
@@ -136,7 +153,8 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
         }
         this.checkArray(this.messages);
         this.areMessagesLoaded = true;
-        setTimeout(() => this.scrollToBottom(), 0);
+        this.cdr.detectChanges();
+        this.zone.onStable.pipe(take(1)).subscribe(() => this.scrollToBottom());
       });
   }
 
@@ -171,12 +189,12 @@ export class DirectMessageComponent implements OnInit, OnDestroy {
   }
 
   scrollToBottom(): void {
-    try {
-      const el = this.scrollContainer.nativeElement;
-      el.scrollTop = el.scrollHeight;
-    } catch (err) {
-      console.error('Failed to scroll container:', err);
+    if (!this.scrollContainer) {
+      // element not in DOM yet – nothing to do
+      return;
     }
+    const el = this.scrollContainer.nativeElement;
+    el.scrollTop = el.scrollHeight;
   }
 
   checkArray(arr: Object[]) {

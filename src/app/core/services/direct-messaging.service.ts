@@ -11,7 +11,7 @@ import {
 } from '@angular/fire/firestore';
 
 import { AuthService } from './auth.service';
-import { Observable, map, timestamp } from 'rxjs';
+import { Observable, map, of, timestamp } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
 import { addDoc, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { Message } from '../interfaces/message';
@@ -23,7 +23,7 @@ export class DirectMessagingService {
   private firestore = inject(Firestore);
   private authService = inject(AuthService);
 
-  constructor() {}
+  constructor() { }
 
   getAllUsersExceptCurrent(): Observable<ChatUser[]> {
     const usersRef = collection(this.firestore, 'users');

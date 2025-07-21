@@ -1,50 +1,50 @@
 <!-- Show nothing unless a user is selected -->
-<ng-container *ngIf="hasSelectedUser && areMessagesLoaded">
+<ng-container *ngIf="!areMessagesLoaded">
    <!-- Spinner shown while selectedUser is loading -->
-   <div *ngIf="!selectedUser; else showChat" class="spinner-container">
+   <div class="spinner-container">
       <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
    </div>
 </ng-container>
-<ng-template #showChat>
-   <section>
-      <div class="headline">
-         <div class="main-avatar">
-            <img [src]="selectedUser.avatarPath" alt="">
-            <h3>{{ selectedUser.name }}</h3>
-            <span class="online-dot" [ngStyle]="{
+<ng-container *ngIf="areMessagesLoaded && selectedUser">
+      <section>
+         <div class="headline">
+            <div class="main-avatar">
+               <img [src]="selectedUser.avatarPath" alt="">
+               <h3>{{ selectedUser.name }}</h3>
+               <span class="online-dot" [ngStyle]="{
                'background-color': selectedUser.online ? 'rgba(146, 200, 62, 1)' : 'grey'
                }"></span>
+            </div>
          </div>
-      </div>
-<div class="message" #scrollContainer>
-  <ng-container *ngFor="let item of messages; let i = index;">
-    <ng-container *ngIf="i === 0 || handlingDateTime(item.timestamp) !== handlingDateTime(messages[i-1].timestamp)">
-      <div class="line-wrapper">
-        <app-timestamp-line [date]="handlingDateTime(item.timestamp)"></app-timestamp-line>
-      </div>
-    </ng-container>
-    
-    <app-chat-box 
-      [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
-      [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
-      [time]="convertTimestampToString(item.timestamp)" 
-      [message]="item.message"
-      [userMe]="checkIfMessageIsFromLoggedInUser(i)">
-    </app-chat-box>
-  </ng-container>
-</div>
-      <div class="you-talk-to" [ngStyle]="{'visibility': isMessagesArrayEmpty == true ? 'hidden' : 'visible' }">
-         <div class="secondary-avatar">
-            <img [src]="selectedUser.avatarPath" alt="">
-            <h3>{{ selectedUser.name }}</h3>
-            <h4>
-               Diese Unterhaltung findet nur zwischen
-               <span>&#64;<a>{{ selectedUser.name }}</a></span> und dir statt.
-            </h4>
+         <div class="message" #scrollContainer>
+            <ng-container *ngFor="let item of messages; let i = index;">
+               <ng-container
+                  *ngIf="i === 0 || handlingDateTime(item.timestamp) !== handlingDateTime(messages[i-1].timestamp)">
+                  <div class="line-wrapper">
+                     <app-timestamp-line [date]="handlingDateTime(item.timestamp)"></app-timestamp-line>
+                  </div>
+               </ng-container>
+
+               <app-chat-box
+                  [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
+                  [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
+                  [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
+                  [userMe]="checkIfMessageIsFromLoggedInUser(i)">
+               </app-chat-box>
+            </ng-container>
          </div>
-      </div>
-      <div class="message-field-wrapper">
-         <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>
-      </div>
-   </section>
-</ng-template>
+         <div class="you-talk-to" [ngStyle]="{'display': isMessagesArrayEmpty == true ? 'none' : 'block' }">
+            <div class="secondary-avatar">
+               <img [src]="selectedUser.avatarPath" alt="">
+               <h3>{{ selectedUser.name }}</h3>
+               <h4>
+                  Diese Unterhaltung findet nur zwischen
+                  <span>&#64;<a>{{ selectedUser.name }}</a></span> und dir statt.
+               </h4>
+            </div>
+         </div>
+         <div class="message-field-wrapper">
+            <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>
+         </div>
+      </section>
+</ng-container>
