@@ -85,8 +85,6 @@ export class ChannelMessagesComponent implements OnInit {
     return counts;
   }
 
-
-
   toggleEmojiPicker(messageId: string) {
     this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
   }
