@@ -13,6 +13,9 @@
       @if (msg.reactions) {
       <div class="message-reactions">
         @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
+          <a class="reply-count">
+            {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+          </a>
           <span class="reaction">
             {{ emoji }} {{ groupReactions(msg.reactions)[emoji] }}
           </span>
