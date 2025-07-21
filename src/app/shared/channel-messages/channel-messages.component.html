@@ -1,6 +1,6 @@
 <div class="message-wrapper">
   @for (msg of messages$ | async; track msg.id) {
-     <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null">
+    <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null">
       <app-chat-box
         [src]="getAvatarPath(msg.senderId)"
         [userName]="getUserName(msg.senderId)"
@@ -9,15 +9,35 @@
         [userMe]="msg.senderId === currentUserId">
       </app-chat-box>
 
+      <!-- Reactions Display -->
+      @if (msg.reactions) {
+      <div class="message-reactions">
+        @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
+          <a class="reply-count">
+            {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+          </a>
+          <span class="reaction">
+            {{ emoji }} {{ groupReactions(msg.reactions)[emoji] }}
+          </span>
+        }
+      </div>
+    }
+      <!-- Message Toolbar -->
       @if (hoveredMessageId === msg.id) {
         <div class="message-toolbar">
-          <button (click)="reactToMessage(msg.id!, '👍')">👍</button>
-          <button (click)="toggleEmojiPicker(msg.id!)">😀</button>
-          <button (click)="openThread(msg.id!)">💬</button>
-
+          <button (click)="toggleEmojiPicker(msg.id!)">
+            <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
+          </button>
+          <button (click)="openThread(msg.id!)">
+            <img src="/assets/images/sidenav-img/comment.svg" alt="">
+          </button>
+          <button title="Nachricht bearbeiten">
+            <img src="/assets/images/sidenav-img/more_vert.svg" alt="">
+          </button>
         </div>
       }
-       @if (showEmojiPickerFor === msg.id) {
+      <!-- Emoji Picker -->
+      @if (showEmojiPickerFor === msg.id) {
         <emoji-mart
           set="apple"
           (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">
@@ -26,7 +46,3 @@
     </div>
   }
 </div>
-
-
-
- 

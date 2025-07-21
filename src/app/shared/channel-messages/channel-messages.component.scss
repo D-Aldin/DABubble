@@ -1,7 +1,11 @@
 .message-wrapper {
   position: relative;
-  
-
+  flex: 1;
+    overflow-y: auto;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   &:hover .message-toolbar {
     opacity: 1;
   }
@@ -42,4 +46,35 @@ emoji-mart {
   right: 1rem;
   z-index: 999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.message-reactions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  padding-left: 60px;
+  position: absolute;
+  top: 102px;
+  right: 62px;
+
+  .reply-count {
+      font-size: 0.9rem;
+      color: #5b69ff;
+      margin-top: 6px;
+      margin-left: 60px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+  .reaction {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 2px 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    user-select: none;
+  }
 }

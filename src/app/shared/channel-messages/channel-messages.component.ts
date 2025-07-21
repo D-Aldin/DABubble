@@ -12,6 +12,7 @@ import { ChatUser } from '../../core/interfaces/chat-user';
 import { combineLatest, map, switchMap } from 'rxjs';
 import { ChannelMessagingService } from '../../core/services/channel-messaging.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { forkJoin, from } from 'rxjs';
 
 @Component({
   selector: 'app-channel-messages',
@@ -40,26 +41,48 @@ export class ChannelMessagesComponent implements OnInit {
    ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
 
-    this.messages$ = this.messagingService.getChannelMessages(this.channelId);
+    this.messages$ = this.messagingService.getChannelMessages(this.channelId).pipe(
+      switchMap(messages => {
+        const withCount$ = messages.map(msg =>
+          from(this.messagingService.getReplyCount(this.channelId, msg.id!)).pipe(
+            map(count => ({
+              ...msg,
+              replyCount: count
+            }))
+          )
+        );
+        return forkJoin(withCount$); // waits for all reply counts
+      })
+    );
 
-    // Preload all users in this channel to map senderId → name, avatar
     this.userService.getAllUsers().subscribe(users => {
       this.usersMap = {};
       users.forEach(user => {
         this.usersMap[user.id] = {
           ...user,
-          uid: user.id, // fallback: reuse id
-          online: false, // default value or fetch if available
+          uid: user.id,
+          online: false,
         };
       });
-
     });
   }
 
-  reactToMessage(messageId: string, emoji: string) {
-    console.log('React to', messageId, emoji);
+  async reactToMessage(messageId: string, emoji: string) {
+    if (!this.currentUserId || !this.channelId) return;
+
+    await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
     this.showEmojiPickerFor = null;
   }
+
+  groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
+    const counts: { [emoji: string]: number } = {};
+    Object.values(reactions).forEach(emoji => {
+      counts[emoji] = (counts[emoji] || 0) + 1;
+    });
+    return counts;
+  }
+
+
 
   toggleEmojiPicker(messageId: string) {
     this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;

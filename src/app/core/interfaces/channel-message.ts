@@ -7,4 +7,5 @@ export interface ChannelMessage {
   timestamp: Timestamp;
   reactions?: { [userId: string]: string };
   threadId?: string;
+  replyCount?: number;
 }
