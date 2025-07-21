@@ -9,10 +9,10 @@ import { ChatUser } from '../interfaces/chat-user';
 export class UserService {
   private firestore = inject(Firestore);
 
-  async createUserDocument(uid: string, avatarPath: string, name: string): Promise<void> {
+  async createUserDocument(uid: string, avatarPath: string, name: string, email: string): Promise<void> {
     const userRef = doc(this.firestore, 'users', uid);
     await setDoc(userRef, {
-      avatarPath, name
+      avatarPath, name, email
     });
   }
 

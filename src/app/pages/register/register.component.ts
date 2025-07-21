@@ -100,7 +100,8 @@ export class RegisterComponent {
       this.authService.register(this.form.value.email, this.form.value.password)
         .then(async userCredential => {
           const user = userCredential.user;
-          await this.userService.createUserDocument(user.uid, this.selectedAvatar, this.nameInput);
+          if (user.email)
+            await this.userService.createUserDocument(user.uid, this.selectedAvatar, this.nameInput, user.email);
           this.showSuccessFeedback()
           this.proceedToLogin()
         })

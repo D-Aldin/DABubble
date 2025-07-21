@@ -65,6 +65,7 @@ export class ChannelMessagesComponent implements OnInit {
           ...user,
           uid: user.id,
           online: false,
+          email: 'dummymail@gmail.com'
         };
       });
     });

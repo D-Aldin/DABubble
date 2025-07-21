@@ -268,3 +268,7 @@
   padding-right: 6px;
   scrollbar-width: thin;
 }
+
+.bounce-x {
+  animation: bounceX 250ms ease-out;
+}

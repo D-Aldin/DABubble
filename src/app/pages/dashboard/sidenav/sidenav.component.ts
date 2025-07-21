@@ -10,11 +10,13 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 import { SharedService } from '../../../core/services/shared.service';
 import { User } from 'firebase/auth';
 import { user } from '@angular/fire/auth';
+import { ProfileCardComponent } from "../../../shared/profile-card/profile-card.component";
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule, RouterModule, SpinnerComponent],
+  imports: [CommonModule, RouterModule, SpinnerComponent, ProfileCardComponent],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })
@@ -24,8 +26,9 @@ export class SidenavComponent implements OnInit {
   usersArray: ChatUser[] = [];
   currentURL: string = '';
   isURLChannel: boolean | null = null;
+  bounceMap: { [uid: string]: boolean } = {}; //For bounce animation when selecting user
 
-  constructor(private sharedService: SharedService, private router: Router) { }
+  constructor(private sharedService: SharedService, private router: Router, private userService: UserService) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
@@ -115,5 +118,12 @@ export class SidenavComponent implements OnInit {
           });
       }
     }
+  }
+
+  triggerBounce(uid: string): void {
+    this.bounceMap[uid] = true;
+    setTimeout(() => {
+      this.bounceMap[uid] = false;
+    }, 250);
   }
 }

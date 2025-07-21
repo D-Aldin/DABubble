@@ -20,6 +20,7 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
+import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
 
 interface CurrentUserId {
   userId: string;
@@ -34,6 +35,7 @@ interface CurrentUserId {
     SpinnerComponent,
     ChatBoxComponent,
     TimestampLineComponent,
+    ProfileCardComponent
   ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
@@ -49,6 +51,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
   userAvatarsMap: { [userId: string]: string } = {};
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
+  showProfileCard: boolean = false;
 
   @ViewChild('scrollContainer')
   private scrollContainer?: ElementRef<HTMLElement>;
@@ -222,5 +225,9 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
       day: 'numeric',
       month: 'long',
     });
+  }
+
+  toggleProfileCardOnClick(): void {
+    this.showProfileCard = !this.showProfileCard;
   }
 }

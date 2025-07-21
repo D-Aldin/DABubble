@@ -41,8 +41,8 @@ export class LoginComponent {
       next: async user => {
         console.log('Signed in as guest:', user.displayName, user.uid);
         await this.userService.setOnlineStatus(user.uid, true);
-        if (user.photoURL && user.displayName) {
-          await this.userService.createUserDocument(user.uid, user.photoURL, user.displayName);
+        if (user.photoURL && user.displayName && user.email) {
+          await this.userService.createUserDocument(user.uid, user.photoURL, user.displayName, user.email);
         }
         this.proceedToDashboard(0);
       },
@@ -58,7 +58,7 @@ export class LoginComponent {
     const result = await this.authService.loginWithGoogle();
     if (result && result.user.displayName && result.user.photoURL && result.user.email) {
       console.log('Angemeldet als:', result.user.displayName);
-      await this.userService.createUserDocument(result.user.uid, result.user.photoURL, result.user.displayName);
+      await this.userService.createUserDocument(result.user.uid, result.user.photoURL, result.user.displayName, result.user.email);
       await this.userService.setOnlineStatus(result.user.uid, true)
       this.proceedToDashboard(0);
     }

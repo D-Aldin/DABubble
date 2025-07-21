@@ -199,6 +199,8 @@ header {
       border-bottom-right-radius: 30px;
       border-bottom-left-radius: 30px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      animation: slideInFromRight 0.35s ease-out;
+      will-change: transform, opacity;
 
       button {
         font-size: 20px;
@@ -250,6 +252,9 @@ app-profile-card {
     border-bottom-left-radius: 30px !important;
     border-top-right-radius: 0px !important;
     margin: 0;
+
+    animation: slideInFromRight 0.35s ease-out;
+    will-change: transform, opacity;
   }
 
   ::ng-deep .profile-img {

@@ -6,6 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-header',
@@ -154,11 +155,12 @@ export class HeaderComponent {
   async onNameSaved(newName: string) {
     this.userName = newName;
     const userData = this.getCurrentUser();
-    if (userData) {
+    if (userData && userData.email) {
       await this.userService.createUserDocument(
         userData.uid,
         this.avatarPath,
-        this.userName
+        this.userName,
+        userData.email
       );
     }
   }

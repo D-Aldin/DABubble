@@ -4,4 +4,5 @@ export interface ChatUser {
   name: string;
   avatarPath: string;
   online: boolean;
+  email: string;
 }
