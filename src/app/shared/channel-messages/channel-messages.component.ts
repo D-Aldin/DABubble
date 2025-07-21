@@ -13,11 +13,12 @@ import { combineLatest, map, switchMap } from 'rxjs';
 import { ChannelMessagingService } from '../../core/services/channel-messaging.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { forkJoin, from } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule],
+  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })
@@ -29,7 +30,9 @@ export class ChannelMessagesComponent implements OnInit {
   currentUserId: string = '';
   hoveredMessageId: string | null | undefined = null;
   @Output() openThreadRequest = new EventEmitter<ChannelMessage>();
-   showEmojiPickerFor: string | null = null;
+  showEmojiPickerFor: string | null = null;
+  editingMessageId: string | null = null;
+  editedMessageText: string = '';
 
   constructor(
     private channelService: ChannelService,
@@ -103,4 +106,27 @@ export class ChannelMessagesComponent implements OnInit {
   objectKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];
   }
+
+  startEditing(msg: ChannelMessage) {
+    this.editingMessageId = msg.id!;
+    this.editedMessageText = msg.text;
+    this.showEmojiPickerFor = null; 
+    this.hoveredMessageId = null;
+  }
+
+  cancelEditing() {
+    this.editingMessageId = null;
+    this.editedMessageText = '';
+  }
+
+  async saveEditedMessage(msgId: string) {
+    if (!this.channelId || !msgId || !this.editedMessageText.trim()) return;
+    await this.messagingService.updateChannelMessageText(this.channelId, msgId, this.editedMessageText.trim());
+    this.cancelEditing();
+  }
+   
+  appendEmojiToEdit(emoji: string) {
+    this.editedMessageText += emoji;
+  }
+
 }
