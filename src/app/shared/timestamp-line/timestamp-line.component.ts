@@ -8,9 +8,26 @@ import { Component, Input } from '@angular/core';
   styleUrl: './timestamp-line.component.scss',
 })
 export class TimestampLineComponent {
-  @Input({ required: true }) date!: string;
+  @Input({ required: true }) date!: Date;
 
   get displayText(): string {
-    return this.date === 'today' ? 'Today' : this.date;
+  const today = new Date();
+    const input = this.date;
+
+    // Normalize both to midnight local time
+    const todayLocal = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const inputLocal = new Date(input.getFullYear(), input.getMonth(), input.getDate());
+
+    const isToday = inputLocal.getTime() === todayLocal.getTime();
+
+    if (isToday) return 'Today';
+
+    return input.toLocaleDateString('en-GB', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
   }
+
 }

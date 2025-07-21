@@ -14,11 +14,12 @@ import { ChannelMessagingService } from '../../core/services/channel-messaging.s
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule],
+  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })
@@ -33,6 +34,7 @@ export class ChannelMessagesComponent implements OnInit {
   showEmojiPickerFor: string | null = null;
   editingMessageId: string | null = null;
   editedMessageText: string = '';
+ groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
 
   constructor(
     private channelService: ChannelService,
@@ -41,24 +43,60 @@ export class ChannelMessagesComponent implements OnInit {
     private messagingService: ChannelMessagingService
   ) { }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
 
     this.messages$ = this.messagingService.getChannelMessages(this.channelId).pipe(
       switchMap(messages => {
-        const withCount$ = messages.map(msg =>
+        const tasks = messages.map(msg =>
           from(this.messagingService.getReplyCount(this.channelId, msg.id!)).pipe(
-            map(count => ({
-              ...msg,
-              replyCount: count
-            }))
+            map(count => ({ ...msg, replyCount: count }))
           )
         );
-        return forkJoin(withCount$); // waits for all reply counts
+        return forkJoin(tasks);
       })
     );
 
+    this.messages$.subscribe(msgs => this.groupedMessages = this.groupMessagesByDate(msgs));
+
     this.userService.getAllUsers().subscribe(users => {
+      this.usersMap = Object.fromEntries(users.map(u => [u.id, { ...u, uid: u.id, online: false }]));
+    });
+  }
+
+  groupMessagesByDate(messages: ChannelMessage[]): {
+    date: Date;
+    dateString: string; 
+    messages: ChannelMessage[];
+  }[] {
+    const grouped: { [key: string]: ChannelMessage[] } = {};
+
+    messages.forEach(msg => {
+      const date = msg.timestamp.toDate();
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(msg);
+    });
+
+    return Object.entries(grouped).map(([key, messages]) => {
+      const [year, month, day] = key.split('-').map(Number);
+      return {
+        date: new Date(year, month - 1, day), 
+        dateString: key, 
+        messages
+      };
+    });
+  }
+
+  formatDate(date: Date): string {
+    const today = new Date();
+    
+    const msgDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    const todayDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
+
+    if (msgDate === todayDate) return 'today';
+
+    return date.toLocaleDateString('de-DE'); // or your preferred format
       this.usersMap = {};
       users.forEach(user => {
         this.usersMap[user.id] = {
