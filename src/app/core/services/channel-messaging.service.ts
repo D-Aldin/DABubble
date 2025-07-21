@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc,collectionData, orderBy, query, serverTimestamp, doc, runTransaction, getCountFromServer } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc,collectionData, orderBy, query, serverTimestamp, doc, runTransaction, getCountFromServer, updateDoc  } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Message } from '../../core/interfaces/message';
 import { ChannelMessage } from '../interfaces/channel-message';
@@ -52,4 +52,15 @@ export class ChannelMessagingService {
       transaction.update(msgRef, { reactions });
     });
   }
+
+  async updateChannelMessageText(channelId: string, messageId: string, newText: string): Promise<void> {
+  const msgRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+    await runTransaction(this.firestore, async (transaction) => {
+      const snapshot = await transaction.get(msgRef);
+      if (!snapshot.exists()) throw new Error('Message not found');
+
+      transaction.update(msgRef, { text: newText });
+    });
+  }
+
 }
