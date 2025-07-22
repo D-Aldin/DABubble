@@ -176,6 +176,7 @@
   width: 100%;
 }
 
+// overlay hover styles
 .message-options {
   position: absolute;
   top: -20px;
@@ -185,7 +186,6 @@
   justify-content: space-evenly;
   background-color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  // transform: translateY(-10px);
   pointer-events: none;
   transform: scaleX(1) translateY(-10px); // combine both
   transition: opacity 0.2s ease, transform 0.125s ease !important;

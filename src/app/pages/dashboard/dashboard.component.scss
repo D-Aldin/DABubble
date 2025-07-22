@@ -1,5 +1,10 @@
 @use "../../../styles/variables" as *;
 
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 section {
   display: flex;
   width: 100%;
@@ -13,13 +18,13 @@ section {
   width: 100%;
   max-width: 1920px;
   padding: 0 1rem;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 140px);
 }
 
 .main-container {
   flex: 1;
   transition: all 0.3s ease;
-  padding-right: 1rem;
+  // padding-right: 1rem;
   padding-left: 1rem;
 
   &.expanded {
@@ -34,7 +39,7 @@ section {
   border-radius: 8px;
   // padding: 2rem;
   overflow-y: auto;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 140px);
   border-radius: 36px;
   overflow: hidden;
 }
@@ -113,7 +118,7 @@ section {
 
 app-message-field {
   position: absolute;
-  min-width: calc(100% - 4rem);
+  // min-width: calc(100% - 4rem);
   bottom: 10px;
 }
 

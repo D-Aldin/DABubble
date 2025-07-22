@@ -40,6 +40,7 @@ export class ChannelMessagesComponent implements OnInit {
   groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
   showProfileCard: boolean = false;
   selectedUserId: string = '';
+  showHoverOptions: boolean = false;
 
   constructor(
     private channelService: ChannelService,
