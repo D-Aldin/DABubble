@@ -23,7 +23,7 @@ export class DirectMessagingService {
   private firestore = inject(Firestore);
   private authService = inject(AuthService);
 
-  constructor() { }
+  constructor() {}
 
   getAllUsersExceptCurrent(): Observable<ChatUser[]> {
     const usersRef = collection(this.firestore, 'users');
@@ -72,10 +72,13 @@ export class DirectMessagingService {
     );
     const refMessages = collection(refDirectMessages, 'messages');
 
+    const tags = this.ifMessageHasChannelTags(message);
+
     await addDoc(refMessages, {
       messageFrom: from,
       messageTo: to,
       message: message,
+      tags: tags,
       timestamp: serverTimestamp(),
     });
   }
@@ -92,5 +95,10 @@ export class DirectMessagingService {
     return collectionData(sortByTime, { idField: 'id' }) as Observable<
       Message[]
     >;
+  }
+
+  ifMessageHasChannelTags(message: string): string[] {
+    const matches = message.match(/#[a-zA-Z0-9\-]+/g);
+    return matches ? matches.map((tag) => tag.slice(1).toLowerCase()) : [];
   }
 }

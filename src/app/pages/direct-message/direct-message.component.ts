@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
-import { Subscription, take } from 'rxjs';
+import { map, Subscription, take } from 'rxjs';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -20,7 +20,7 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
-import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
+import { ProfileCardComponent } from '../../shared/profile-card/profile-card.component';
 
 interface CurrentUserId {
   userId: string;
@@ -35,12 +35,14 @@ interface CurrentUserId {
     SpinnerComponent,
     ChatBoxComponent,
     TimestampLineComponent,
-    ProfileCardComponent
+    ProfileCardComponent,
   ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
 })
-export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DirectMessageComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   messages: Message[] = [];
   selectedUser: any = null;
   currentUser: CurrentUserId | null = null;
@@ -52,7 +54,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
   showProfileCard: boolean = false;
-  selectedUserId: string = ''
+  selectedUserId: string = '';
 
   @ViewChild('scrollContainer')
   private scrollContainer?: ElementRef<HTMLElement>;
@@ -66,7 +68,7 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
     private userService: UserService,
     private zone: NgZone,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.sharedService.sharedData$.subscribe((user) => {
@@ -88,11 +90,11 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
     //     this.messages = msg;
     //   });
   }
-  
+
   /** called once view is created; useful for initial deep‑link load */
   ngAfterViewInit(): void {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
-      this.scrollToBottom()
+      this.scrollToBottom();
     });
   }
 

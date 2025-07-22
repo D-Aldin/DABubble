@@ -1,4 +1,12 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
@@ -33,7 +41,7 @@ export class MessageFieldComponent implements AfterViewInit {
   constructor(
     private messagingService: DirectMessagingService,
     private channelService: ChannelService
-  ) { }
+  ) {}
 
   users$: Observable<ChatUser[]> =
     this.messagingService.getAllUsersExceptCurrent();
@@ -89,11 +97,14 @@ export class MessageFieldComponent implements AfterViewInit {
   }
 
   toggleChannelMention() {
-    if (this.message.includes('#')) {
+    const match = this.message.match(/(^|\s)#(\w*)$/);
+    if (match) {
+      this.searchTerm = match[2].toLowerCase();
       this.isChannelMentionActive = true;
       this.getChannels();
-    } else if (!this.message.includes('#')) {
+    } else {
       this.isChannelMentionActive = false;
+      this.searchTerm = '';
     }
   }
 
@@ -105,6 +116,13 @@ export class MessageFieldComponent implements AfterViewInit {
     const regex = /(^|\s)@(\w*)$/;
     this.message = this.message.replace(regex, `$1@${userName} `);
     this.isUserMentionActive = false;
+    this.searchTerm = '';
+  }
+
+  addChannel(channel: string) {
+    const regex = /(^|\s)#(\w*)$/;
+    this.message = this.message.replace(regex, `$1#${channel} `);
+    this.isChannelMentionActive = false;
     this.searchTerm = '';
   }
 

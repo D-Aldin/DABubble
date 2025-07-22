@@ -56,6 +56,11 @@
       font-size: 18px;
       line-height: 100%;
       letter-spacing: 0%;
+
+      a {
+        text-decoration: none;
+        color: white;
+      }
     }
 
     .message,
@@ -63,7 +68,6 @@
     .time {
       transform: scaleX(-1); // unflip
     }
-
   }
 
   &:hover {

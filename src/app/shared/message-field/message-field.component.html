@@ -12,8 +12,8 @@
    </div>
    <div class="user-channel-list" [ngStyle]="{'visibility': isChannelMentionActive == true ? 'visible' : 'hidden'}">
       @for (channel of channelArr; track $index) {
-      <div class="channel-container">
-         <div class="channel">
+      <div class="channel-container" [class.hidden]="!channel.title.toLowerCase().includes(searchTerm)">
+         <div class="channel" (click)="addChannel(channel.title)">
             {{channel.title}}
          </div>
       </div>

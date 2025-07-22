@@ -13,7 +13,12 @@
    <div class="time">
       <p>{{time}}</p>
    </div>
-   <div class="message">
-      <p>{{message}}</p>
+   <div class="message" >
+      <span *ngFor="let part of changedMessage">
+  <ng-container *ngIf="part.isTag; else normalText">
+    <a [routerLink]="['/dashboard/channels', part.text]">#{{ part.text }}</a>
+  </ng-container>
+  <ng-template #normalText>{{ part.text }}</ng-template>
+</span>
    </div>
 </div>
