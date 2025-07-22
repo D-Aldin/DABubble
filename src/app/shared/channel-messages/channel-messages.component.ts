@@ -16,12 +16,13 @@ import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
 import { Timestamp } from 'firebase/firestore';
+import { ProfileCardComponent } from "../profile-card/profile-card.component";
 
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent],
+  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })
@@ -37,6 +38,8 @@ export class ChannelMessagesComponent implements OnInit {
   editingMessageId: string | null = null;
   editedMessageText: string = '';
   groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
+  showProfileCard: boolean = false;
+  selectedUserId: string = '';
 
   constructor(
     private channelService: ChannelService,
@@ -173,4 +176,8 @@ export class ChannelMessagesComponent implements OnInit {
     this.editedMessageText += emoji;
   }
 
+  toggleProfileCardOnClick(userId: string): void {
+    this.showProfileCard = !this.showProfileCard;
+    this.selectedUserId = userId
+  }
 }

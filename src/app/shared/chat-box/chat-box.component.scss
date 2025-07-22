@@ -14,6 +14,14 @@
     pointer-events: auto;
   }
 
+  .user-name {
+    cursor: pointer;
+
+    &:hover {
+      color: $primary-color;
+    }
+  }
+
   &.other-user {
     transform: scaleX(-1) !important;
 
@@ -72,6 +80,7 @@
   grid-row: 1 / span 2;
 
   img {
+    cursor: pointer;
     width: 70px;
     height: 70px;
     border-radius: 50%;

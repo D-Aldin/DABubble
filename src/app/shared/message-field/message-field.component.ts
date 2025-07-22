@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,7 @@ import { Channel } from '../../core/interfaces/channel';
   templateUrl: './message-field.component.html',
   styleUrl: './message-field.component.scss',
 })
-export class MessageFieldComponent {
+export class MessageFieldComponent implements AfterViewInit {
   @Input() customClass: string = '';
   @Output() messageSend = new EventEmitter<string>();
   emojiPicker: boolean = false;
@@ -28,10 +28,12 @@ export class MessageFieldComponent {
   isVisible: boolean = false;
   searchTerm: string = '';
 
+  @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
+
   constructor(
     private messagingService: DirectMessagingService,
     private channelService: ChannelService
-  ) {}
+  ) { }
 
   users$: Observable<ChatUser[]> =
     this.messagingService.getAllUsersExceptCurrent();
@@ -104,5 +106,11 @@ export class MessageFieldComponent {
     this.message = this.message.replace(regex, `$1@${userName} `);
     this.isUserMentionActive = false;
     this.searchTerm = '';
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.inputRef.nativeElement.focus();
+    });
   }
 }

@@ -8,7 +8,7 @@
 <ng-container *ngIf="areMessagesLoaded && selectedUser">
    <section>
       <div class="headline">
-         <div class="main-avatar" (click)="toggleProfileCardOnClick()">
+         <div class="main-avatar" (click)="toggleProfileCardOnClick(selectedUser.id)">
             <img [src]="selectedUser.avatarPath" alt="">
             <h3>{{ selectedUser.name }}</h3>
             <span class="online-dot" [ngStyle]="{
@@ -28,17 +28,19 @@
             <app-chat-box [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
                [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
                [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
-               [userMe]="checkIfMessageIsFromLoggedInUser(i)">
+               [userMe]="checkIfMessageIsFromLoggedInUser(i)" (profileClick)="toggleProfileCardOnClick($event)"
+               [userId]="item.messageFrom">
             </app-chat-box>
          </ng-container>
       </div>
       <div class="you-talk-to" [ngStyle]="{'display': isMessagesArrayEmpty == true ? 'none' : 'block' }">
          <div class="secondary-avatar">
-            <img [src]="selectedUser.avatarPath" alt="" (click)="toggleProfileCardOnClick()">
-            <h3 (click)="toggleProfileCardOnClick()">{{ selectedUser.name }}</h3>
+            <img [src]="selectedUser.avatarPath" alt="" (click)="toggleProfileCardOnClick(selectedUser.id)">
+            <h3 (click)="toggleProfileCardOnClick(selectedUser.id)">{{ selectedUser.name }}</h3>
             <h4>
                Diese Unterhaltung findet nur zwischen
-               <span (click)="toggleProfileCardOnClick()">&#64;<a>{{ selectedUser.name }}</a></span> und dir statt.
+               <span (click)="toggleProfileCardOnClick(selectedUser.id)">&#64;<a>{{ selectedUser.name }}</a></span> und
+               dir statt.
             </h4>
          </div>
       </div>
@@ -48,9 +50,15 @@
    </section>
 </ng-container>
 
-<div class="profile-card-overlay" *ngIf="showProfileCard" (click)="toggleProfileCardOnClick()">
+<div class="profile-card-overlay" *ngIf="showProfileCard" (click)="toggleProfileCardOnClick(selectedUser.id)">
    <app-profile-card [name]="selectedUser.name" [email]="selectedUser.email || 'Guests have no email!'"
       [src]="selectedUser.avatarPath || ''" [active]="selectedUser.online" [isInsertedInHeader]="false"
-      (click)="$event.stopPropagation()" (closeCard)="toggleProfileCardOnClick()">
+      (click)="$event.stopPropagation()" (closeCard)="toggleProfileCardOnClick('')">
+      <div class="button-container">
+         <button (click)="toggleProfileCardOnClick('')" class="goToDm-button">
+            <img src="./../../assets/icons/mode_comment.svg" alt="">
+            Nachricht
+         </button>
+      </div>
    </app-profile-card>
 </div>

@@ -137,10 +137,46 @@ h3 {
   ::ng-deep app-profile-card .profile-card {
     margin: 0;
     position: absolute;
+    height: auto;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10000;
     animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::ng-deep .goToDm-button {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 164px;
+    height: 49px;
+    border-radius: 50px;
+    gap: 10px;
+    padding-top: 12px;
+    padding-right: 25px;
+    padding-bottom: 12px;
+    padding-left: 25px;
+    background-color: $button;
+    color: white;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    cursor: pointer;
+    border: none;
+    outline: none;
+
+    &:hover {
+      background-color: $primary-color;
+    }
+  }
+
+  ::ng-deep .button-container {
+    margin-top: 24px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 }

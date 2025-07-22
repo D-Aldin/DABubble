@@ -52,9 +52,12 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
   areMessagesLoaded: boolean = false;
   isMessagesArrayEmpty: boolean = false;
   showProfileCard: boolean = false;
+  selectedUserId: string = ''
 
   @ViewChild('scrollContainer')
   private scrollContainer?: ElementRef<HTMLElement>;
+
+  @ViewChild('messageInput') messageFieldComponent!: MessageFieldComponent;
 
   constructor(
     private sharedService: SharedService,
@@ -85,12 +88,12 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
     //     this.messages = msg;
     //   });
   }
-
+  
   /** called once view is created; useful for initial deep‑link load */
   ngAfterViewInit(): void {
-    /** if messages are already there (e.g. restored from cache),
-        wait until change‑detection settles, then scroll */
-    this.zone.onStable.pipe(take(1)).subscribe(() => this.scrollToBottom());
+    this.zone.onStable.pipe(take(1)).subscribe(() => {
+      this.scrollToBottom()
+    });
   }
 
   ngOnDestroy() {
@@ -227,7 +230,8 @@ export class DirectMessageComponent implements OnInit, OnDestroy, AfterViewInit 
     });
   }
 
-  toggleProfileCardOnClick(): void {
+  toggleProfileCardOnClick(userId: string): void {
     this.showProfileCard = !this.showProfileCard;
+    // this.selectedUserId = this.userNamesMap[userId]
   }
 }

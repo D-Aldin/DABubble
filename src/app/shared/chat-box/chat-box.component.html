@@ -8,8 +8,8 @@
    </div>
 
 
-   <div class="avatar"><img [src]="src" alt="avatar"></div>
-   <div class="user-name">{{userName}}</div>
+   <div class="avatar" (click)="onNameClick()"><img [src]="src" alt="avatar"></div>
+   <div class="user-name" (click)="onNameClick()">{{userName}}</div>
    <div class="time">
       <p>{{time}}</p>
    </div>
