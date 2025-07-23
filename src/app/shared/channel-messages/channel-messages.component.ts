@@ -25,7 +25,7 @@ import { RouterLink, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [RouterModule, CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent],
+  imports: [RouterModule, CommonModule, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })

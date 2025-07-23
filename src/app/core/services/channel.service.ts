@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, updateDoc, arrayUnion, doc, docData, serverTimestamp,  query,
-  orderBy } from '@angular/fire/firestore';
+  orderBy, where, QuerySnapshot, DocumentData, getDocs } from '@angular/fire/firestore';
 import { Observable, Subject, } from 'rxjs';
 import { Channel } from '../interfaces/channel';
 import { ChannelMessage } from '../interfaces/channel-message';
@@ -18,10 +18,18 @@ export class ChannelService {
     return collectionData(channelsRef, { idField: 'id' }) as Observable<Channel[]>;
   }
 
-  createChannel(channel: Channel): Promise<void> {
+  async createChannel(channel: Channel): Promise<void> {
     const channelsRef = collection(this.firestore, 'channels');
-    return addDoc(channelsRef, channel).then(() => { });
+    const q = query(channelsRef, where('title', '==', channel.title));
+
+    return getDocs(q).then((snapshot: QuerySnapshot<DocumentData>) => {
+      if (!snapshot.empty) {
+        throw new Error(`A channel with the name "${channel.title}" already exists.`);
+      }
+      return addDoc(channelsRef, channel).then(() => {});
+    });
   }
+
 
   addUsersToChannel(channelId: string, userIds: string[]) {
     const channelRef = doc(this.firestore, 'channels', channelId);

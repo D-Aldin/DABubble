@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddPeopleComponent } from './add-people/add-people.component';
 import { InputFieldComponent } from '../input-field/input-field.component';
+import { getDocs, collection, query, where } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
+
 
 @Component({
   selector: 'app-add-channel',
@@ -18,15 +21,21 @@ export class AddChannelComponent {
   @Output() cancel = new EventEmitter<void>();
   @Output() openAddPeopleDialog = new EventEmitter<void>();
   @Output() proceedToPeople = new EventEmitter<{ name: string; description: string }>();
+  @Output() confirm = new EventEmitter<{ title: string; description: string }>();
   channelDescription = '';
   showPeopleStep = false;
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private firestore: Firestore) {
     this.form = this.fb.group({
-      channelname: ['', [Validators.required, Validators.minLength(4)]],
-      channeldescription: [''], // optional field
-    });
+  channelname: ['', {
+    validators: [Validators.required, Validators.minLength(4)],
+    asyncValidators: [this.channelNameTakenValidator.bind(this)],
+    updateOn: 'blur' // validation runs when user finishes typing or leaves input
+  }],
+  channeldescription: [''],
+});
+
   }
 
   proceedToAddPeople() {
@@ -63,7 +72,22 @@ export class AddChannelComponent {
       if (control.errors['required']) {
         return 'Bitte geben Sie einen Namen ein.';
       }
+      if (control.errors['duplicate']) {
+        return 'Ein Channel mit diesem Namen existiert bereits. Bitte wählen Sie einen anderen.';
+      }
     }
     return '';
   }
+
+  async channelNameTakenValidator(control: FormControl) {
+    const name = control.value.trim();
+    if (!name) return Promise.resolve(null);
+
+    const q = query(collection(this.firestore, 'channels'), where('title', '==', name));
+
+    return getDocs(q).then(snapshot => {
+      return snapshot.empty ? null : { duplicate: true };
+    });
+  }
+
 }
