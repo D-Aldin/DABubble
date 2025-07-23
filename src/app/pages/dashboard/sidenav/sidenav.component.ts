@@ -30,7 +30,11 @@ export class SidenavComponent implements OnInit {
   isURLChannel: boolean | null = null;
   bounceMap: { [uid: string]: boolean } = {}; //For bounce animation when selecting user
 
-  constructor(private sharedService: SharedService, private router: Router, private userService: UserService, private route: ActivatedRoute
+  constructor(
+    private sharedService: SharedService,
+    private router: Router,
+    public userService: UserService,
+    public authService: AuthService,
   ) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
