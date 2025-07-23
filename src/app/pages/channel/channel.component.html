@@ -60,7 +60,9 @@
 
               <!-- Actions -->
               <div class="popup-actions">
-                <button class="leave-btn" (click)="toggleChannelOptionsPopup()">Channel verlassen</button>
+                @if (selectedChannel.members.includes(authService.currentUserId)) {
+                  <button class="leave-btn" (click)="leaveChannel()">Channel verlassen</button>
+                }
               </div>
 
               <button class="popup-close" (click)="toggleChannelOptionsPopup()">✕</button>

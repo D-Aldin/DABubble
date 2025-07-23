@@ -108,7 +108,28 @@ export class ChannelComponent {
       this.showAddChannelDialog = true;
     });
   }
-  
+
+  leaveChannel() {
+    const currentUserId = this.authService.currentUserId;
+
+    if (!this.selectedChannel || !currentUserId) return;
+    if (!this.selectedChannel.members.includes(currentUserId)) { // Check if user is in the channel
+      console.warn('User is not a member of this channel.');
+      return;
+    }
+    // Remove user from members
+    const updatedMembers = this.selectedChannel.members.filter(id => id !== currentUserId);
+
+    this.channelService.updateChannel(this.selectedChannel.id, {
+      members: updatedMembers
+    }).then(() => {
+      // Optionally reset state or show toast here
+      this.router.navigate(['/dashboard']); // or redirect elsewhere
+    }).catch(err => {
+      console.error('Failed to leave channel:', err);
+    });
+  }
+
   handleOpenAddUserFromPopup() {
     this.showChannelMemberPopup = false; 
     this.openAddUserToChannelPopup();    
