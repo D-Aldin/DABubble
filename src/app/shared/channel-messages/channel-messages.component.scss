@@ -54,22 +54,26 @@ emoji-mart {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.message-reactions-container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 60px;
+  margin-top: 4px;
+
+  &.me {
+    justify-content: flex-end;
+  }
+}
+
 .message-reactions {
   display: flex;
+  align-items: center;
   gap: 8px;
-  margin-top: 6px;
-  padding-left: 60px;
-  position: absolute;
-  top: 102px;
-  right: 62px;
 
   .reply-count {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     color: #5b69ff;
-    margin-top: 6px;
-    margin-left: 60px;
     cursor: pointer;
-    display: inline-block;
   }
 
   .reaction {
