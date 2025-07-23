@@ -9,6 +9,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { ResetRequestComponent } from './pages/reset-request/reset-request.component';
 import { DirectMessageComponent } from './pages/direct-message/direct-message.component';
 import { ChannelComponent } from './pages/channel/channel.component';
+import { ThreadComponent } from './shared/thread/thread.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -28,7 +29,10 @@ export const routes: Routes = [
         path: 'channel/:id', //  Channel route with channel ID
         component: ChannelComponent
       },
-      // Created route for channel showing as defined above like direct-message route
+      {
+        path: 'thread/:messageId', // Thread route with thread ID for channel or direct message ID
+        component: ThreadComponent,
+      }
     ],
   },
   { path: 'register', component: RegisterComponent },

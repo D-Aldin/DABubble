@@ -37,11 +37,19 @@
          <div class="secondary-avatar">
             <img [src]="selectedUser.avatarPath" alt="" (click)="toggleProfileCardOnClick(selectedUser.id)">
             <h3 (click)="toggleProfileCardOnClick(selectedUser.id)">{{ selectedUser.name }}</h3>
-            <h4>
-               Diese Unterhaltung findet nur zwischen
-               <span (click)="toggleProfileCardOnClick(selectedUser.id)">&#64;<a>{{ selectedUser.name }}</a></span> und
-               dir statt.
+            <h4 *ngIf="selectedUser?.uid === authService.currentUserId; else notSelfChat">
+               <span style="color: rgb(117 117 117); font-weight: 700; cursor: unset;">Dieser Raum ist nur für dich da.</span> Mache dir Notizen, liste deine To-dos auf oder bewahre Links griffbereit
+               auf. Du kannst hier auch gerne mit dir selbst sprechen.
             </h4>
+
+            <ng-template #notSelfChat>
+               <h4>
+                  Diese Unterhaltung findet nur zwischen
+                  <span (click)="toggleProfileCardOnClick(selectedUser.id)">
+                     &#64;<a>{{ selectedUser.name }}</a>
+                  </span> und dir statt.
+               </h4>
+            </ng-template>
          </div>
       </div>
       <div class="message-field-wrapper">

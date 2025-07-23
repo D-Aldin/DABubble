@@ -185,11 +185,6 @@ export class ChannelMessagesComponent implements OnInit {
     this.editedMessageText += emoji;
   }
 
-  // toggleProfileCardOnClick(userId: string): void {
-  //   this.openProfileCard(userId)
-  //   this.showProfileCard = !this.showProfileCard;
-  // }
-
   getObserveableProfileCardData(): void {
     this.userDataForProfileCard$ = this.directMessagingService.getAllUsersForProfileCardCreation();
 

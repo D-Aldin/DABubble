@@ -63,7 +63,7 @@ export class DirectMessageComponent
 
   constructor(
     private sharedService: SharedService,
-    private authService: AuthService,
+    public authService: AuthService,
     private messagingService: DirectMessagingService,
     private userService: UserService,
     private zone: NgZone,

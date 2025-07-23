@@ -32,9 +32,7 @@ export class ChatBoxComponent {
   }
 
   onNameClick(): void {
-    if (this.userMe) {
-      this.profileClick.emit(this.userId);
-    }
+    this.profileClick.emit(this.userId);
   }
 
   changedMessageWithLinks(message: string): { text: string; isTag: boolean }[] {
