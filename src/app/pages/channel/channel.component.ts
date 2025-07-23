@@ -82,6 +82,14 @@ export class ChannelComponent {
 
           // Load ALL members for the Mitglieder-Popup
           this.userService.getUsersByIds(channel.members).subscribe(users => {
+            const currentUserId = this.authService.currentUserId;
+          
+            users.sort((a, b) => {// Sort so that current user is always first if present
+              if (a.id === currentUserId) return -1;
+              if (b.id === currentUserId) return 1;
+              return 0;
+            });
+
             this.fullChannelMembers = users;
           });
 
