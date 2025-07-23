@@ -12,6 +12,8 @@ import { User } from 'firebase/auth';
 import { user } from '@angular/fire/auth';
 import { ProfileCardComponent } from "../../../shared/profile-card/profile-card.component";
 import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidenav',
@@ -28,7 +30,12 @@ export class SidenavComponent implements OnInit {
   isURLChannel: boolean | null = null;
   bounceMap: { [uid: string]: boolean } = {}; //For bounce animation when selecting user
 
-  constructor(private sharedService: SharedService, private router: Router, private userService: UserService) { }
+  constructor(
+    private sharedService: SharedService,
+    private router: Router,
+    public userService: UserService,
+    public authService: AuthService,
+  ) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
@@ -38,7 +45,10 @@ export class SidenavComponent implements OnInit {
   private dmService = inject(DirectMessagingService);
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
-  users$: Observable<ChatUser[]> = this.dmService.getAllUsersExceptCurrent();
+
+  users$: Observable<ChatUser[]> = this.userService.getAllUsers().pipe(
+    map(users => this.userService.sortUsersWithCurrentFirst(users, this.authService.currentUserId))
+  );
 
   ngOnInit(): void {
     this.subscribeToUsers();
@@ -46,6 +56,7 @@ export class SidenavComponent implements OnInit {
     this.checkGivenURL();
     this.handleRouteSelectionOnPageReload();
     this.subscribeToRouterEvents();
+    console.log('[SIDENAV] Logged-in user UID:', this.authService.currentUserId);
   }
 
   subscribeToRouterEvents(): void {
