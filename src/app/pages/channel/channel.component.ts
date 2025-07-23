@@ -246,9 +246,11 @@ export class ChannelComponent {
     });
   }
 
-  handleUserAddCancel() {
-    this.showAddUserToChannelPopup = false;
-  }
+ handleUserAddCancel() {
+  this.showPeopleDialog = false;
+  this.showAddUserToChannelPopup = false;
+}
+
 
   openAddChannelDialog() {
     this.showAddChannelDialog = true;
@@ -366,5 +368,16 @@ export class ChannelComponent {
       this.channelService.sendChannelMessage(this.selectedChannelId, senderId, messageText.trim());
     }
   }
+
+  onAddPeopleCancel() {
+    if (this.addUserMode === 'add-to-channel') {
+      this.handleUserAddCancel();
+    } else {
+      this.closePeopleDialog();
+    }
+    console.log('dialog closed');
+    
+  }
+
 
 }

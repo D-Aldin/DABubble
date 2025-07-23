@@ -94,7 +94,7 @@
                 [channelId]="selectedChannelIdForUserAdd"
                 [channelName]="createdChannelName || selectedChannelTitleForUserAdd"
                 [mode]="addUserMode"
-                (cancel)="addUserMode === 'add-to-channel' ? handleUserAddCancel() : closePeopleDialog()"
+                (cancel)="onAddPeopleCancel()"
                 (confirm)="addUserMode === 'add-to-channel' ? handleUserAddConfirm($event) : handlePeopleConfirmed($event)">
               </app-add-people>
             </div>

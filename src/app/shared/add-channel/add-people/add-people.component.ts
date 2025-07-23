@@ -40,11 +40,12 @@ export class AddPeopleComponent {
     const term = this.searchTerm.trim().toLowerCase();
     this.searchResults = this.users
       .filter(user =>
-        user.name.toLowerCase().includes(term) &&
+        user.name?.toLowerCase().includes(term) && 
         !this.selectedUserObjects.some(u => u.id === user.id)
       )
-      .slice(0, 5); // limit result length
+      .slice(0, 4); // limit result length
   }
+
 
   selectUser(user: { id: string; name: string; avatarPath: string }) {
     this.selectedUserObjects.push(user);
@@ -74,5 +75,6 @@ export class AddPeopleComponent {
 
   cancelDialog() {
     this.cancel.emit();
+    console.log('dialog closed');
   }
 }
