@@ -51,6 +51,8 @@ export class ChannelComponent {
   editedDescription = '';
   openedThreadMessageId: string | null = null;
   selectedChannelId!: string;
+  showChannelMemberPopup = false;
+  fullChannelMembers: ChatUser[] = [];
 
   constructor(
     private channelService: ChannelService,
@@ -58,7 +60,7 @@ export class ChannelComponent {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -66,15 +68,24 @@ export class ChannelComponent {
       const channelId = params.get('id');
       if (channelId) {
         this.isLoadingChannel = true;
+
         this.channelService.getChannelById(channelId).subscribe(channel => {
           this.selectedChannel = channel;
+          this.selectedChannel.members ||= [];
           this.selectedChannelId = channel.id;
 
+          // Load first 3 preview users (avatars in header)
           const previewIds = channel.members.slice(0, 3);
           this.userService.getUsersByIds(previewIds).subscribe(users => {
             this.selectedChannelPreviewUsers = users;
           });
 
+          // Load ALL members for the Mitglieder-Popup
+          this.userService.getUsersByIds(channel.members).subscribe(users => {
+            this.fullChannelMembers = users;
+          });
+
+          // Get creator info
           this.userService.getUserById(channel.creatorId).subscribe(user => {
             this.creatorName = user.name;
             this.creatorOnline = user.online;
@@ -84,9 +95,15 @@ export class ChannelComponent {
         });
       }
     });
+
     this.channelService.openAddChannelDialog$.subscribe(() => {
       this.showAddChannelDialog = true;
     });
+  }
+  
+  handleOpenAddUserFromPopup() {
+    this.showChannelMemberPopup = false; 
+    this.openAddUserToChannelPopup();    
   }
 
   openThread(msg: ChannelMessage) {

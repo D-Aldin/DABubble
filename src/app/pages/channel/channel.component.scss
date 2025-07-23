@@ -380,3 +380,107 @@ h3 {
     height: 100%;
     width: 100%;
 }
+.members-popup {
+    background-color: #fff;
+    border-radius: 24px;
+    padding: 1.5rem;
+    width: 320px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: inherit;
+    position: relative;
+
+    .popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+    }
+
+    .member-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 300px;
+        overflow-y: auto;
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            span {
+                font-size: 1rem;
+            }
+
+            .online-indicator {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: #ccc;
+                position: absolute;
+                left: 32px;
+                bottom: 4px;
+
+                &.online {
+                    background-color: #34c759; // green dot
+                }
+            }
+        }
+    }
+
+   .add-users-btn {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 8px;
+       margin-top: 0.5rem;
+       padding: 10px 16px;
+       background-color: #f5f7ff;
+       border: none;
+       border-radius: 999px; // pill shape
+       font-size: 1rem;
+       font-weight: 500;
+       color: #444df2;
+       cursor: pointer;
+       transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+       img {
+           width: 20px;
+           height: 20px;
+           filter: brightness(0) saturate(100%) invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+       }
+
+       &:hover {
+           background-color: #eceefe;
+           box-shadow: 0 0 0 2px rgba(68, 77, 242, 0.2);
+       }
+
+       &:active {
+           background-color: #dde1fd;
+       }
+   }
+}

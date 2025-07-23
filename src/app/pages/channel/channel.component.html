@@ -3,6 +3,7 @@
   <div class="main-content">
     <!-- Channel Header -->
     <div class="channel-header">
+      <!-- Channel Title + Options -->
       <div class="channel-info channel-popup-wrapper" (click)="$event.stopPropagation()">
         <button class="channel-dropdown" (click)="toggleChannelOptionsPopup()">
           <span><b>#</b> {{ selectedChannel.title }}</span>
@@ -10,91 +11,124 @@
         </button>
 
         @if (showChannelOptionsPopup) {
-        <div class="channel-popup-overlay" (click)="toggleChannelOptionsPopup()">
-          <div class="channel-popup" (click)="$event.stopPropagation()">
-            <h3># {{ selectedChannel.title }}</h3>
+          <div class="channel-popup-overlay" (click)="toggleChannelOptionsPopup()">
+            <div class="channel-popup" (click)="$event.stopPropagation()">
+              <h3># {{ selectedChannel.title }}</h3>
 
-            <!-- Channel Name -->
-            <div class="popup-section boxed">
-              <div class="popup-section-header">
-                <span>Channel-Name</span>
-                @if (!isEditingChannelName) {
-                <button class="edit-btn" (click)="isEditingChannelName = true">Bearbeiten</button>
+              <!-- Channel Name -->
+              <div class="popup-section boxed">
+                <div class="popup-section-header">
+                  <span>Channel-Name</span>
+                  @if (!isEditingChannelName) {
+                    <button class="edit-btn" (click)="isEditingChannelName = true">Bearbeiten</button>
+                  }
+                </div>
+
+                @if (isEditingChannelName) {
+                  <div class="edit-wrapper">
+                    <div class="input-prefix">#</div>
+                    <input class="popup-input" [(ngModel)]="editedChannelName" />
+                    <button class="save-btn" (click)="saveChannelName()">Speichern</button>
+                  </div>
+                } @else {
+                  <p><b>#</b> {{ selectedChannel.title }}</p>
                 }
               </div>
 
-              @if (isEditingChannelName) {
-              <div class="edit-wrapper">
-                <div class="input-prefix">#</div>
-                <input class="popup-input" [(ngModel)]="editedChannelName" />
-                <button class="save-btn" (click)="saveChannelName()">Speichern</button>
-              </div>
-              } @else {
-              <p><b>#</b> {{ selectedChannel.title }}</p>
-              }
-            </div>
+              <!-- Channel Description -->
+              <div class="popup-section boxed">
+                <div class="popup-section-header">
+                  <span>Beschreibung</span>
+                  @if (!isEditingDescription) {
+                    <button class="edit-btn" (click)="isEditingDescription = true">Bearbeiten</button>
+                  }
+                </div>
 
-            <!-- Channel Description -->
-            <div class="popup-section boxed">
-              <div class="popup-section-header">
-                <span>Beschreibung</span>
-                @if (!isEditingDescription) {
-                <button class="edit-btn" (click)="isEditingDescription = true">Bearbeiten</button>
+                @if (isEditingDescription) {
+                  <textarea class="popup-textarea" [(ngModel)]="editedDescription"></textarea>
+                  <button class="save-btn" (click)="saveChannelDescription()">Speichern</button>
+                } @else {
+                  <p>{{ selectedChannel.description }}</p>
                 }
               </div>
 
-              @if (isEditingDescription) {
-              <textarea class="popup-textarea" [(ngModel)]="editedDescription"></textarea>
-              <button class="save-btn" (click)="saveChannelDescription()">Speichern</button>
-              } @else {
-              <p>{{ selectedChannel.description }}</p>
-              }
-            </div>
+              <!-- Created By -->
+              <div class="popup-section">
+                <span>Erstellt von</span>
+                <p class="creator-name" [ngClass]="{ 'online': creatorOnline }">{{ creatorName }}</p>
+              </div>
 
-            <!-- Created By -->
-            <div class="popup-section">
-              <span>Erstellt von</span>
-              <p class="creator-name" [ngClass]="{ 'online': creatorOnline }">{{ creatorName }}</p>
-            </div>
+              <!-- Actions -->
+              <div class="popup-actions">
+                <button class="leave-btn" (click)="toggleChannelOptionsPopup()">Channel verlassen</button>
+              </div>
 
-            <!-- Actions -->
-            <div class="popup-actions">
-              <button class="leave-btn" (click)="toggleChannelOptionsPopup()">Channel verlassen</button>
+              <button class="popup-close" (click)="toggleChannelOptionsPopup()">✕</button>
             </div>
-
-            <button class="popup-close" (click)="toggleChannelOptionsPopup()"></button>
           </div>
-        </div>
         }
       </div>
 
       <!-- Avatars + Add Users -->
       <div class="channel-users">
         @if (selectedChannel.members.length > 0) {
-        <div class="user-avatars">
-          @for (user of selectedChannelPreviewUsers; track user.id) {
-          <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
-          }
-          <span class="user-count">{{ selectedChannel.members.length }}</span>
-        </div>
+          <div class="user-avatars" (click)="showChannelMemberPopup = true">
+            @for (user of selectedChannelPreviewUsers; track user.id) {
+              <img [src]="user.avatarPath" class="user-avatar" [alt]="user.name" />
+            }
+            <span class="user-count">{{ selectedChannel.members.length }}</span>
+          </div>
         }
 
         <button class="add-user-btn" (click)="openAddUserToChannelPopup()" title="Mitglieder hinzufügen">
           <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" />
         </button>
 
+        <!-- Add People Dialog -->
         @if (showPeopleDialog) {
-        <div class="channel-popup-overlay" (click)="closePeopleDialog()">
-          <div class="dialog-container" (click)="$event.stopPropagation()">
-            <app-add-people [channelId]="selectedChannelIdForUserAdd"
-              [channelName]="createdChannelName || selectedChannelTitleForUserAdd" [mode]="addUserMode"
-              (cancel)="addUserMode === 'add-to-channel' ? handleUserAddCancel() : closePeopleDialog()"
-              (confirm)="addUserMode === 'add-to-channel' ? handleUserAddConfirm($event) : handlePeopleConfirmed($event)"></app-add-people>
+          <div class="channel-popup-overlay" (click)="closePeopleDialog()">
+            <div class="dialog-container" (click)="$event.stopPropagation()">
+              <app-add-people
+                [channelId]="selectedChannelIdForUserAdd"
+                [channelName]="createdChannelName || selectedChannelTitleForUserAdd"
+                [mode]="addUserMode"
+                (cancel)="addUserMode === 'add-to-channel' ? handleUserAddCancel() : closePeopleDialog()"
+                (confirm)="addUserMode === 'add-to-channel' ? handleUserAddConfirm($event) : handlePeopleConfirmed($event)">
+              </app-add-people>
+            </div>
           </div>
-        </div>
+        }
+
+        <!-- Mitglieder-Popup -->
+        @if (showChannelMemberPopup) {
+          <div class="channel-popup-overlay" (click)="showChannelMemberPopup = false">
+            <div class="dialog-container" (click)="$event.stopPropagation()">
+              <div class="members-popup">
+                <div class="popup-header">
+                  <h3>Mitglieder</h3>
+                  <button class="close-btn" (click)="showChannelMemberPopup = false">✕</button>
+                </div>
+
+                <div class="member-list">
+                  @for (user of fullChannelMembers; track user.id) {
+                    <div class="member-item">
+                      <img [src]="user.avatarPath" class="user-avatar" />
+                      <span>{{ user.name }} <span *ngIf="authService.currentUserId === user.id">(Du)</span></span>
+                      <span class="online-indicator" [class.online]="user.online"></span>
+                    </div>
+                  }
+                </div>
+
+                <button class="add-users-btn"  (click)="handleOpenAddUserFromPopup()">
+                  <img src="/assets/images/sidenav-img/person_add.svg" alt="Add User" /> Mitglieder hinzufügen
+                </button>
+              </div>
+            </div>
+          </div>
         }
       </div>
     </div>
+
 
 
     <div class="messages-container">
