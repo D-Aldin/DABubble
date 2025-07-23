@@ -50,6 +50,23 @@ export class UserService {
     return docData(userRef, { idField: 'id' }) as Observable<ChatUser>;
   }
 
+  sortUsersWithCurrentFirst(
+    users: { id: string; name: string; avatarPath: string }[],
+    currentUserId: string
+  ): ChatUser[] {
+    const chatUsers: ChatUser[] = users.map(u => ({
+      uid: u.id,
+      name: u.name,
+      avatarPath: u.avatarPath,
+      email: '',
+      online: false
+    }));
 
-  
+    return chatUsers.sort((a, b) => {
+      if (a.uid === currentUserId) return -1;
+      if (b.uid === currentUserId) return 1;
+      return 0;
+    });
+  }
+
 }
