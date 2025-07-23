@@ -28,7 +28,8 @@ export class SidenavComponent implements OnInit {
   isURLChannel: boolean | null = null;
   bounceMap: { [uid: string]: boolean } = {}; //For bounce animation when selecting user
 
-  constructor(private sharedService: SharedService, private router: Router, private userService: UserService) { }
+  constructor(private sharedService: SharedService, private router: Router, private userService: UserService, private route: ActivatedRoute
+  ) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   showChannels = true;
@@ -55,6 +56,7 @@ export class SidenavComponent implements OnInit {
         this.currentURL = event.urlAfterRedirects;
         this.checkGivenURL();
         this.handleRouteSelectionOnPageReload();
+        this.updateSelectedUserFromUrl();
       });
   }
 
@@ -62,6 +64,15 @@ export class SidenavComponent implements OnInit {
     this.users$.subscribe((users) => {
       this.usersArray = users;
     });
+  }
+
+  updateSelectedUserFromUrl(): void {
+    const match = this.currentURL.match(/\/dashboard\/direct-message\/([^\/]+)/);
+    if (match && match[1]) {
+      this.selectedUserId = match[1];
+    } else {
+      this.selectedUserId = '';
+    }
   }
 
   checkGivenURL(): void {

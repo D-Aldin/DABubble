@@ -21,6 +21,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
 import { ProfileCardComponent } from '../../shared/profile-card/profile-card.component';
+import { ActivatedRoute } from '@angular/router';
 
 interface CurrentUserId {
   userId: string;
@@ -41,8 +42,7 @@ interface CurrentUserId {
   styleUrl: './direct-message.component.scss',
 })
 export class DirectMessageComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewInit {
   messages: Message[] = [];
   selectedUser: any = null;
   currentUser: CurrentUserId | null = null;
@@ -67,8 +67,9 @@ export class DirectMessageComponent
     private messagingService: DirectMessagingService,
     private userService: UserService,
     private zone: NgZone,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     this.sharedService.sharedData$.subscribe((user) => {
@@ -89,6 +90,24 @@ export class DirectMessageComponent
     //   .subscribe((msg) => {
     //     this.messages = msg;
     //   });
+
+    this.route.paramMap.subscribe(async (params) => {
+      const selectedUid = params.get('uid');
+
+      if (this.currentUser?.userId && selectedUid) {
+        // 🔽 Fetch full user data first
+        const userDoc = await this.userService.getUserDocument(selectedUid);
+        if (userDoc) {
+          this.selectedUser = {
+            uid: selectedUid,
+            ...userDoc,
+          };
+
+          // 🔁 Now create the conversation
+          this.createConversation(this.currentUser.userId, selectedUid);
+        }
+      }
+    });
   }
 
   /** called once view is created; useful for initial deep‑link load */

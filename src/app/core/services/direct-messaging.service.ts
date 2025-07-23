@@ -15,6 +15,7 @@ import { Observable, map, of, timestamp } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
 import { addDoc, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { Message } from '../interfaces/message';
+import { ProfileCard } from '../interfaces/profile-card';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class DirectMessagingService {
   private firestore = inject(Firestore);
   private authService = inject(AuthService);
 
-  constructor() {}
+  constructor() { }
 
   getAllUsersExceptCurrent(): Observable<ChatUser[]> {
     const usersRef = collection(this.firestore, 'users');
@@ -33,6 +34,22 @@ export class DirectMessagingService {
       map((users) => {
         return (users as ChatUser[]).filter((user) => user.uid !== currentUid);
       })
+    );
+  }
+
+  getAllUsersForProfileCardCreation(): Observable<ProfileCard[]> {
+    const usersRef = collection(this.firestore, 'users');
+
+    return collectionData(usersRef, { idField: 'uid' }).pipe(
+      map((users) =>
+        (users as ChatUser[]).map((user) => ({
+          name: user.name,
+          email: user.email,
+          avatarPath: user.avatarPath,
+          online: user.online,
+          direktMessageLink: `/dashboard/direct-message/${user.uid}`,
+        }))
+      )
     );
   }
 

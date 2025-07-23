@@ -16,12 +16,12 @@ export class UserService {
     });
   }
 
-  async getUserDocument(uid: string): Promise<{ avatarPath: string, name: string } | null> {
+  async getUserDocument(uid: string): Promise<{ avatarPath: string, name: string, email: string } | null> {
     const userRef = doc(this.firestore, 'users', uid);
     const docSnap = await getDoc(userRef);
 
     if (docSnap.exists()) {
-      const data = docSnap.data() as { avatarPath: string; name: string };
+      const data = docSnap.data() as { avatarPath: string; name: string, email: string };
       return data;
     } else {
       console.warn('No such document!');

@@ -30,14 +30,8 @@
     <app-chat-box [src]="getAvatarPath(msg.senderId)" [userName]="getUserName(msg.senderId)"
       [time]="(msg.timestamp.toDate() | date:'shortTime') || ''" [message]="msg.text"
       [userMe]="msg.senderId !== currentUserId" [userId]="msg.senderId"
-      (profileClick)="toggleProfileCardOnClick($event)" />
+      (profileClick)="openProfileCard($event)"/>
 
-    <!-- <div class="profile-card-overlay" *ngIf="showProfileCard" (click)="toggleProfileCardOnClick(msg.senderId)">
-      <app-profile-card [name]="getUserName(msg.senderId)" [email]="'Guests have no email!'"
-        [src]="getAvatarPath(msg.senderId) || ''" [active]="true" [isInsertedInHeader]="false"
-        (click)="$event.stopPropagation()" (closeCard)="toggleProfileCardOnClick(msg.senderId)">
-      </app-profile-card>
-    </div> -->
     @if (msg.reactions) {
     <div class="message-reactions">
       @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
@@ -73,4 +67,18 @@
   </div>
   }
   }
+</div>
+
+<div class="profile-card-overlay" *ngIf="showProfileCard" (click)="closeProfileCard()">
+  <app-profile-card *ngIf="selectedUserForProfileCard as user" [name]="selectedUserForProfileCard.name"
+    [email]="selectedUserForProfileCard.email || 'Guests have no email!'"
+    [src]="selectedUserForProfileCard.avatarPath || ''" [active]="selectedUserForProfileCard.online"
+    [isInsertedInHeader]="false" (click)="$event.stopPropagation()" (closeCard)="closeProfileCard()">
+    <div class="button-container">
+      <button [routerLink]="user.direktMessageLink" class="goToDm-button">
+        <img src="./../../assets/icons/mode_comment.svg" alt="">
+        Nachricht
+      </button>
+    </div>
+  </app-profile-card>
 </div>

@@ -17,12 +17,15 @@ import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
 import { Timestamp } from 'firebase/firestore';
 import { ProfileCardComponent } from "../profile-card/profile-card.component";
+import { ProfileCard } from '../../core/interfaces/profile-card';
+import { DirectMessagingService } from '../../core/services/direct-messaging.service';
+import { RouterLink, RouterModule } from '@angular/router';
 
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent],
+  imports: [RouterModule, CommonModule, AsyncPipe, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })
@@ -39,14 +42,17 @@ export class ChannelMessagesComponent implements OnInit {
   editedMessageText: string = '';
   groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
   showProfileCard: boolean = false;
-  selectedUserId: string = '';
   showHoverOptions: boolean = false;
+  userDataForProfileCard$!: Observable<ProfileCard[]>;
+  userDataForProfileCard: ProfileCard[] = [];
+  selectedUserForProfileCard: ProfileCard | null = null;
 
   constructor(
     private channelService: ChannelService,
     private userService: UserService,
     private authService: AuthService,
-    private messagingService: ChannelMessagingService
+    private messagingService: ChannelMessagingService,
+    private directMessagingService: DirectMessagingService,
   ) { }
 
   ngOnInit(): void {
@@ -77,6 +83,8 @@ export class ChannelMessagesComponent implements OnInit {
         };
       });
     });
+
+    this.getObserveableProfileCardData()
   }
 
   groupMessagesByDate(messages: ChannelMessage[]): {
@@ -177,8 +185,30 @@ export class ChannelMessagesComponent implements OnInit {
     this.editedMessageText += emoji;
   }
 
-  toggleProfileCardOnClick(userId: string): void {
-    this.showProfileCard = !this.showProfileCard;
-    this.selectedUserId = userId
+  // toggleProfileCardOnClick(userId: string): void {
+  //   this.openProfileCard(userId)
+  //   this.showProfileCard = !this.showProfileCard;
+  // }
+
+  getObserveableProfileCardData(): void {
+    this.userDataForProfileCard$ = this.directMessagingService.getAllUsersForProfileCardCreation();
+
+    this.userDataForProfileCard$.subscribe(data => {
+      console.log('Loaded profile card data:', data);
+      this.userDataForProfileCard = data;
+    });
+  }
+
+  openProfileCard(uid: string): void {
+    const user = this.userDataForProfileCard.find(u => u.direktMessageLink.endsWith(uid));
+    if (user) {
+      this.selectedUserForProfileCard = user;
+      this.showProfileCard = true;
+    }
+  }
+
+  closeProfileCard(): void {
+    this.showProfileCard = false;
+    this.selectedUserForProfileCard = null;
   }
 }
