@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../core/services/channel.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
@@ -16,18 +25,28 @@ import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
 import { Timestamp } from 'firebase/firestore';
-import { ProfileCardComponent } from "../profile-card/profile-card.component";
+import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { RouterLink, RouterModule, Router, ActivatedRoute   } from '@angular/router';
+import { Router, RouterLink, RouterModule, Router, ActivatedRoute   } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { Zone } from 'zone.js/lib/zone-impl';
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [RouterModule, CommonModule, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent, SpinnerComponent],
+  imports: [
+    RouterModule,
+    CommonModule,
+    ChatBoxComponent,
+    PickerModule,
+    FormsModule,
+    TimestampLineComponent,
+    ProfileCardComponent,
+    SpinnerComponent,
+  ],
   templateUrl: './channel-messages.component.html',
-  styleUrls: ['./channel-messages.component.scss']
+  styleUrls: ['./channel-messages.component.scss'],
 })
 export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   @Input() channelId!: string;
@@ -40,7 +59,11 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   showEmojiPickerFor: string | null = null;
   editingMessageId: string | null = null;
   editedMessageText: string = '';
-  groupedMessages: { date: Date; dateString: string; messages: ChannelMessage[] }[] = [];
+  groupedMessages: {
+    date: Date;
+    dateString: string;
+    messages: ChannelMessage[];
+  }[] = [];
   showProfileCard: boolean = false;
   showHoverOptions: boolean = false;
   userDataForProfileCard$!: Observable<ProfileCard[]>;
@@ -48,7 +71,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   selectedUserForProfileCard: ProfileCard | null = null;
   isLoading: boolean = true;
   hasScrolledAfterLoad: boolean = false;
-  @ViewChild('scrollContainer', { static: false }) scrollContainer?: ElementRef<HTMLElement>;
+  @ViewChild('scrollContainer', { static: false })
+  scrollContainer?: ElementRef<HTMLElement>;
 
   constructor(
     private channelService: ChannelService,
@@ -60,44 +84,49 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef
-  ) { }
+    private router: Router,
+    private cdRef: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
 
-    this.messages$ = this.messagingService.getChannelMessages(this.channelId).pipe(
-      switchMap(messages => {
-        const tasks = messages.map(msg =>
-          from(this.messagingService.getReplyCount(this.channelId, msg.id!)).pipe(
-            map(count => ({ ...msg, replyCount: count }))
-          )
-        );
-        return forkJoin(tasks);
-      })
-    );
+    this.messages$ = this.messagingService
+      .getChannelMessages(this.channelId)
+      .pipe(
+        switchMap((messages) => {
+          const tasks = messages.map((msg) =>
+            from(
+              this.messagingService.getReplyCount(this.channelId, msg.id!)
+            ).pipe(map((count) => ({ ...msg, replyCount: count })))
+          );
+          return forkJoin(tasks);
+        })
+      );
 
     this.messages$.subscribe((msgs) => {
       this.isLoading = true;
       this.hasScrolledAfterLoad = false;
       this.groupedMessages = this.groupMessagesByDate(msgs);
-      this.cdRef.detectChanges();
+      // this.cdRef.detectChanges();
       this.isLoading = false;
     });
 
-    this.userService.getAllUsers().subscribe(users => {
+    this.userService.getAllUsers().subscribe((users) => {
       // this.usersMap = Object.fromEntries(users.map(u => [u.id, { ...u, uid: u.id, online: false }]));
       this.usersMap = {};
-      users.forEach(user => {
+      users.forEach((user) => {
         this.usersMap[user.id] = {
           ...user,
           uid: user.id,
           online: false,
-          email: ''
+          email: '',
         };
       });
     });
 
-    this.getObserveableProfileCardData()
+    this.getObserveableProfileCardData();
   }
 
   groupMessagesByDate(messages: ChannelMessage[]): {
@@ -107,9 +136,12 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }[] {
     const grouped: { [key: string]: ChannelMessage[] } = {};
 
-    messages.forEach(msg => {
+    messages.forEach((msg) => {
       const date = msg.timestamp.toDate();
-      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        '0'
+      )}-${String(date.getDate()).padStart(2, '0')}`;
       if (!grouped[key]) grouped[key] = [];
       grouped[key].push(msg);
     });
@@ -119,7 +151,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       return {
         date: new Date(year, month - 1, day),
         dateString: key,
-        messages
+        messages,
       };
     });
   }
@@ -127,19 +159,25 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   formatDate(date: Date): string {
     const today = new Date();
 
-    const msgDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
-    const todayDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
+    const msgDate =
+      date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    const todayDate =
+      today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
 
     if (msgDate === todayDate) return 'today';
 
     return date.toLocaleDateString('de-DE'); // or your preferred format
-  };
-
+  }
 
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
 
-    await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
+    await this.messagingService.toggleReaction(
+      this.channelId,
+      messageId,
+      emoji,
+      this.currentUserId
+    );
     this.showEmojiPickerFor = null;
   }
 
@@ -147,17 +185,19 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     return date.toLocaleDateString(); // or any other formatting logic
   }
 
-
-  groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
+  groupReactions(reactions: { [userId: string]: string }): {
+    [emoji: string]: number;
+  } {
     const counts: { [emoji: string]: number } = {};
-    Object.values(reactions).forEach(emoji => {
+    Object.values(reactions).forEach((emoji) => {
       counts[emoji] = (counts[emoji] || 0) + 1;
     });
     return counts;
   }
 
   toggleEmojiPicker(messageId: string) {
-    this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
+    this.showEmojiPickerFor =
+      this.showEmojiPickerFor === messageId ? null : messageId;
   }
 
   getUserName(uid: string): string {
@@ -165,16 +205,18 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   getAvatarPath(uid: string): string {
-    return this.usersMap[uid]?.avatarPath ?? '/assets/images/default-avatar.svg';
+    return (
+      this.usersMap[uid]?.avatarPath ?? '/assets/images/default-avatar.svg'
+    );
   }
 
   openThread(messageId: string) {
-      this.replyToMessage.emit(messageId);
+    this.replyToMessage.emit(messageId);
 
-      this.router.navigate([], {
-      queryParams: { thread: messageId },
-      queryParamsHandling: 'merge'
-    });
+    // this.router.navigate([], {
+    //   queryParams: { thread: messageId },
+    //   queryParamsHandling: 'merge',
+    // });
   }
 
   objectKeys(obj: any): string[] {
@@ -195,7 +237,11 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   async saveEditedMessage(msgId: string) {
     if (!this.channelId || !msgId || !this.editedMessageText.trim()) return;
-    await this.messagingService.updateChannelMessageText(this.channelId, msgId, this.editedMessageText.trim());
+    await this.messagingService.updateChannelMessageText(
+      this.channelId,
+      msgId,
+      this.editedMessageText.trim()
+    );
     this.cancelEditing();
   }
 
@@ -204,16 +250,18 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   getObserveableProfileCardData(): void {
-    this.userDataForProfileCard$ = this.directMessagingService.getAllUsersForProfileCardCreation();
+    this.userDataForProfileCard$ =
+      this.directMessagingService.getAllUsersForProfileCardCreation();
 
-    this.userDataForProfileCard$.subscribe(data => {
-      console.log('Loaded profile card data:', data);
+    this.userDataForProfileCard$.subscribe((data) => {
       this.userDataForProfileCard = data;
     });
   }
 
   openProfileCard(uid: string): void {
-    const user = this.userDataForProfileCard.find(u => u.direktMessageLink.endsWith(uid));
+    const user = this.userDataForProfileCard.find((u) =>
+      u.direktMessageLink.endsWith(uid)
+    );
     if (user) {
       this.selectedUserForProfileCard = user;
       this.showProfileCard = true;
@@ -234,17 +282,16 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     el.scrollTop = el.scrollHeight;
   }
 
-
   ngAfterViewInit(): void {
-    this.zone.onStable.pipe(take(1)).subscribe(() => {
-      this.scrollToBottom();
-    });
+    // this.zone.onStable.pipe(take(1)).subscribe(() => {
+    //   this.scrollToBottom();
+    // });
   }
 
   ngAfterViewChecked(): void {
     if (!this.isLoading && !this.hasScrolledAfterLoad) {
       this.scrollToBottom();
-      this.hasScrolledAfterLoad = true; // ✅ only scroll once
+      this.hasScrolledAfterLoad = true;
     }
   }
 }

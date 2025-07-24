@@ -3,7 +3,7 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
 import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, Event } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
 import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
@@ -16,6 +16,8 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
+import { DashboardIntroComponent } from './dashboard-intro/dashboard-intro.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,8 +28,9 @@ import { ThreadMessagingService } from '../../core/services/thread-messaging.ser
     CommonModule,
     RouterModule,
     RouterOutlet,
-    ThreadComponent
-],
+    ThreadComponent,
+    DashboardIntroComponent
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -41,11 +44,6 @@ export class DashboardComponent {
   channelName = '';
   channelDescription = '';
   currentUrl: string = ''; // use this to keep track of current URL, which is tracked in onInit()
-  // selectedChannelPreviewUsers: ChatUser[] = [];
-  // selectedChannel: Channel | null = null;
-  // showChannelOptionsPopup = false;
-  // creatorName: string = '';
-  // creatorOnline: boolean = false;
   showAddUserToChannelPopup = false;
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
   selectedChannelIdForUserAdd: string = '';
@@ -53,11 +51,8 @@ export class DashboardComponent {
   showThread = false;
   selectedMessageId: string = '';
   selectedChannelId: string = '';
+  isIntroSectionVisible: boolean = true;
   @Output() replyToThread = new EventEmitter<string>();
-
-  
-  // Comments will be removed after confirming if everything functions corerctly
-  // until then please dont remove them
 
   constructor(
     private channelService: ChannelService,
@@ -105,6 +100,18 @@ export class DashboardComponent {
       }
     });
 
+    this.checkDashboardRouting();
+  }
+
+    checkDashboardRouting() {
+    this.router.events
+      .pipe(
+        filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
+      )
+      .subscribe((event) => {
+        this.currentUrl = event.urlAfterRedirects;
+        this.isIntroSectionVisible = this.currentUrl === '/dashboard';
+      });
   }
 
   openThread(channelId: string, messageId: string) {
@@ -114,13 +121,13 @@ export class DashboardComponent {
     this.showThread = true;
   }
 
-   onCloseThread() {
+  onCloseThread() {
     this.threadService.closeThread();
   }
 
   onReplyToMessage(messageId: string) {
-  this.replyToThread.emit(messageId);
-}
+    this.replyToThread.emit(messageId);
+  }
 
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;
@@ -150,161 +157,4 @@ export class DashboardComponent {
     this.createdChannelName = '';
     this.showPeopleDialog = false;
   }
-
-  // ngOnInit(): void {
-  //   this.router.events.subscribe(event => {
-  //     if (event instanceof NavigationEnd) {
-  //       this.currentUrl = event.urlAfterRedirects;
-  //       // Clear selectedChannel when navigating to direct-messages
-  //       if (this.currentUrl.startsWith('/dashboard/direct-message/')) {
-  //         this.selectedChannel = null;
-  //       }
-  //     }
-  //   });
-  // }
-
-  // toggleChannelOptionsPopup() {
-  //   this.showChannelOptionsPopup = !this.showChannelOptionsPopup;
-
-  //   if (this.showChannelOptionsPopup && this.selectedChannel?.creatorId) {
-  //     this.userService.getUserById(this.selectedChannel.creatorId).subscribe(user => {
-  //       this.creatorName = user.name;
-  //       this.creatorOnline = user.online;
-  //     });
-  //   }
-  // }
-
-  // editChannelName() {
-  //   // You can show a dialog or input to change the name
-  //   console.log('Edit channel name');
-  // }
-
-  // editChannelDescription() {
-  //   // You can show a dialog or input to change the description
-  //   console.log('Edit channel description');
-  // }
-
-  // handleProceedToPeople(data: { name: string; description: string }) {
-  //   this.channelDataBuffer = {
-  //     title: data.name,
-  //     description: data.description,
-  //     createdAt: new Date(),
-  //   };
-  //   this.createdChannelName = data.name;
-  //   this.closeAddChannelDialog();
-  //   this.openAddPeopleDialog({
-  //     name: data.name,
-  //     description: data.description,
-  //   });
-
-  // }
-
-  // selectChannel(channel: Channel): void {
-  //   this.selectedChannel = channel;
-  //   // Load preview users
-  //   const previewIds = channel.members.slice(0, 3);
-  //   this.userService.getUsersByIds(previewIds).subscribe(users => {
-  //     this.selectedChannelPreviewUsers = users;
-  //   });
-  //   // ✅ Navigate away from /dashboard/direct-messages
-  //   this.router.navigate(['/dashboard']);
-  // }
-
-  // get selectedChannelPreviewMembers(): string[] {
-  //   return this.selectedChannel?.members?.slice(0, 3) || [];
-  // }
-
-  // async handlePeopleConfirmed(selectedUsers: string[]) {
-  //   let finalMembers: string[] = [];
-
-  //   if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
-  //     const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
-  //     finalMembers = usersSnapshot.docs.map((doc) => doc.id);
-  //   } else {
-  //     finalMembers = selectedUsers;
-  //   }
-
-  //   const finalChannel = {
-  //     ...this.channelDataBuffer,
-  //     members: finalMembers,
-  //     creatorId: this.authService.currentUserId, 
-  //   } as Channel;
-
-
-  //   this.channelService.createChannel(finalChannel).then(() => {
-  //     console.log('Channel created with users:', finalMembers);
-  //     this.closePeopleDialog();
-  //   });
-  // }
-
-  // openAddUserToChannelPopup() {//to add new user to current-channel
-  //     this.showPeopleDialog = true;
-  //   this.showAddUserToChannelPopup = true;
-  //   this.addUserMode = 'add-to-channel';
-  //   this.selectedChannelIdForUserAdd = this.selectedChannel?.id!;
-  //   this.selectedChannelTitleForUserAdd = this.selectedChannel?.title!;
-  //   console.log('Popup opens');
-
-  // }
-
-  // handleUserAddConfirm(userIds: string[]) {
-  //   this.channelService.addUsersToChannel(this.selectedChannelIdForUserAdd, userIds).then(() => {
-  //     // Merge new user IDs into selectedChannel
-  //     if (this.selectedChannel) {
-  //       this.selectedChannel.members.push(...userIds.filter(id => !this.selectedChannel!.members.includes(id)));
-  //     }
-  //     // Close dialog
-  //     this.showAddUserToChannelPopup = false;
-  //     this.showPeopleDialog = false;
-  //     // Refresh user preview avatars
-  //     const previewIds = this.selectedChannel!.members.slice(0, 3);
-  //     this.userService.getUsersByIds(previewIds).subscribe(users => {
-  //       this.selectedChannelPreviewUsers = users;
-  //     });
-  //   });
-  // }
-
-  // handleUserAddCancel() {
-  //   this.showAddUserToChannelPopup = false;
-  // }
-
-  // handleChannelCreation(channelData: Channel) {
-  //   this.channelName = channelData.title;
-  //   this.channelDescription = channelData.description;
-  //   this.createdChannelName = channelData.title;
-  //   this.openAddPeopleDialog({
-  //     name: channelData.title,
-  //     description: channelData.description,
-  //   });
-  // }
-
-  // @HostListener('document:click')
-  //   closePopupOnOutsideClick() {
-  //     this.showChannelOptionsPopup = false;
-  //   }
-
-  // handleChannelCreation(channelData: Channel) {
-  //   this.channelName = channelData.title;
-  //   this.channelDescription = channelData.description;
-  //   this.createdChannelName = channelData.title;
-  //   this.openAddPeopleDialog({
-  //     name: channelData.title,
-  //     description: channelData.description,
-  //   });
-  // }
-
-  // handleProceedToPeople(data: { name: string; description: string }) {
-  //   this.channelDataBuffer = {
-  //     title: data.name,
-  //     description: data.description,
-  //     createdAt: new Date(),
-  //   };
-  //   this.createdChannelName = data.name;
-  //   this.closeAddChannelDialog();
-  //   this.openAddPeopleDialog({
-  //     name: data.name,
-  //     description: data.description,
-  //   });
-
-  // }
 }

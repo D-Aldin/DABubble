@@ -33,6 +33,7 @@ export class HeaderComponent {
   DASHBOARD_PREFIX: string = '/dashboard';
   DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
   CHANNEL_PREFIX: string = '/dashboard/channel';
+  currentURL: string = '';
 
   constructor(
     public router: Router,
@@ -47,6 +48,7 @@ export class HeaderComponent {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
         const url = (event as NavigationEnd).urlAfterRedirects;
+        this.currentURL = url;
         this.handleLoginAppearance(url);
         this.handleDashboardAppearance(url);
       });
@@ -88,15 +90,12 @@ export class HeaderComponent {
 
   logout(): void {
     const user = this.userAuthService.getCurrentUser();
-
-    // Prevent logout for guest users
     if (user?.isAnonymous) {
       console.log('Guest user – not logging out');
       this.setUserOnlineStatus(user.uid, false);
       this.router.navigate(['/login']); // Or wherever you want to redirect
       return;
     }
-
     this.userAuthService.logout().then(() => {
       if (user) {
         this.setUserOnlineStatus(user.uid, false);
@@ -136,12 +135,8 @@ export class HeaderComponent {
     if (userDoc && userDoc.name && userDoc.avatarPath) {
       this.userName = userDoc.name;
       this.avatarPath = userDoc.avatarPath;
-      // console.log(this.userName);
-      // console.log(this.avatarPath);
     } else {
       this.userName = 'Unbekannt';
-      // console.log(this.userName);
-      // console.log(this.avatarPath);
     }
   }
 
@@ -168,5 +163,12 @@ export class HeaderComponent {
   async setUserOnlineStatus(uid: string, online: boolean) {
     await this.userService.setOnlineStatus(uid, online);
     this.onlineStatus = online;
+  }
+
+  dashboardIntroRouting(currentURL: string): string {
+    if (currentURL.includes('/dashboard')) {
+      return '/dashboard'
+    }
+    return currentURL;
   }
 }

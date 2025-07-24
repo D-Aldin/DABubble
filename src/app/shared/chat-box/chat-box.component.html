@@ -1,24 +1,23 @@
 <div class="thread-message" [class.other-user]="!userMe" (mouseenter)="onHover(true)" (mouseleave)="onHover(false)">
-   <!-- This is the hover overlay which shows the interaction options to a message -->
-   <div class="message-options" [class.visible]="showOptions">
-      <img src="../../../assets/icons/Answer.svg" alt="Mehr Optionen" />
-      <img src="../../../assets/icons/add_reaction.svg" alt="Reaktion" />
-      <span class="emoji-button">✅</span>
-      <span class="emoji-button">👍</span>
-   </div>
-
-
-   <div class="avatar" (click)="onNameClick()"><img [src]="src" alt="avatar"></div>
-   <div class="user-name" (click)="onNameClick()">{{userName}}</div>
-   <div class="time">
-      <p>{{time}}</p>
-   </div>
-   <div class="message" >
-      <span *ngFor="let part of changedMessage">
-  <ng-container *ngIf="part.isTag; else normalText">
-    <a [routerLink]="['/dashboard/channels', part.text]">#{{ part.text }}</a>
-  </ng-container>
-  <ng-template #normalText>{{ part.text }}</ng-template>
-</span>
-   </div>
+<!-- This is the hover overlay which shows the interaction options to a message -->
+<div class="message-options" [class.visible]="showOptions">
+   <img src="../../../assets/icons/Answer.svg" alt="Mehr Optionen" />
+   <img src="../../../assets/icons/add_reaction.svg" alt="Reaktion" />
+   <span class="emoji-button">✅</span>
+   <span class="emoji-button">👍</span>
+</div>
+<div class="avatar" (click)="onNameClick()"><img [src]="src" alt="avatar"></div>
+<div class="user-name" (click)="onNameClick()">{{userName}}</div>
+<div class="time">
+   <p>{{time}}</p>
+</div>
+<div class="message" >
+   @for (part of changedMessage; track $index) {
+      @if (part.isTag) {
+         <a [routerLink]="['/dashboard/channel', part.channelId]">#{{ part.text }}</a>
+      } @else {
+         {{ part.text }}
+      }
+   }
+</div>
 </div>

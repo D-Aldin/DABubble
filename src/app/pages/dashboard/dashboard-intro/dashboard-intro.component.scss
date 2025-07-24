@@ -1,0 +1,141 @@
+.main-content {
+    background-color: #ffffff;
+    border-radius: 36px;
+    height: calc(100vh - 140px);
+    padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+// Intro content wrapper
+.intro-wrapper {
+    text-align: center;
+    animation: fadeInSlideUp 0.6s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; // increased gap slightly for visual spacing
+    padding: 24px;
+}
+
+.intro-wrapper h1 {
+    color: #4d4dff;
+    font-size: 2.4rem; // increased from 2rem
+    font-weight: 700;
+    animation: slideInFromTop 0.8s ease-out;
+}
+
+.intro-wrapper p {
+    font-size: 1.3rem; // increased from 1.1rem
+    color: #333;
+    animation: fadeIn 1.2s ease-in;
+}
+
+.intro-wrapper h2 {
+    font-size: 1.5rem;
+    color: rgba(151, 71, 255, 1);;
+    margin-top: 12px;
+    animation: fadeIn 1.2s ease-out;
+}
+
+.tech-icons {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 24px; // slight increase for spacing
+    animation: fadeInIcons 1.5s ease-in-out;
+}
+
+.tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem; // increased from 0.95rem
+    color: #333;
+
+    .ts-img {
+        width: 66px;
+    }
+
+    .fb-img {
+        width: 48px;
+    }
+
+    .ang-img {
+        width: 60px;
+    }
+}
+
+.tech-item img {
+    height: auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.tech-item img:hover {
+    transform: scale(1.15);
+}
+
+
+@keyframes fadeInSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+
+    60% {
+        opacity: 0.7;
+        transform: translateY(-5px) scale(1.02);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px) rotateX(60deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInIcons {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-20deg);
+    }
+
+    60% {
+        opacity: 0.8;
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+}
