@@ -36,7 +36,7 @@
         <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
             <div class="message-reactions">
               @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
-                <a class="reply-count">
+                <a class="reply-count" (click)="openThread(msg.id!)">
                   {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
                 </a>
                 <span class="reaction">

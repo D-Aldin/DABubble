@@ -19,7 +19,7 @@ import { Timestamp } from 'firebase/firestore';
 import { ProfileCardComponent } from "../profile-card/profile-card.component";
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterLink, RouterModule, Router  } from '@angular/router';
 
 
 @Component({
@@ -53,6 +53,7 @@ export class ChannelMessagesComponent implements OnInit {
     private authService: AuthService,
     private messagingService: ChannelMessagingService,
     private directMessagingService: DirectMessagingService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -156,7 +157,12 @@ export class ChannelMessagesComponent implements OnInit {
   }
 
   openThread(messageId: string) {
-    this.replyToMessage.emit(messageId);
+      this.replyToMessage.emit(messageId);
+
+      this.router.navigate([], {
+      queryParams: { thread: messageId },
+      queryParamsHandling: 'merge'
+    });
   }
 
   objectKeys(obj: any): string[] {
