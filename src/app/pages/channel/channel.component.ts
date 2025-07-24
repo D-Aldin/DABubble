@@ -15,6 +15,7 @@ import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
 import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
+import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { take } from 'rxjs';
 
 @Component({
@@ -61,7 +62,8 @@ export class ChannelComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    public authService: AuthService
+    public authService: AuthService,
+    private threadService: ThreadMessagingService,
   ) { }
 
   ngOnInit(): void {
@@ -141,7 +143,12 @@ export class ChannelComponent implements OnInit {
   }
 
   onReplyToMessage(messageId: string) {
-    this.openedThreadMessageId = messageId;
+    this.threadService.openThread(messageId);
+
+    this.router.navigate([], {
+      queryParams: { thread: messageId },
+      queryParamsHandling: 'merge'
+    });
   }
 
   closeThread() {

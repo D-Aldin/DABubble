@@ -17,9 +17,10 @@ export class ThreadComponent {
   emojiPicker: boolean = false;
   @Input() messageId!: string;
   @Input() channelId!: string;
+  @Output() closeThread = new EventEmitter<void>();
 
   close(event: Event) {
-    this.isClose = true;
+    this.closeThread.emit();
     event.stopPropagation();
   }
 

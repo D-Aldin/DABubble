@@ -38,6 +38,13 @@
 
         <router-outlet></router-outlet>
       </div>
+       @if (showThread) {
+        <app-thread
+          class="thread-container"
+          [messageId]="selectedMessageId"
+          (closeThread)="onCloseThread()">
+        </app-thread>
+      }
     </div>
   </section>
 </div>

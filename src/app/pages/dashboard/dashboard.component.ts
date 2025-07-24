@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, EventEmitter, Output } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
@@ -15,6 +15,7 @@ import { UserService } from '../../core/services/user.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
+import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +25,8 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
     HeaderComponent,
     CommonModule,
     RouterModule,
-    RouterOutlet
+    RouterOutlet,
+    ThreadComponent
 ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -48,6 +50,11 @@ export class DashboardComponent {
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
+  showThread = false;
+  selectedMessageId: string = '';
+  selectedChannelId: string = '';
+  @Output() replyToThread = new EventEmitter<string>();
+
   
   // Comments will be removed after confirming if everything functions corerctly
   // until then please dont remove them
@@ -57,7 +64,8 @@ export class DashboardComponent {
     private firestore: Firestore,
     private userService: UserService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private threadService: ThreadMessagingService
   ) { }
 
   chatMessages = [
@@ -83,6 +91,32 @@ export class DashboardComponent {
       userMe: false,
     },
   ];
+
+  ngOnInit(): void {
+    this.threadService.threadMessageId$.subscribe((messageId) => {
+      if (messageId) {
+        this.selectedMessageId = messageId;
+        this.showThread = true;
+      } else {
+        this.selectedMessageId = '';
+        this.showThread = false;
+      }
+    });
+  }
+
+  openThread(channelId: string, messageId: string) {
+    this.selectedChannelId = channelId;
+    this.selectedMessageId = messageId;
+    this.showThread = true;
+  }
+
+   onCloseThread() {
+    this.threadService.closeThread();
+  }
+
+  onReplyToMessage(messageId: string) {
+  this.replyToThread.emit(messageId);
+}
 
   toggleSidenav() {
     this.showSidenav = !this.showSidenav;

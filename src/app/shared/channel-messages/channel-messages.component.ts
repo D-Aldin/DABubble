@@ -20,7 +20,7 @@ import { ProfileCardComponent } from "../profile-card/profile-card.component";
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { RouterLink, RouterModule } from '@angular/router';
-import { SpinnerComponent } from "../spinner/spinner.component";
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 
 @Component({
@@ -57,8 +57,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private messagingService: ChannelMessagingService,
     private directMessagingService: DirectMessagingService,
-    private zone: NgZone,
-    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -168,7 +166,12 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   openThread(messageId: string) {
-    this.replyToMessage.emit(messageId);
+      this.replyToMessage.emit(messageId);
+
+      this.router.navigate([], {
+      queryParams: { thread: messageId },
+      queryParamsHandling: 'merge'
+    });
   }
 
   objectKeys(obj: any): string[] {
