@@ -11,13 +11,15 @@
 <div class="time">
    <p>{{time}}</p>
 </div>
-<div class="message" >
-   @for (part of changedMessage; track $index) {
-      @if (part.isTag) {
-         <a [routerLink]="['/dashboard/channel', part.channelId]">#{{ part.text }}</a>
-      } @else {
-         {{ part.text }}
-      }
-   }
+<div class="message">
+  @for (part of changedMessage; track $index) {
+    @if (part.tagChannel) {
+      <a [routerLink]="['/dashboard/channel', part.channelId]">#{{ part.text }}</a>
+    } @else if (part.tagUser) {
+      <span class="user-tag" (click)="testFunction()">&#64;{{ part.text }}</span>
+    } @else {
+      {{ part.text }}
+    }
+  }
 </div>
 </div>

@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule, getLocaleFirstDayOfWeek } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
+import { User } from '../../core/interfaces/user';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-chat-box',
@@ -18,14 +20,29 @@ export class ChatBoxComponent {
   @Input({ required: true }) message!: string;
   @Input({ required: true }) userMe: boolean = true;
   @Input({ required: true }) userId!: string;
-  changedMessage: { text: string; isTag: boolean; channelId: string }[] = [];
+  changedMessage: {
+    text: string;
+    tagChannel: boolean;
+    tagUser: boolean;
+    channelId: string;
+    userId: string;
+  }[] = [];
   @Output() profileClick = new EventEmitter<string>();
   showOptions: boolean = false;
   channels: Channel[] = [];
+  users: User[] = [];
 
-  constructor(private channelService: ChannelService) {
+  constructor(
+    private channelService: ChannelService,
+    private userService: UserService
+  ) {
     this.channelService.getChannels().subscribe((channels: Channel[]) => {
       this.channels = channels;
+      this.changedMessage = this.changedMessageWithLinks(this.message);
+    });
+
+    this.userService.getAllUsers().subscribe((user: User[]) => {
+      this.users = user;
       this.changedMessage = this.changedMessageWithLinks(this.message);
     });
   }
@@ -44,43 +61,63 @@ export class ChatBoxComponent {
     this.profileClick.emit(this.userId);
   }
 
-  changedMessageWithLinks(
-    message: string
-  ): { text: string; isTag: boolean; channelId: string }[] {
-    const result: { text: string; isTag: boolean; channelId: string }[] = [];
-    const regex = /#[a-zA-Z0-9\-]+/g;
+  changedMessageWithLinks(message: string): {
+    text: string;
+    tagChannel: boolean;
+    tagUser: boolean;
+    channelId: string;
+    userId: string;
+  }[] {
+    const result: {
+      text: string;
+      tagChannel: boolean;
+      tagUser: boolean;
+      channelId: string;
+      userId: string;
+    }[] = [];
+
+    const combinedRegex = /(@[\w\s]+|#[\w\-]+)/g;
     let lastIndex = 0;
     let match;
 
-    while ((match = regex.exec(message)) !== null) {
+    while ((match = combinedRegex.exec(message)) !== null) {
       if (match.index > lastIndex) {
         result.push({
           text: message.slice(lastIndex, match.index),
-          isTag: false,
+          tagChannel: false,
+          tagUser: false,
           channelId: '',
+          userId: '',
         });
       }
 
       const tagText = match[0].slice(1);
-      const channelId = this.findChannelByTitle(tagText);
+      const isChannel = match[0].startsWith('#');
+      const isUser = match[0].startsWith('@');
+
+      const channelId = isChannel ? this.findChannelByTitle(tagText) : '';
+      const userId = isUser ? this.findUserByName(tagText) : '';
 
       result.push({
         text: tagText,
-        isTag: true,
+        tagChannel: isChannel,
+        tagUser: isUser,
         channelId: channelId ?? '',
+        userId: userId ?? '',
       });
 
-      lastIndex = regex.lastIndex;
+      lastIndex = combinedRegex.lastIndex;
     }
 
     if (lastIndex < message.length) {
       result.push({
         text: message.slice(lastIndex),
-        isTag: false,
+        tagChannel: false,
+        tagUser: false,
         channelId: '',
+        userId: '',
       });
     }
-    console.log(result);
 
     return result;
   }
@@ -88,5 +125,14 @@ export class ChatBoxComponent {
   findChannelByTitle(channelTag: string): string | undefined {
     const found = this.channels.find((channel) => channel.title === channelTag);
     return found?.id;
+  }
+
+  findUserByName(userTag: string): string | undefined {
+    const found = this.users.find((user) => user.name === userTag);
+    return found?.id;
+  }
+
+  testFunction() {
+    console.log('hello');
   }
 }

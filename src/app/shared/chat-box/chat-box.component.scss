@@ -259,4 +259,9 @@
       transform: scaleX(-1);
     }
   }
+
+  .user-tag {
+    cursor: pointer;
+    font-weight: bold;
+  }
 }
