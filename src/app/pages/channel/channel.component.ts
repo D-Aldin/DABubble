@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { AuthService } from '../../core/services/auth.service';
@@ -55,6 +55,7 @@ export class ChannelComponent implements OnInit {
   selectedChannelId!: string;
   showChannelMemberPopup = false;
   fullChannelMembers: ChatUser[] = [];
+  channelId: string = '';
 
   constructor(
     private channelService: ChannelService,
@@ -67,50 +68,48 @@ export class ChannelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const channelId = params.get('id');
-      if (channelId) {
-        this.isLoadingChannel = true;
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('id'); // NOT 'channelId'!
+    if (id) {
+      this.channelId = id;
+      this.selectedChannelId = id;
+      console.log('ChannelComponent loaded with ID:', this.channelId);
 
-        this.channelService.getChannelById(channelId).subscribe(channel => {
-          this.selectedChannel = channel;
-          this.selectedChannel.members ||= [];
-          this.selectedChannelId = channel.id;
+      this.isLoadingChannel = true;
+      this.channelService.getChannelById(id).subscribe(channel => {
+        this.selectedChannel = channel;
+        this.selectedChannel.members ||= [];
 
-          // Load first 3 preview users (avatars in header)
-          const previewIds = channel.members.slice(0, 3);
-          this.userService.getUsersByIds(previewIds).subscribe(users => {
-            this.selectedChannelPreviewUsers = users;
-          });
-
-          // Load ALL members for the Mitglieder-Popup
-          this.userService.getUsersByIds(channel.members).subscribe(users => {
-            const currentUserId = this.authService.currentUserId;
-
-            users.sort((a, b) => {// Sort so that current user is always first if present
-              if (a.id === currentUserId) return -1;
-              if (b.id === currentUserId) return 1;
-              return 0;
-            });
-
-            this.fullChannelMembers = users;
-          });
-
-          // Get creator info
-          this.userService.getUserById(channel.creatorId).subscribe(user => {
-            this.creatorName = user.name;
-            this.creatorOnline = user.online;
-          });
-
-          this.isLoadingChannel = false;
+        const previewIds = channel.members.slice(0, 3);
+        this.userService.getUsersByIds(previewIds).subscribe(users => {
+          this.selectedChannelPreviewUsers = users;
         });
-      }
-    });
 
-    this.channelService.openAddChannelDialog$.subscribe(() => {
-      this.showAddChannelDialog = true;
-    });
-  }
+        this.userService.getUsersByIds(channel.members).subscribe(users => {
+          const currentUserId = this.authService.currentUserId;
+          users.sort((a, b) => {
+            if (a.id === currentUserId) return -1;
+            if (b.id === currentUserId) return 1;
+            return 0;
+          });
+          this.fullChannelMembers = users;
+        });
+
+        this.userService.getUserById(channel.creatorId).subscribe(user => {
+          this.creatorName = user.name;
+          this.creatorOnline = user.online;
+        });
+
+        this.isLoadingChannel = false;
+      });
+    }
+  });
+
+  this.channelService.openAddChannelDialog$.subscribe(() => {
+    this.showAddChannelDialog = true;
+  });
+}
+
 
   leaveChannel() {
     const currentUserId = this.authService.currentUserId;
@@ -138,18 +137,26 @@ export class ChannelComponent implements OnInit {
     this.openAddUserToChannelPopup();
   }
 
-  openThread(msg: ChannelMessage) {
-    this.openedThreadMessageId = msg.id!;
-  }
+  openThread(channelId: string, messageId: string) {
+  this.threadService.openThread(channelId, messageId); 
+}
 
   onReplyToMessage(messageId: string) {
-    this.threadService.openThread(messageId);
-
-    this.router.navigate([], {
-      queryParams: { thread: messageId },
-      queryParamsHandling: 'merge'
-    });
+  if (!this.channelId) {
+    console.warn('Missing channelId in channel component');
+    return;
   }
+
+  this.threadService.openThread(this.channelId, messageId);
+
+  this.router.navigate([], {
+    queryParams: { thread: messageId },
+    queryParamsHandling: 'merge'
+  });
+}
+
+
+
 
   closeThread() {
     this.openedThreadMessageId = null;

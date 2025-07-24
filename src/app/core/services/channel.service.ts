@@ -1,12 +1,27 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc, updateDoc, arrayUnion, doc, docData, serverTimestamp,  query,
-  orderBy, where, QuerySnapshot, DocumentData, getDocs } from '@angular/fire/firestore';
-import { Observable, Subject, } from 'rxjs';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+  updateDoc,
+  arrayUnion,
+  doc,
+  docData,
+  serverTimestamp,
+  query,
+  orderBy,
+  where,
+  QuerySnapshot,
+  DocumentData,
+  getDocs,
+} from '@angular/fire/firestore';
+import { Observable, Subject } from 'rxjs';
 import { Channel } from '../interfaces/channel';
 import { ChannelMessage } from '../interfaces/channel-message';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChannelService {
   private firestore = inject(Firestore);
@@ -15,7 +30,21 @@ export class ChannelService {
 
   getChannels(): Observable<Channel[]> {
     const channelsRef = collection(this.firestore, 'channels');
-    return collectionData(channelsRef, { idField: 'id' }) as Observable<Channel[]>;
+    return collectionData(channelsRef, { idField: 'id' }) as Observable<
+      Channel[]
+    >;
+  }
+
+  getChannelIdByTitle(
+    title: string,
+    callback: (channel?: Channel) => void
+  ): void {
+    this.getChannels().subscribe((channels: Channel[]) => {
+      const matchingChannel = channels.find(
+        (channel) => channel.title === title
+      );
+      callback(matchingChannel);
+    });
   }
 
   async createChannel(channel: Channel): Promise<void> {
@@ -24,17 +53,18 @@ export class ChannelService {
 
     return getDocs(q).then((snapshot: QuerySnapshot<DocumentData>) => {
       if (!snapshot.empty) {
-        throw new Error(`A channel with the name "${channel.title}" already exists.`);
+        throw new Error(
+          `A channel with the name "${channel.title}" already exists.`
+        );
       }
       return addDoc(channelsRef, channel).then(() => {});
     });
   }
 
-
   addUsersToChannel(channelId: string, userIds: string[]) {
     const channelRef = doc(this.firestore, 'channels', channelId);
     return updateDoc(channelRef, {
-      members: arrayUnion(...userIds)
+      members: arrayUnion(...userIds),
     });
   }
 
@@ -53,7 +83,10 @@ export class ChannelService {
   }
 
   sendChannelMessage(channelId: string, senderId: string, text: string) {
-    const messagesRef = collection(this.firestore, `channels/${channelId}/messages`);
+    const messagesRef = collection(
+      this.firestore,
+      `channels/${channelId}/messages`
+    );
     return addDoc(messagesRef, {
       senderId,
       text,
@@ -62,23 +95,36 @@ export class ChannelService {
   }
 
   listenToChannelMessages(channelId: string): Observable<ChannelMessage[]> {
-    const messagesRef = collection(this.firestore, `channels/${channelId}/messages`);
+    const messagesRef = collection(
+      this.firestore,
+      `channels/${channelId}/messages`
+    );
     const q = query(messagesRef, orderBy('timestamp'));
     return collectionData(q, { idField: 'id' }) as Observable<ChannelMessage[]>;
   }
 
-  addReaction(channelId: string, messageId: string, userId: string, emoji: string) {
-    const msgRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+  addReaction(
+    channelId: string,
+    messageId: string,
+    userId: string,
+    emoji: string
+  ) {
+    const msgRef = doc(
+      this.firestore,
+      `channels/${channelId}/messages/${messageId}`
+    );
     return updateDoc(msgRef, {
-      [`reactions.${userId}`]: emoji
+      [`reactions.${userId}`]: emoji,
     });
   }
 
   addThreadIdToMessage(channelId: string, messageId: string, threadId: string) {
-    const msgRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+    const msgRef = doc(
+      this.firestore,
+      `channels/${channelId}/messages/${messageId}`
+    );
     return updateDoc(msgRef, {
-      threadId
+      threadId,
     });
   }
-
 }
