@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../core/services/channel.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { AsyncPipe } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { Output, EventEmitter } from '@angular/core';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
 import { UserService } from '../../core/services/user.service';
@@ -19,17 +19,18 @@ import { Timestamp } from 'firebase/firestore';
 import { ProfileCardComponent } from "../profile-card/profile-card.component";
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { RouterLink, RouterModule, Router  } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 
 @Component({
   selector: 'app-channel-messages',
   standalone: true,
-  imports: [RouterModule, CommonModule, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent],
+  imports: [RouterModule, CommonModule, ChatBoxComponent, PickerModule, FormsModule, TimestampLineComponent, ProfileCardComponent, SpinnerComponent],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss']
 })
-export class ChannelMessagesComponent implements OnInit {
+export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   @Input() channelId!: string;
   messages$!: Observable<ChannelMessage[]>;
   @Output() replyToMessage = new EventEmitter<string>();
@@ -46,6 +47,9 @@ export class ChannelMessagesComponent implements OnInit {
   userDataForProfileCard$!: Observable<ProfileCard[]>;
   userDataForProfileCard: ProfileCard[] = [];
   selectedUserForProfileCard: ProfileCard | null = null;
+  isLoading: boolean = true;
+  hasScrolledAfterLoad: boolean = false;
+  @ViewChild('scrollContainer', { static: false }) scrollContainer?: ElementRef<HTMLElement>;
 
   constructor(
     private channelService: ChannelService,
@@ -53,7 +57,6 @@ export class ChannelMessagesComponent implements OnInit {
     private authService: AuthService,
     private messagingService: ChannelMessagingService,
     private directMessagingService: DirectMessagingService,
-    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -70,7 +73,13 @@ export class ChannelMessagesComponent implements OnInit {
       })
     );
 
-    this.messages$.subscribe(msgs => this.groupedMessages = this.groupMessagesByDate(msgs));
+    this.messages$.subscribe((msgs) => {
+      this.isLoading = true;
+      this.hasScrolledAfterLoad = false;
+      this.groupedMessages = this.groupMessagesByDate(msgs);
+      this.cdRef.detectChanges();
+      this.isLoading = false;
+    });
 
     this.userService.getAllUsers().subscribe(users => {
       // this.usersMap = Object.fromEntries(users.map(u => [u.id, { ...u, uid: u.id, online: false }]));
@@ -211,5 +220,28 @@ export class ChannelMessagesComponent implements OnInit {
   closeProfileCard(): void {
     this.showProfileCard = false;
     this.selectedUserForProfileCard = null;
+  }
+
+  scrollToBottom(): void {
+    if (!this.scrollContainer) {
+      console.warn('scrollContainer not available');
+      return;
+    }
+    const el = this.scrollContainer.nativeElement;
+    el.scrollTop = el.scrollHeight;
+  }
+
+
+  ngAfterViewInit(): void {
+    this.zone.onStable.pipe(take(1)).subscribe(() => {
+      this.scrollToBottom();
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.isLoading && !this.hasScrolledAfterLoad) {
+      this.scrollToBottom();
+      this.hasScrolledAfterLoad = true; // ✅ only scroll once
+    }
   }
 }

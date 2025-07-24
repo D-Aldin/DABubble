@@ -1,0 +1,51 @@
+.main-content {
+    background-color: #ffffff;
+    border-radius: 36px;
+    height: calc(100vh - 140px);
+    padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    // Header styling
+    header {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: left;
+        border-bottom: 1px solid #eee;
+        height: 160px;
+        padding-top: 32px;
+        padding-right: 45px;
+        padding-bottom: 20px;
+        padding-left: 45px;
+        gap: 20px;
+        box-shadow: 0px 2px 10px rgb(224, 224, 224);
+    }
+
+    app-input-field {
+        ::ng-deep .input-wrapper {
+            max-width: unset;
+
+            .custom-input {
+                width: 100%;
+                background-color: white;
+                border-color: rgba(173, 176, 217, 1);
+
+                &:hover {
+                    border-color: rgba(121, 126, 243, 1);
+                }
+
+                &:focus {
+                    border-color: rgba(83, 90, 241, 1) !important;
+                }
+            }
+        }
+    }
+
+    .message-field-wrapper {
+        width: 100%;
+        bottom: 10px;
+    }
+}

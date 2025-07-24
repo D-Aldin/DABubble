@@ -12,7 +12,7 @@ import { SuccessToastComponent } from './shared/success-toast/success-toast.comp
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  title = 'dabubble';
+  title = 'DABubble';
   showToast: boolean = false;
   toastMessage: string = '';
   successCondition: boolean = true;

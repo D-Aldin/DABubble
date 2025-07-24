@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { AuthService } from '../../core/services/auth.service';
@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-channel',
@@ -24,7 +25,7 @@ import { ThreadMessagingService } from '../../core/services/thread-messaging.ser
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
-export class ChannelComponent {
+export class ChannelComponent implements OnInit {
   selectedChannelPreviewUsers: ChatUser[] = [];
   selectedChannel: undefined | Channel = undefined;
   showChannelOptionsPopup = false;
@@ -85,7 +86,7 @@ export class ChannelComponent {
           // Load ALL members for the Mitglieder-Popup
           this.userService.getUsersByIds(channel.members).subscribe(users => {
             const currentUserId = this.authService.currentUserId;
-          
+
             users.sort((a, b) => {// Sort so that current user is always first if present
               if (a.id === currentUserId) return -1;
               if (b.id === currentUserId) return 1;
@@ -133,8 +134,8 @@ export class ChannelComponent {
   }
 
   handleOpenAddUserFromPopup() {
-    this.showChannelMemberPopup = false; 
-    this.openAddUserToChannelPopup();    
+    this.showChannelMemberPopup = false;
+    this.openAddUserToChannelPopup();
   }
 
   openThread(msg: ChannelMessage) {
@@ -253,10 +254,10 @@ export class ChannelComponent {
     });
   }
 
- handleUserAddCancel() {
-  this.showPeopleDialog = false;
-  this.showAddUserToChannelPopup = false;
-}
+  handleUserAddCancel() {
+    this.showPeopleDialog = false;
+    this.showAddUserToChannelPopup = false;
+  }
 
 
   openAddChannelDialog() {
@@ -383,8 +384,6 @@ export class ChannelComponent {
       this.closePeopleDialog();
     }
     console.log('dialog closed');
-    
+
   }
-
-
 }
