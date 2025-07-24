@@ -28,7 +28,7 @@ import { Timestamp } from 'firebase/firestore';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { Router, RouterLink, RouterModule, Router, ActivatedRoute   } from '@angular/router';
+import { Router, RouterLink, RouterModule, ActivatedRoute   } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { Zone } from 'zone.js/lib/zone-impl';
 
@@ -84,9 +84,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef
-    private router: Router,
-    private cdRef: ChangeDetectorRef,
-    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -109,7 +106,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       this.isLoading = true;
       this.hasScrolledAfterLoad = false;
       this.groupedMessages = this.groupMessagesByDate(msgs);
-      // this.cdRef.detectChanges();
+      this.cdRef.detectChanges();
       this.isLoading = false;
     });
 
@@ -213,10 +210,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   openThread(messageId: string) {
     this.replyToMessage.emit(messageId);
 
-    // this.router.navigate([], {
-    //   queryParams: { thread: messageId },
-    //   queryParamsHandling: 'merge',
-    // });
+    this.router.navigate([], {
+      queryParams: { thread: messageId },
+      queryParamsHandling: 'merge',
+    });
   }
 
   objectKeys(obj: any): string[] {
@@ -283,9 +280,9 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // this.zone.onStable.pipe(take(1)).subscribe(() => {
-    //   this.scrollToBottom();
-    // });
+    this.zone.onStable.pipe(take(1)).subscribe(() => {
+      this.scrollToBottom();
+    });
   }
 
   ngAfterViewChecked(): void {
