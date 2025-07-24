@@ -14,9 +14,9 @@
 <div class="message">
   @for (part of changedMessage; track $index) {
     @if (part.tagChannel) {
-      <a [routerLink]="['/dashboard/channel', part.channelId]">#{{ part.text }}</a>
+      <a [ngStyle]="{'font-weight': '600'}" [routerLink]="['/dashboard/channel', part.channelId]">#{{ part.text }}</a>
     } @else if (part.tagUser) {
-      <span class="user-tag" (click)="testFunction()">&#64;{{ part.text }}</span>
+      <span [ngStyle]="{'cursor': 'pointer', 'font-weight': '600'}" (click)="testFunction()">&#64;{{ part.text }}</span>
     } @else {
       {{ part.text }}
     }
