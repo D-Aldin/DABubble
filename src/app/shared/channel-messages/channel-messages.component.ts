@@ -48,6 +48,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   userDataForProfileCard: ProfileCard[] = [];
   selectedUserForProfileCard: ProfileCard | null = null;
   isLoading: boolean = true;
+  hasScrolledAfterLoad: boolean = false;
   @ViewChild('scrollContainer', { static: false }) scrollContainer?: ElementRef<HTMLElement>;
 
   constructor(
@@ -75,6 +76,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     );
 
     this.messages$.subscribe((msgs) => {
+      this.isLoading = true;
+      this.hasScrolledAfterLoad = false;
       this.groupedMessages = this.groupMessagesByDate(msgs);
       this.cdRef.detectChanges();
       this.isLoading = false;
@@ -233,8 +236,9 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewChecked(): void {
-    if (!this.isLoading) {
+    if (!this.isLoading && !this.hasScrolledAfterLoad) {
       this.scrollToBottom();
+      this.hasScrolledAfterLoad = true; // ✅ only scroll once
     }
   }
 }
