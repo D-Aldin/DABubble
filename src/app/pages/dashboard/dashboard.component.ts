@@ -93,18 +93,22 @@ export class DashboardComponent {
   ];
 
   ngOnInit(): void {
-    this.threadService.threadMessageId$.subscribe((messageId) => {
-      if (messageId) {
-        this.selectedMessageId = messageId;
+    this.threadService.threadState$.subscribe((state) => {
+      if (state) {
+        this.selectedMessageId = state.messageId;
+        this.selectedChannelId = state.channelId;
         this.showThread = true;
       } else {
         this.selectedMessageId = '';
+        this.selectedChannelId = '';
         this.showThread = false;
       }
     });
+
   }
 
   openThread(channelId: string, messageId: string) {
+    console.log('Opening thread:', channelId, messageId);
     this.selectedChannelId = channelId;
     this.selectedMessageId = messageId;
     this.showThread = true;

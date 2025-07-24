@@ -6,7 +6,6 @@
       @if (showSidenav) {
       <app-sidenav class="sidenav"></app-sidenav>
       }
-
       <!-- Main content container -->
       <div class="main-container" [class.expanded]="!showSidenav">
 
@@ -41,6 +40,7 @@
        @if (showThread) {
         <app-thread
           class="thread-container"
+          [channelId]="selectedChannelId"
           [messageId]="selectedMessageId"
           (closeThread)="onCloseThread()">
         </app-thread>

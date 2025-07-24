@@ -19,9 +19,8 @@ import { Timestamp } from 'firebase/firestore';
 import { ProfileCardComponent } from "../profile-card/profile-card.component";
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterLink, RouterModule, Router, ActivatedRoute   } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
-
 
 @Component({
   selector: 'app-channel-messages',
@@ -57,6 +56,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private messagingService: ChannelMessagingService,
     private directMessagingService: DirectMessagingService,
+    private zone: NgZone,
+    private router: Router,
+    private route: ActivatedRoute,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {

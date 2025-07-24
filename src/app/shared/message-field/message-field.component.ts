@@ -1,12 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
@@ -51,6 +43,7 @@ export class MessageFieldComponent implements AfterViewInit {
     if (this.message.trim()) {
       this.messageSend.emit(this.message);
       this.message = '';
+      console.log('message sent'); 
     }
   }
 
