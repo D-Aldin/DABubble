@@ -10,6 +10,7 @@ import { ResetRequestComponent } from './pages/reset-request/reset-request.compo
 import { DirectMessageComponent } from './pages/direct-message/direct-message.component';
 import { ChannelComponent } from './pages/channel/channel.component';
 import { ThreadComponent } from './shared/thread/thread.component';
+import { NewMessageComponent } from './pages/new-message/new-message.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -32,6 +33,10 @@ export const routes: Routes = [
       {
         path: 'thread/:messageId', // Thread route with thread ID for channel or direct message ID
         component: ThreadComponent,
+      },
+      {
+        path: 'new-message', //route for new-message component
+        component: NewMessageComponent,
       }
     ],
   },

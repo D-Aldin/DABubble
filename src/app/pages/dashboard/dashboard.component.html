@@ -1,26 +1,11 @@
 <div class="content-wrapper">
   <app-header></app-header>
-
   <section>
     <div class="dashboard-wrapper">
       <!-- Sidenav -->
       @if (showSidenav) {
-      <!-- <app-sidenav class="sidenav" (openAddChannelDialog)="openAddChannelDialog()"
-      (channelSelected)="selectChannel($event)">
-    </app-sidenav> -->
       <app-sidenav class="sidenav"></app-sidenav>
       }
-
-      <!-- Dialog Overlays
-    @if (showAddChannelDialog) {
-    <div class="overlay" (click)="closeAddChannelDialog()">
-      <div class="dialog-container" (click)="$event.stopPropagation()">
-        <app-add-channel (close)="closeAddChannelDialog()" (openAddPeopleDialog)="openAddPeopleDialog()"
-          (complete)="handleChannelCreation($event)" (proceedToPeople)="handleProceedToPeople($event)">
-        </app-add-channel>
-      </div>
-    </div>
-    } -->
 
       <!-- Main content container -->
       <div class="main-container" [class.expanded]="!showSidenav">
@@ -52,7 +37,6 @@
         </button>
 
         <router-outlet></router-outlet>
-
       </div>
     </div>
   </section>

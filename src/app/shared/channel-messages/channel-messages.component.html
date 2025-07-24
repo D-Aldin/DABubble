@@ -1,73 +1,72 @@
-<div class="message-wrapper">
+<div class="message-wrapper" #scrollContainer *ngIf="!isLoading">
   @for (group of groupedMessages; track group.dateString) {
   <app-timestamp-line [date]="handlingDateTime(group.date)" />
 
-    @for (msg of group.messages; track msg.id) {
-      <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null">
+  @for (msg of group.messages; track msg.id) {
+  <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null">
 
-        <!-- EDITING MODE -->
-        @if (editingMessageId === msg.id) {
-        <div class="edit-message-box">
-          <textarea [(ngModel)]="editedMessageText" rows="3"></textarea>
+    <!-- EDITING MODE -->
+    @if (editingMessageId === msg.id) {
+    <div class="edit-message-box">
+      <textarea [(ngModel)]="editedMessageText" rows="3"></textarea>
 
-          <div class="edit-message-toolbar">
-            <button class="emoji-btn" (click)="toggleEmojiPicker(msg.id!)">
-              <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
-            </button>
-          </div>
+      <div class="edit-message-toolbar">
+        <button class="emoji-btn" (click)="toggleEmojiPicker(msg.id!)">
+          <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
+        </button>
+      </div>
 
-          @if (showEmojiPickerFor === msg.id) {
-          <emoji-mart set="apple" (emojiSelect)="appendEmojiToEdit($event.emoji.native)"></emoji-mart>
-          }
+      @if (showEmojiPickerFor === msg.id) {
+      <emoji-mart set="apple" (emojiSelect)="appendEmojiToEdit($event.emoji.native)"></emoji-mart>
+      }
 
-          <div class="edit-buttons">
-            <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
-            <button class="save-btn" (click)="saveEditedMessage(msg.id)">Speichern</button>
-          </div>
-        </div>
-        } @else {
-        <!-- DEFAULT MESSAGE VIEW -->
-        <app-chat-box [src]="getAvatarPath(msg.senderId)" [userName]="getUserName(msg.senderId)"
-          [time]="(msg.timestamp.toDate() | date:'shortTime') || ''" [message]="msg.text"
-          [userMe]="msg.senderId !== currentUserId" [userId]="msg.senderId"
-          (profileClick)="openProfileCard($event)"/>
+      <div class="edit-buttons">
+        <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
+        <button class="save-btn" (click)="saveEditedMessage(msg.id)">Speichern</button>
+      </div>
+    </div>
+    } @else {
+    <!-- DEFAULT MESSAGE VIEW -->
+    <app-chat-box [src]="getAvatarPath(msg.senderId)" [userName]="getUserName(msg.senderId)"
+      [time]="(msg.timestamp.toDate() | date:'shortTime') || ''" [message]="msg.text"
+      [userMe]="msg.senderId !== currentUserId" [userId]="msg.senderId" (profileClick)="openProfileCard($event)" />
 
-        @if (msg.reactions) {
-        <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
-            <div class="message-reactions">
-              @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
-                <a class="reply-count">
-                  {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
-                </a>
-                <span class="reaction">
-                  {{ emoji }} {{ groupReactions(msg.reactions)[emoji] }}
-                </span>
-              }
-            </div>
-          </div>
-        }
-
-        @if (hoveredMessageId === msg.id) {
-        <div class="message-toolbar">
-          <button (click)="toggleEmojiPicker(msg.id!)">
-            <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
-          </button>
-          <button (click)="openThread(msg.id!)">
-            <img src="/assets/images/sidenav-img/comment.svg" alt="">
-          </button>
-          <button (click)="startEditing(msg)">
-            <img src="/assets/images/sidenav-img/more_vert.svg" alt="">
-          </button>
-        </div>
-        }
-
-          @if (showEmojiPickerFor === msg.id) {
-          <emoji-mart set="apple" (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">
-          </emoji-mart>
-          }
+    @if (msg.reactions) {
+    <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
+      <div class="message-reactions">
+        @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
+        <a class="reply-count">
+          {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+        </a>
+        <span class="reaction">
+          {{ emoji }} {{ groupReactions(msg.reactions)[emoji] }}
+        </span>
         }
       </div>
+    </div>
     }
+
+    @if (hoveredMessageId === msg.id) {
+    <div class="message-toolbar">
+      <button (click)="toggleEmojiPicker(msg.id!)">
+        <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
+      </button>
+      <button (click)="openThread(msg.id!)">
+        <img src="/assets/images/sidenav-img/comment.svg" alt="">
+      </button>
+      <button (click)="startEditing(msg)">
+        <img src="/assets/images/sidenav-img/more_vert.svg" alt="">
+      </button>
+    </div>
+    }
+
+    @if (showEmojiPickerFor === msg.id) {
+    <emoji-mart set="apple" (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">
+    </emoji-mart>
+    }
+    }
+  </div>
+  }
   }
 </div>
 
@@ -83,4 +82,8 @@
       </button>
     </div>
   </app-profile-card>
+</div>
+
+<div class="spinner-container" *ngIf="isLoading">
+  <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
 </div>
