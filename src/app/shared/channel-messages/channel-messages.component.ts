@@ -201,7 +201,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     this.userDataForProfileCard$ = this.directMessagingService.getAllUsersForProfileCardCreation();
 
     this.userDataForProfileCard$.subscribe(data => {
-      console.log('Loaded profile card data:', data);
       this.userDataForProfileCard = data;
     });
   }
@@ -238,7 +237,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   ngAfterViewChecked(): void {
     if (!this.isLoading && !this.hasScrolledAfterLoad) {
       this.scrollToBottom();
-      this.hasScrolledAfterLoad = true; // ✅ only scroll once
+      this.hasScrolledAfterLoad = true;
     }
   }
 }
