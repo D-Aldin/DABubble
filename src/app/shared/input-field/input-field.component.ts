@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -20,12 +20,17 @@ export class InputFieldComponent {
   @Input() src: string = '';
   @Input() placeholder: string = '';
   @Input() type: string = 'text';
-  @Input() errorMsg: string = '';
+  @Input() errorMsg: string | null = '';
   @Input() name?: string;
   @Input() required: boolean = true;
   @Input() minlength?: number;
   @Input() maxlength?: number;
   @Input() autocomplete?: string;
+  @Input() ngModel: string = '';
+  @Output() input = new EventEmitter<Event>();
+  @Output() focus = new EventEmitter<FocusEvent>();
+  @Output() blur = new EventEmitter<FocusEvent>();
+  @Output() ngModelChange = new EventEmitter<string>();
 
   value: string = '';
   isDisabled: boolean = false;
@@ -34,7 +39,7 @@ export class InputFieldComponent {
   onTouched = () => { };
 
   writeValue(val: any): void {
-    this.value = val;
+    this.ngModel = val;
   }
 
   registerOnChange(fn: any): void {

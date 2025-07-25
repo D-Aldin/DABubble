@@ -1,10 +1,33 @@
 <div class="main-content">
-    <header>
-        <h1>Neue Nachricht</h1>
-        <app-input-field placeholder="An: #Channel, oder @jemand oder E-Mail Adresse"></app-input-field>
-    </header>
+  <header>
+    <h1>Neue Nachricht</h1>
+    <div class="input-wrapper">
+      <div [ngClass]="{ 'input-valid': isRecipientValid() }">
+        <app-input-field [(ngModel)]="inputValue" (input)="onInputChange()" (focus)="showDropdown = true"
+          (blur)="hideDropdownWithDelay()" [errorMsg]="getRecipientError()" [autocomplete]="'new-password'"
+          [placeholder]="'An: #Channel, oder @jemand oder E-Mail Adresse'"></app-input-field>
+      </div>
+      <ul class="dropdown-menu" *ngIf="showDropdown && filteredList.length > 0">
+        <li *ngFor="let item of filteredList" (mousedown)="selectItem(item)">
+          <!-- Channel -->
+          <span class="channel-text-hover" *ngIf="inputValue.startsWith('#')">#{{ item.title }}</span>
 
-    <div class="message-field-wrapper">
-      <app-message-field></app-message-field>
+          <!-- User -->
+          <div class="user-item" *ngIf="inputValue.startsWith('@')">
+            <img [src]="item.avatarPath" class="avatar" />
+            <span>{{ item.name }}</span>
+          </div>
+
+          <!-- Email -->
+          <span class="blue-color" *ngIf="!inputValue.startsWith('#') && !inputValue.startsWith('@')">
+            {{ item.email }}
+          </span>
+        </li>
+      </ul>
     </div>
+  </header>
+
+  <div class="message-field-wrapper" *ngIf="isRecipientValid()">
+    <app-message-field></app-message-field>
+  </div>
 </div>

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc, collection, collectionData, docData } from '@angular/fire/firestore';
-import { Observable, combineLatest  } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
 
 @Injectable({
@@ -37,6 +37,11 @@ export class UserService {
   getAllUsers(): Observable<{ id: string, avatarPath: string, name: string }[]> {
     const usersRef = collection(this.firestore, 'users');
     return collectionData(usersRef, { idField: 'id' }) as Observable<{ id: string, avatarPath: string, name: string }[]>;
+  }
+
+  getAllUsersForDropdown(): Observable<{ id: string, avatarPath: string, name: string, email: string }[]> {
+    const usersRef = collection(this.firestore, 'users');
+    return collectionData(usersRef, { idField: 'id' }) as Observable<{ id: string, avatarPath: string, name: string, email: string }[]>;
   }
 
   getUsersByIds(ids: string[]): Observable<ChatUser[]> { //to get multiple users
