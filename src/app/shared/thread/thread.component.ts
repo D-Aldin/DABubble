@@ -57,21 +57,21 @@ export class ThreadComponent {
   }
 
   loadChannelUsers(channelId: string) {
-  const channelRef = doc(this.firestore, `channels/${channelId}`);
-  getDoc(channelRef).then(async (snap) => {
-    if (snap.exists()) {
-      const userIds: string[] = snap.data()['members'] || [];
+    const channelRef = doc(this.firestore, `channels/${channelId}`);
+    getDoc(channelRef).then(async (snap) => {
+      if (snap.exists()) {
+        const userIds: string[] = snap.data()['members'] || [];
 
-      const users = await this.userService.getUsersByIds(userIds).toPromise();
-      if (users) {
-        this.selectedChannelUsers = users.map(user => ({
-          name: user.name,
-          avatarPath: user.avatarPath || 'assets/images/default-avatar.png'
-        }));
+        const users = await this.userService.getUsersByIds(userIds).toPromise();
+        if (users) {
+          this.selectedChannelUsers = users.map(user => ({
+            name: user.name,
+            avatarPath: user.avatarPath || 'assets/images/default-avatar.png'
+          }));
+        }
       }
-    }
-  });
-}
+    });
+  }
 
 
   loadChannelName(channelId: string) {
@@ -84,19 +84,19 @@ export class ThreadComponent {
   }
 
 
- loadThreadMessages(channelId: string, messageId: string) {
-  const threadCollection = collection(this.firestore, `channels/${channelId}/messages/${messageId}/threads`);
-  const q = query(threadCollection, orderBy('timestamp', 'asc'));
+  loadThreadMessages(channelId: string, messageId: string) {
+    const threadCollection = collection(this.firestore, `channels/${channelId}/messages/${messageId}/threads`);
+    const q = query(threadCollection, orderBy('timestamp', 'asc'));
 
-  onSnapshot(q, snapshot => {
-    this.replies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    onSnapshot(q, snapshot => {
+      this.replies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Wait until parent message is also loaded
-    if (this.replies.length && this.parentMessage?.senderId) {
-   this.loadUserProfilesForThread();
-}
-  });
-}
+      // Wait until parent message is also loaded
+      if (this.replies.length && this.parentMessage?.senderId) {
+    this.loadUserProfilesForThread();
+  }
+    });
+  }
 
 loadParentMessage(channelId: string, messageId: string) {
   const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
@@ -140,14 +140,14 @@ loadUserProfilesForThread() {
         avatarPath: user.avatarPath || 'assets/images/default-avatar.png'
       };
     });
-       console.log('✅ userMap after population:', this.userMap);
+       console.log('userMap after population:', this.userMap);
       this.cdr.detectChanges(); //to force Angular to re-render after users are loaded.
   });
 }
 
 
 
-  async sendThreadMessage(text: string) {
+async sendThreadMessage(text: string) {
     // console.log('Thread message received from MessageField:', text);
     if (!text.trim()) return;
 
@@ -175,7 +175,7 @@ loadUserProfilesForThread() {
     } catch (error) {
       console.error('Error saving thread reply:', error);
     }
-  }
+}
 
 
   close(event: Event) {

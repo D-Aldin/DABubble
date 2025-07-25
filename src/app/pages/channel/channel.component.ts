@@ -68,47 +68,59 @@ export class ChannelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  this.route.paramMap.subscribe(params => {
-    const id = params.get('id'); // NOT 'channelId'!
-    if (id) {
-      this.channelId = id;
-      this.selectedChannelId = id;
-      console.log('ChannelComponent loaded with ID:', this.channelId);
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id'); // NOT 'channelId'!
+      if (id) {
+        this.channelId = id;
+        this.selectedChannelId = id;
+        console.log('ChannelComponent loaded with ID:', this.channelId);
 
-      this.isLoadingChannel = true;
-      this.channelService.getChannelById(id).subscribe(channel => {
-        this.selectedChannel = channel;
-        this.selectedChannel.members ||= [];
+        this.isLoadingChannel = true;
 
-        const previewIds = channel.members.slice(0, 3);
-        this.userService.getUsersByIds(previewIds).subscribe(users => {
-          this.selectedChannelPreviewUsers = users;
-        });
+        this.channelService.getChannelById(id).subscribe(channel => {
+          if (!channel) {
+            console.warn('Channel not found in Firestore for ID:', id);
+            this.isLoadingChannel = false;
+            return;
+          }
+          console.log('Channel loaded:', channel);
+          this.selectedChannel = channel;
+          this.selectedChannel.members ||= [];
 
-        this.userService.getUsersByIds(channel.members).subscribe(users => {
-          const currentUserId = this.authService.currentUserId;
-          users.sort((a, b) => {
-            if (a.id === currentUserId) return -1;
-            if (b.id === currentUserId) return 1;
-            return 0;
+          // Load preview users (first 3)
+          const previewIds = channel.members.slice(0, 3);
+          this.userService.getUsersByIds(previewIds).subscribe(users => {
+            this.selectedChannelPreviewUsers = users;
           });
-          this.fullChannelMembers = users;
+
+          // Load full member list with current user on top
+          this.userService.getUsersByIds(channel.members).subscribe(users => {
+            const currentUserId = this.authService.currentUserId;
+            users.sort((a, b) => {
+              if (a.id === currentUserId) return -1;
+              if (b.id === currentUserId) return 1;
+              return 0;
+            });
+            this.fullChannelMembers = users;
+          });
+
+          // Load creator info
+          this.userService.getUserById(channel.creatorId).subscribe(user => {
+            this.creatorName = user.name;
+            this.creatorOnline = user.online;
+          });
+
+          this.isLoadingChannel = false;
         });
+      }
+    });
 
-        this.userService.getUserById(channel.creatorId).subscribe(user => {
-          this.creatorName = user.name;
-          this.creatorOnline = user.online;
-        });
+    // Watch for global request to open "Add Channel" dialog
+    this.channelService.openAddChannelDialog$.subscribe(() => {
+      this.showAddChannelDialog = true;
+    });
+  }
 
-        this.isLoadingChannel = false;
-      });
-    }
-  });
-
-  this.channelService.openAddChannelDialog$.subscribe(() => {
-    this.showAddChannelDialog = true;
-  });
-}
 
 
   leaveChannel() {

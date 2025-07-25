@@ -47,18 +47,31 @@ export class ChannelService {
     });
   }
 
-  async createChannel(channel: Channel): Promise<void> {
+  async createChannel(channel: Partial<Channel>): Promise<void> {
+    // Validate required fields
+    if (!channel.title || !channel.creatorId || !channel.members || channel.members.length === 0) {
+      throw new Error('Missing required channel fields.');
+    }
+
     const channelsRef = collection(this.firestore, 'channels');
     const q = query(channelsRef, where('title', '==', channel.title));
 
-    return getDocs(q).then((snapshot: QuerySnapshot<DocumentData>) => {
-      if (!snapshot.empty) {
-        throw new Error(
-          `A channel with the name "${channel.title}" already exists.`
-        );
-      }
-      return addDoc(channelsRef, channel).then(() => {});
-    });
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      throw new Error(`A channel with the name "${channel.title}" already exists.`);
+    }
+
+    // Ensure required fields are added properly
+    const newChannel: Channel = {
+      id: '', // Will be set later if needed
+      title: channel.title,
+      description: channel.description || '',
+      createdAt: channel.createdAt || new Date(),
+      members: channel.members,
+      creatorId: channel.creatorId,
+    };
+
+    await addDoc(channelsRef, newChannel);
   }
 
   addUsersToChannel(channelId: string, userIds: string[]) {
