@@ -1,47 +1,68 @@
 <div class="thread" [ngClass]="{'d-none': isClose}">
-   <div class="headline">
-      <div class="headline-content">
-         <h2>Profile</h2>
-         <h3># thread-name</h3>
-      </div>
-      <button class="close" (click)="close($event)"></button>
-   </div>
-   <div class="main-content-wrapper">
-      <div class="main-content">
-        @if (parentMessage; as msg) {
-            <div class="thread-message">
-               <div class="avatar">
-                  <img [src]="getAvatarPath(msg.senderId)" alt="">
-               </div>
-               <div class="user-name">{{ getUserName(msg.senderId) }}</div>
-               <div class="time">{{ msg.timestamp?.toDate() | date: 'shortTime' }}</div>
-               <div class="message">
-                  <p>{{ msg.text }}</p>
-               </div>
+  <div class="headline">
+    <div class="headline-content">
+      <h2>Thread</h2>
+      <h3>#{{ channelName }}</h3>
+    </div>
+    <button class="close" (click)="close($event)"></button>
+  </div>
+
+  @if (selectedChannelUsers.length > 0) {
+    <div class="channel-users">
+      @for (user of selectedChannelUsers; track user.name) {
+        <div class="user">
+          <img [src]="user.avatarPath" class="avatar-small" />
+          <span>{{ user.name }}</span>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="main-content-wrapper">
+    <div class="main-content">
+      @if (parentMessage && userMap[parentMessage.senderId]) {
+         <div class="thread-message">
+            <div class="avatar">
+               <img [src]="getAvatarPath(parentMessage.senderId)" alt="Avatar" />
             </div>
+            <div class="user-name">{{ getUserName(parentMessage.senderId) }}</div>
+            <div class="time">{{ parentMessage.timestamp?.toDate() | date: 'shortTime' }}</div>
+            <div class="message">
+               <p>{{ parentMessage.text }}</p>
+            </div>
+         </div>
          }
 
-         <div class="answer-wrapper">
-            <div class="number-of-answers">
-               <span>2 Antworten</span>
-               <div class="line"></div>
-            </div>
-            <div class="answer-content">
-               @for (reply of replies; track reply.id) {
-                  <div class="thread-reply">
-                     <div class="reply-meta">
+
+
+      <div class="answer-wrapper">
+        <div class="number-of-answers">
+          <span>{{ replies.length }} Antworten</span>
+          <div class="line"></div>
+        </div>
+
+      <div class="answer-content">
+         @for (reply of replies; track reply.id) {
+            @if (userMap[reply.senderId]) {
+               <div class="thread-reply">
+               <div class="avatar">
+                  <img [src]="getAvatarPath(reply.senderId)" alt="Avatar" />
+               </div>
+               <div class="reply-body">
+                  <div class="reply-header">
                      <span class="reply-author">{{ getUserName(reply.senderId) }}</span>
                      <span class="reply-time">{{ reply.timestamp?.toDate() | date:'shortTime' }}</span>
-                     </div>
-                     <div class="reply-text">{{ reply.text }}</div>
-                     <span>{{ replies.length }} Antworten</span>
-
                   </div>
-               }
+                  <div class="reply-text">{{ reply.text }}</div>
                </div>
-
+               </div>
+            }
+         }
          </div>
+
       </div>
-      <app-message-field (messageSend)="sendThreadMessage($event)"></app-message-field>
-   </div>
+    </div>
+
+    <app-message-field (messageSend)="sendThreadMessage($event)"></app-message-field>
+  </div>
 </div>

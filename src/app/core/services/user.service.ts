@@ -39,11 +39,14 @@ export class UserService {
     return collectionData(usersRef, { idField: 'id' }) as Observable<{ id: string, avatarPath: string, name: string }[]>;
   }
 
-  getUsersByIds(ids: string[]): Observable<ChatUser[]> { //to get multiple users
+  getUsersByIds(ids: string[]): Observable<ChatUser[]> {
     const userRefs = ids.map(id => doc(this.firestore, 'users', id));
-    const userObservables = userRefs.map(ref => docData(ref, { idField: 'id' }) as Observable<ChatUser>);
+    const userObservables = userRefs.map(ref =>
+      docData(ref, { idField: 'uid' }) as Observable<ChatUser> // uid instead of id
+    );
     return combineLatest(userObservables);
   }
+
 
   getUserById(id: string): Observable<ChatUser> { // to get single user
     const userRef = doc(this.firestore, 'users', id);
