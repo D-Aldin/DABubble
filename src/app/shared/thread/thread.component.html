@@ -41,24 +41,27 @@
           <div class="line"></div>
         </div>
 
-      <div class="answer-content">
-         @for (reply of replies; track reply.id) {
+        <div class="answer-content">
+          @for (reply of replies; track reply.id) {
             @if (userMap[reply.senderId]) {
-               <div class="thread-reply">
-               <div class="avatar">
+              <div class="thread-reply" [ngClass]="{'me': reply.senderId === currentUserId}">
+                <div class="avatar">
                   <img [src]="getAvatarPath(reply.senderId)" alt="Avatar" />
-               </div>
-               <div class="reply-body">
+                </div>
+                <div class="reply-body">
                   <div class="reply-header">
-                     <span class="reply-author">{{ getUserName(reply.senderId) }}</span>
-                     <span class="reply-time">{{ reply.timestamp?.toDate() | date:'shortTime' }}</span>
+                    <h3 class="reply-author">{{ getUserName(reply.senderId) }}</h3>
+                    <span class="reply-time">{{ reply.timestamp?.toDate() | date:'shortTime' }}</span>
                   </div>
-                  <div class="reply-text">{{ reply.text }}</div>
-               </div>
-               </div>
+                  <div class="reply-text message">
+                    {{ reply.text }}
+                  </div>
+                </div>
+              </div>
             }
-         }
-         </div>
+          }
+        </div>
+
 
       </div>
     </div>

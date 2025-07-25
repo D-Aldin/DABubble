@@ -22,13 +22,13 @@ export class ThreadComponent {
   @Input() messageId!: string;
   @Input() channelId!: string;
   @Output() closeThread = new EventEmitter<void>();
-
   replies: any[] = [];
   messageText: string = '';
   userMap: { [userId: string]: { name: string, avatarPath: string } } = {};
   parentMessage: any = null;
   channelName: string = '';
   selectedChannelUsers: { name: string; avatarPath: string }[] = [];
+  currentUserId: string = '';
 
   constructor(
     private firestore: Firestore,
@@ -43,9 +43,8 @@ export class ThreadComponent {
       if (thread?.channelId && thread?.messageId) {
         this.channelId = thread.channelId;
         this.messageId = thread.messageId;
-
-        // console.log('ThreadComponent initialized → Channel:', this.channelId, 'MessageId:', this.messageId);
-
+        this.currentUserId = this.authService.currentUserId;
+        
         this.loadChannelUsers(this.channelId); 
         this.loadChannelName(this.channelId); 
         this.loadThreadMessages(this.channelId, this.messageId);
@@ -140,7 +139,7 @@ loadUserProfilesForThread() {
         avatarPath: user.avatarPath || 'assets/images/default-avatar.png'
       };
     });
-       console.log('userMap after population:', this.userMap);
+      //  console.log('userMap after population:', this.userMap);
       this.cdr.detectChanges(); //to force Angular to re-render after users are loaded.
   });
 }
