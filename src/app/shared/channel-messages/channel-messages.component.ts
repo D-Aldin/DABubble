@@ -83,7 +83,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private zone: NgZone,
     private router: Router,
     private route: ActivatedRoute,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
