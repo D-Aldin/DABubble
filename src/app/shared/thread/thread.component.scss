@@ -193,7 +193,10 @@
       flex-direction: column;
       padding: 10px 14px;
       border-radius: 12px;
-      max-width: 70%;
+      max-width: 80%; // or 100%, depending on layout
+      width: fit-content;
+      word-break: break-word;
+      text-align: left;
     }
 
     .reply-header {
