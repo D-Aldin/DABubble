@@ -28,7 +28,7 @@ import { Timestamp } from 'firebase/firestore';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { Router, RouterLink, RouterModule, ActivatedRoute   } from '@angular/router';
+import { Router, RouterLink, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { Zone } from 'zone.js/lib/zone-impl';
 
@@ -84,7 +84,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
@@ -134,11 +134,14 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     const grouped: { [key: string]: ChannelMessage[] } = {};
 
     messages.forEach((msg) => {
+      if (!msg.timestamp || typeof msg.timestamp.toDate !== 'function') {
+        console.warn('Skipping message with invalid timestamp:', msg);
+        return;
+      }
+
       const date = msg.timestamp.toDate();
-      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-        2,
-        '0'
-      )}-${String(date.getDate()).padStart(2, '0')}`;
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
       if (!grouped[key]) grouped[key] = [];
       grouped[key].push(msg);
     });
@@ -272,7 +275,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   scrollToBottom(): void {
     if (!this.scrollContainer) {
-      console.warn('scrollContainer not available');
       return;
     }
     const el = this.scrollContainer.nativeElement;

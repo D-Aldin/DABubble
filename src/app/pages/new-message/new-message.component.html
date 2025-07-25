@@ -27,7 +27,15 @@
     </div>
   </header>
 
+  <div class="button-wrapper" *ngIf="showRedirectButton">
+    <button (click)="redirectToMsg()" class="go-to-msg-button">Hier klicken um die gesendete Nachricht anzusehen.</button>
+  </div>
+
   <div class="message-field-wrapper" *ngIf="isRecipientValid()">
-    <app-message-field></app-message-field>
+    <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>
   </div>
 </div>
+
+<app-success-toast *ngIf="messageSentSuccessfully" [message]="toastMessage" [success]="wasMessageSentSuccessfully"
+  [hasIcon]="false">
+</app-success-toast>

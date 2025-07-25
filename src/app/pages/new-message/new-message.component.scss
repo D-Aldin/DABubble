@@ -108,4 +108,38 @@
         width: 100%;
         bottom: 10px;
     }
+
+    .button-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .go-to-msg-button {
+            background-color: rgb(68, 77, 242);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.125s ease;
+            width: fit-content;
+            height: auto;
+            border-radius: 50px;
+            gap: 10px;
+            opacity: 1;
+            padding-top: 12px;
+            padding-right: 25px;
+            padding-bottom: 12px;
+            padding-left: 25px;
+            border-width: 1px;
+            font-weight: 700;
+            font-style: Bold;
+            font-size: 18px;
+            line-height: 100%;
+            letter-spacing: 0%;
+            text-align: center;
+
+            &:hover {
+                background-color: $input-field-focus-color;
+            }
+        }
+    }
 }

@@ -56,7 +56,6 @@ export class SidenavComponent implements OnInit {
     this.checkGivenURL();
     this.handleRouteSelectionOnPageReload();
     this.subscribeToRouterEvents();
-    console.log('[SIDENAV] Logged-in user UID:', this.authService.currentUserId);
   }
 
   subscribeToRouterEvents(): void {

@@ -73,7 +73,7 @@ export class ChannelComponent implements OnInit {
       if (id) {
         this.channelId = id;
         this.selectedChannelId = id;
-        console.log('ChannelComponent loaded with ID:', this.channelId);
+        // console.log('ChannelComponent loaded with ID:', this.channelId);
 
         this.isLoadingChannel = true;
 
@@ -83,14 +83,14 @@ export class ChannelComponent implements OnInit {
             this.isLoadingChannel = false;
             return;
           }
-          console.log('Channel loaded:', channel);
+          // console.log('Channel loaded:', channel);
           this.selectedChannel = channel;
           this.selectedChannel.members ||= [];
 
           // Load preview users (first 3)
           const previewIds = channel.members.slice(0, 3);
           this.userService.getUsersByIds(previewIds).subscribe(users => {
-            this.selectedChannelPreviewUsers = users;
+            this.selectedChannelPreviewUsers = users.filter(u => !!u);
           });
 
           // Load full member list with current user on top

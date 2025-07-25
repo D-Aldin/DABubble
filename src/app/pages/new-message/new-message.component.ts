@@ -10,11 +10,15 @@ import { ChannelService } from '../../core/services/channel.service';
 import { UserDropDown } from '../../core/interfaces/user-drop-down';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChannelMessagingService } from '../../core/services/channel-messaging.service';
+import { DirectMessagingService } from '../../core/services/direct-messaging.service';
+import { Router } from '@angular/router';
+import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 
 @Component({
   selector: 'app-new-message',
   standalone: true,
-  imports: [InputFieldComponent, MessageFieldComponent, CommonModule, FormsModule],
+  imports: [InputFieldComponent, MessageFieldComponent, CommonModule, FormsModule, SuccessToastComponent],
   templateUrl: './new-message.component.html',
   styleUrl: './new-message.component.scss'
 })
@@ -29,8 +33,21 @@ export class NewMessageComponent implements OnInit {
   dropdownTimeout: any;
   hasTyped: boolean = false;
   selectedRecipient: string = '';
-  messageText: string = ''
-  constructor(private authService: AuthService, private userService: UserService, private channelService: ChannelService) { }
+  messageText: string = '';
+  messageSentSuccessfully: boolean = false;
+  toastMessage: string = '';
+  wasMessageSentSuccessfully: boolean = false;
+  redirectURL: string = '';
+  showRedirectButton: boolean = false;
+
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private channelService: ChannelService,
+    private channelMessageService: ChannelMessagingService,
+    private directMessageService: DirectMessagingService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.getChannels();
@@ -63,19 +80,25 @@ export class NewMessageComponent implements OnInit {
     const value = this.inputValue.toLowerCase().trim();
 
     if (value.startsWith('#')) {
-      const query = value.slice(1); // remove '#'
-      this.filteredList = this.channelDocData.filter((channel) =>
-        channel.title.toLowerCase().includes(query)
+      const query = value.slice(1);
+      this.filteredList = this.channelDocData.filter(
+        (channel) => channel?.title?.toLowerCase().includes(query)
       );
     } else if (value.startsWith('@')) {
-      const query = value.slice(1); // remove '@'
-      this.filteredList = this.userDocData.filter((user) =>
-        user.name.toLowerCase().includes(query)
+      const query = value.slice(1);
+      this.filteredList = this.userDocData.filter(
+        (user) => user?.name?.toLowerCase().includes(query)
       );
     } else {
-      this.filteredList = this.userDocData.filter((user) =>
-        user.email?.toLowerCase().includes(value)
-      );
+      this.filteredList = this.userDocData.filter((user) => {
+        const emailMatch =
+          typeof user.email === 'string' &&
+          user.email.toLowerCase().includes(value);
+        const nameMatch =
+          typeof user.name === 'string' &&
+          user.name.toLowerCase().includes(value);
+        return emailMatch || nameMatch;
+      });
     }
 
     this.getSelectedRecipient()
@@ -154,14 +177,13 @@ export class NewMessageComponent implements OnInit {
   getSelectedRecipient(): void {
     if (!this.isRecipientValid()) {
       this.selectedRecipient = '';
-      return
+      return;
     }
+
     this.selectedRecipient = this.inputValue.trim();
     const recipientData = this.getSelectedRecipientData(this.selectedRecipient);
-    console.log(recipientData);
-    
-    // this.selectedRecipient = value.startsWith('#') || value.startsWith('@') ? value.slice(1) : value;
   }
+
 
   getSelectedRecipientData(recipient: string): UserDropDown | Channel | null {
     const type = this.getInputType(recipient);
@@ -179,5 +201,71 @@ export class NewMessageComponent implements OnInit {
       default:
         return null;
     }
+  }
+
+  sendMessage(recipientData: UserDropDown | Channel) {
+    if ('avatarPath' in recipientData) {
+      // it's a UserDropDown
+      this.directMessaging(recipientData);
+    } else {
+      // it's a Channel
+      this.channelMessaging(recipientData);
+    }
+  }
+
+  getCurrentUserId(): string | null {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      return user.uid
+    }
+    return null;
+  }
+
+  channelMessaging(recipientData: Channel) {
+    const userId = this.getCurrentUserId?.();
+    if (userId) {
+      this.channelMessageService.sendMessage(recipientData.id, userId, this.messageText);
+      this.redirectURL = `/dashboard/channel/${recipientData.id}`;
+      this.showRedirectButton = true;
+    }
+  }
+
+  directMessaging(recipientData: UserDropDown) {
+    if (this.getCurrentUserId !== null) {
+      // this.directMessageService.sendDirectMsg()
+    }
+  }
+
+  onMessageSend(message: string): void {
+    this.messageText = message;
+
+    if (!this.messageText.trim()) return;
+
+    const recipient = this.inputValue.trim();
+    const recipientData = this.getSelectedRecipientData(recipient);
+
+    if (recipientData) {
+      this.sendMessage(recipientData);
+      this.handleToast(true);
+    } else {
+      this.handleToast(false);
+      console.warn('No valid recipient selected.');
+    }
+  }
+
+  handleToast(success: boolean): void {
+    if (success) {
+      this.toastMessage = 'Nachricht erfolgreich gesendet!';
+      this.wasMessageSentSuccessfully = true;
+    } else {
+      this.toastMessage = 'Es ist ein Fehler aufgetreten';
+      this.wasMessageSentSuccessfully = false;
+    }
+
+    this.messageSentSuccessfully = true;
+  }
+
+  redirectToMsg(): void {
+    this.router.navigateByUrl(this.redirectURL);
   }
 }
