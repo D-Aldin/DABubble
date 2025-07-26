@@ -182,3 +182,16 @@ h3 {
     justify-content: center;
   }
 }
+
+.message-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; // fill the message container height
+  width: 100%;
+  position: absolute; // or relative if preferred
+  top: 0;
+  left: 0;
+  z-index: 10; // ensure it's above background
+  // background-color: rgba(255, 255, 255, 0.8); // optional semi-transparent background
+}

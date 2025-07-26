@@ -59,7 +59,6 @@ export class NewMessageComponent implements OnInit {
 
     this.channels$.subscribe((data) => {
       this.channelDocData = data;
-      console.log(this.channelDocData);
     })
   }
 
@@ -77,31 +76,45 @@ export class NewMessageComponent implements OnInit {
 
   onInputChange(): void {
     this.hasTyped = true;
-    const value = this.inputValue.toLowerCase().trim();
+    const value = this.getNormalizedInput();
 
     if (value.startsWith('#')) {
-      const query = value.slice(1);
-      this.filteredList = this.channelDocData.filter(
-        (channel) => channel?.title?.toLowerCase().includes(query)
-      );
+      this.filteredList = this.filterChannels(value.slice(1));
     } else if (value.startsWith('@')) {
-      const query = value.slice(1);
-      this.filteredList = this.userDocData.filter(
-        (user) => user?.name?.toLowerCase().includes(query)
-      );
+      this.filteredList = this.filterUsersByName(value.slice(1));
     } else {
-      this.filteredList = this.userDocData.filter((user) => {
-        const emailMatch =
-          typeof user.email === 'string' &&
-          user.email.toLowerCase().includes(value);
-        const nameMatch =
-          typeof user.name === 'string' &&
-          user.name.toLowerCase().includes(value);
-        return emailMatch || nameMatch;
-      });
+      this.filteredList = this.filterUsersByEmailOrName(value);
     }
 
-    this.getSelectedRecipient()
+    this.getSelectedRecipient();
+  }
+
+  getNormalizedInput(): string {
+    return this.inputValue?.toLowerCase().trim() || '';
+  }
+
+  filterChannels(query: string): Channel[] {
+    return this.channelDocData.filter(
+      (channel) => channel?.title?.toLowerCase().includes(query)
+    );
+  }
+
+  filterUsersByName(query: string): UserDropDown[] {
+    return this.userDocData.filter(
+      (user) => user?.name?.toLowerCase().includes(query)
+    );
+  }
+
+  filterUsersByEmailOrName(value: string): UserDropDown[] {
+    return this.userDocData.filter((user) => {
+      const isGuest = user?.name?.toLowerCase().includes('guest');
+      if (isGuest || !user?.email) return false;
+
+      const emailMatch = user.email?.toLowerCase().includes(value);
+      const nameMatch = user.name?.toLowerCase().includes(value);
+
+      return emailMatch || nameMatch;
+    });
   }
 
   selectItem(item: any): void {

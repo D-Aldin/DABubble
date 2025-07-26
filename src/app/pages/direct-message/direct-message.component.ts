@@ -55,6 +55,7 @@ export class DirectMessageComponent
   isMessagesArrayEmpty: boolean = false;
   showProfileCard: boolean = false;
   selectedUserId: string = '';
+  areMessagesRendered: boolean = false;
 
   @ViewChild('scrollContainer')
   private scrollContainer?: ElementRef<HTMLElement>;
@@ -72,39 +73,41 @@ export class DirectMessageComponent
   ) { }
 
   ngOnInit() {
-    this.sharedService.sharedData$.subscribe((user) => {
-      if (user) {
-        this.areMessagesLoaded = false;
-        this.hasSelectedUser = true;
-        this.selectedUser = user;
-        this.loadCurrentUserId();
-        const currentUserId = this.currentUser?.userId;
-        const selectedUserId = this.selectedUser?.uid;
-        if (currentUserId && selectedUserId) {
-          this.createConversation(currentUserId, selectedUserId);
-        }
-      }
-    });
+    // this.sharedService.sharedData$.subscribe((user) => {
+    //   if (user) {
+    //     this.areMessagesLoaded = false;
+    //     this.hasSelectedUser = true;
+    //     this.selectedUser = user;
+    //     this.loadCurrentUserId();
+    //     const currentUserId = this.currentUser?.userId;
+    //     const selectedUserId = this.selectedUser?.uid;
+    //     if (currentUserId && selectedUserId) {
+    //       this.createConversation(currentUserId, selectedUserId);
+    //     }
+    //   }
+    // });
     // this.subscription = this.messagingService
     //   .getMessages(this.conversation)
     //   .subscribe((msg) => {
     //     this.messages = msg;
     //   });
-
+    this.loadCurrentUserId();
     this.route.paramMap.subscribe(async (params) => {
       const selectedUid = params.get('uid');
 
       if (this.currentUser?.userId && selectedUid) {
-        // 🔽 Fetch full user data first
+        this.areMessagesLoaded = false; // 🔁 show spinner
         const userDoc = await this.userService.getUserDocument(selectedUid);
+
         if (userDoc) {
           this.selectedUser = {
             uid: selectedUid,
             ...userDoc,
           };
 
-          // 🔁 Now create the conversation
-          this.createConversation(this.currentUser.userId, selectedUid);
+          await this.createConversation(this.currentUser.userId, selectedUid);
+          this.areMessagesLoaded = true; // ✅ spinner off when done
+          this.cdr.detectChanges();
         }
       }
     });
@@ -132,23 +135,18 @@ export class DirectMessageComponent
     }
   }
 
-  async createConversation(
-    currentUserId: string,
-    selectedUserId: string
-  ): Promise<void> {
-    const conversationId = this.messagingService.generateConversationId(
-      currentUserId,
-      selectedUserId
-    );
+  async createConversation(currentUserId: string, selectedUserId: string): Promise<void> {
+    const conversationId = this.messagingService.generateConversationId(currentUserId, selectedUserId);
+
+    this.conversation = conversationId;
     await this.messagingService.createConversation(conversationId, [
       currentUserId,
       selectedUserId,
     ]);
 
-    this.conversation = conversationId;
-    this.areMessagesLoaded = false;
-    this.loadMessages(conversationId);
+    await this.loadMessages(conversationId); // fully awaited now
   }
+
 
   onMessageSend(msg: string) {
     const from = this.currentUser?.userId;
@@ -163,27 +161,41 @@ export class DirectMessageComponent
     this.loadMessages(this.conversation);
   }
 
-  loadMessages(id: string) {
-    this.subscription = this.messagingService
-      .getMessages(id)
-      .subscribe(async (msg) => {
-        this.areMessagesLoaded = false;
-        this.messages = msg;
-        const senderIds = [...new Set(msg.map((m) => m.messageFrom))];
-        for (const uid of senderIds) {
-          if (!this.userNamesMap[uid]) {
-            this.userNamesMap[uid] = await this.getCurrentUserName(uid);
-          }
-          if (!this.userAvatarsMap[uid]) {
-            this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
-          }
+  async loadMessages(id: string): Promise<void> {
+    this.subscription?.unsubscribe();
+
+    // 🧹 Clear old messages immediately before rendering anything
+    this.messages = [];
+    this.areMessagesRendered = false;
+    this.cdr.detectChanges();
+
+    this.subscription = this.messagingService.getMessages(id).subscribe(async (msg) => {
+      const senderIds = [...new Set(msg.map((m) => m.messageFrom))];
+
+      for (const uid of senderIds) {
+        if (!this.userNamesMap[uid]) {
+          this.userNamesMap[uid] = await this.getCurrentUserName(uid);
         }
-        this.checkArray(this.messages);
-        this.areMessagesLoaded = true;
+        if (!this.userAvatarsMap[uid]) {
+          this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
+        }
+      }
+
+      this.messages = msg;
+      this.checkArray(this.messages);
+
+      // Mark messages fully rendered after change detection
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.areMessagesRendered = true;
+        this.zone.onStable.pipe(take(1)).subscribe(() => {
+          this.scrollToBottom();
+        });
         this.cdr.detectChanges();
-        this.zone.onStable.pipe(take(1)).subscribe(() => this.scrollToBottom());
       });
+    });
   }
+
 
   checkIfMessageIsFromLoggedInUser(index: number): boolean {
     const userFromAuthService = this.authService.getCurrentUser();
@@ -225,11 +237,7 @@ export class DirectMessageComponent
   }
 
   checkArray(arr: Object[]) {
-    if (arr.length < 1) {
-      this.isMessagesArrayEmpty = false;
-    } else {
-      this.isMessagesArrayEmpty = true;
-    }
+    this.isMessagesArrayEmpty = arr.length < 1;
   }
 
   handlingDateTime(timestamp: Timestamp): string {

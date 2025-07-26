@@ -18,17 +18,22 @@
             <span>{{ item.name }}</span>
           </div>
 
-          <!-- Email -->
-          <span class="blue-color" *ngIf="!inputValue.startsWith('#') && !inputValue.startsWith('@')">
-            {{ item.email }}
-          </span>
+          <ng-container *ngIf="
+            !inputValue.startsWith('#') &&
+            !inputValue.startsWith('@') &&
+            item.email &&
+            !item.name?.toLowerCase().includes('guest')
+          ">
+            <span class="blue-color">{{ item.email }}</span>
+          </ng-container>
         </li>
       </ul>
     </div>
   </header>
 
   <div class="button-wrapper" *ngIf="showRedirectButton">
-    <button (click)="redirectToMsg()" class="go-to-msg-button">Hier klicken um die gesendete Nachricht anzusehen.</button>
+    <button (click)="redirectToMsg()" class="go-to-msg-button">Hier klicken um die gesendete Nachricht
+      anzusehen.</button>
   </div>
 
   <div class="message-field-wrapper" *ngIf="isRecipientValid()">

@@ -38,14 +38,24 @@
         <router-outlet></router-outlet>
         <app-dashboard-intro *ngIf="isIntroSectionVisible"></app-dashboard-intro>
       </div>
-       @if (showThread) {
-        <app-thread
-          class="thread-container"
-          [channelId]="selectedChannelId"
-          [messageId]="selectedMessageId"
-          (closeThread)="onCloseThread()">
-        </app-thread>
+      @if (showThread) {
+      <app-thread class="thread-container" [channelId]="selectedChannelId" [messageId]="selectedMessageId"
+        (closeThread)="onCloseThread()">
+      </app-thread>
       }
     </div>
   </section>
+</div>
+
+<div *ngIf="showProfileCard$ | async" class="profile-card-overlay" (click)="closeProfileCard()">
+  <app-profile-card *ngIf="(selectedUser$ | async) as user" [name]="user.name" [email]="user.email"
+    [src]="user.avatarPath || ''" [active]="user.online" [isInsertedInHeader]="false" (click)="$event.stopPropagation()"
+    (closeCard)="closeProfileCard()">
+    <div class="button-container">
+      <button [routerLink]="user.direktMessageLink" (click)="closeProfileCard()" class="goToDm-button">
+        <img src="./../../assets/icons/mode_comment.svg" alt="">
+        Nachricht
+      </button>
+    </div>
+  </app-profile-card>
 </div>

@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../core/services/channel.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { AsyncPipe } from '@angular/common';
-import { Observable, take } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import { Output, EventEmitter } from '@angular/core';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
 import { UserService } from '../../core/services/user.service';
@@ -31,6 +31,7 @@ import { DirectMessagingService } from '../../core/services/direct-messaging.ser
 import { Router, RouterLink, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { Zone } from 'zone.js/lib/zone-impl';
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 
 @Component({
   selector: 'app-channel-messages',
@@ -84,43 +85,45 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
+    private overlayService: ProfileOverlayService
   ) { }
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
+    this.isLoading = true;
+    this.hasScrolledAfterLoad = false;
 
-    this.messages$ = this.messagingService
-      .getChannelMessages(this.channelId)
-      .pipe(
-        switchMap((messages) => {
-          const tasks = messages.map((msg) =>
-            from(
-              this.messagingService.getReplyCount(this.channelId, msg.id!)
-            ).pipe(map((count) => ({ ...msg, replyCount: count })))
-          );
-          return forkJoin(tasks);
-        })
-      );
+    this.userService.getAllUsers().pipe(
+      // Step 1: load and store users
+      tap((users) => {
+        this.usersMap = {};
+        users.forEach((user) => {
+          this.usersMap[user.id] = {
+            ...user,
+            uid: user.id,
+            online: false,
+            email: '',
+          };
+        });
+      }),
 
-    this.messages$.subscribe((msgs) => {
-      this.isLoading = true;
-      this.hasScrolledAfterLoad = false;
+      // Step 2: load messages
+      switchMap(() => this.messagingService.getChannelMessages(this.channelId)),
+
+      // Step 3: fetch reply counts for each message
+      switchMap((messages) => {
+        const tasks = messages.map((msg) =>
+          from(this.messagingService.getReplyCount(this.channelId, msg.id!)).pipe(
+            map((count) => ({ ...msg, replyCount: count }))
+          )
+        );
+        return forkJoin(tasks);
+      })
+    ).subscribe((msgs) => {
+      // Final step: assign and render
       this.groupedMessages = this.groupMessagesByDate(msgs);
       this.cdRef.detectChanges();
       this.isLoading = false;
-    });
-
-    this.userService.getAllUsers().subscribe((users) => {
-      // this.usersMap = Object.fromEntries(users.map(u => [u.id, { ...u, uid: u.id, online: false }]));
-      this.usersMap = {};
-      users.forEach((user) => {
-        this.usersMap[user.id] = {
-          ...user,
-          uid: user.id,
-          online: false,
-          email: '',
-        };
-      });
     });
 
     this.getObserveableProfileCardData();
@@ -258,15 +261,15 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openProfileCard(uid: string): void {
-    const user = this.userDataForProfileCard.find((u) =>
-      u.direktMessageLink.endsWith(uid)
-    );
-    if (user) {
-      this.selectedUserForProfileCard = user;
-      this.showProfileCard = true;
-    }
-  }
+  // openProfileCard(uid: string): void {
+  //   const user = this.userDataForProfileCard.find((u) =>
+  //     u.direktMessageLink.endsWith(uid)
+  //   );
+  //   if (user) {
+  //     this.selectedUserForProfileCard = user;
+  //     this.showProfileCard = true;
+  //   }
+  // }
 
   closeProfileCard(): void {
     this.showProfileCard = false;
@@ -292,5 +295,31 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       this.scrollToBottom();
       this.hasScrolledAfterLoad = true;
     }
+  }
+
+  openProfileCard(userId: string): void {
+    // Open immediately with minimal info
+    const initialProfile: ProfileCard = {
+      name: '...',
+      email: '', // empty for now
+      avatarPath: '',
+      online: false,
+      direktMessageLink: `/dashboard/direct-message/${userId}`
+    };
+
+    this.overlayService.open(initialProfile);
+
+    // Load actual user and update profile once available
+    this.userService.getUserById(userId).subscribe(userDoc => {
+      if (!userDoc) return;
+
+      this.overlayService.updatePartial({
+        name: userDoc.name,
+        email: userDoc.email,
+        avatarPath: userDoc.avatarPath,
+        online: userDoc.online,
+        direktMessageLink: `/dashboard/direct-message/${userId}`
+      });
+    });
   }
 }

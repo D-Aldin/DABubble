@@ -19,6 +19,7 @@ import { ThreadMessagingService } from '../../core/services/thread-messaging.ser
 import { DashboardIntroComponent } from './dashboard-intro/dashboard-intro.component';
 import { filter } from 'rxjs';
 import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +33,7 @@ import { ProfileCardComponent } from "../../shared/profile-card/profile-card.com
     ThreadComponent,
     DashboardIntroComponent,
     ProfileCardComponent
-],
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -54,6 +55,8 @@ export class DashboardComponent {
   selectedMessageId: string = '';
   selectedChannelId: string = '';
   isIntroSectionVisible: boolean = true;
+  showProfileCard$ = this.overlayService.isVisible$;
+  selectedUser$ = this.overlayService.selectedUser$;
   @Output() replyToThread = new EventEmitter<string>();
 
   constructor(
@@ -62,8 +65,13 @@ export class DashboardComponent {
     private userService: UserService,
     private router: Router,
     private authService: AuthService,
-    private threadService: ThreadMessagingService
+    private threadService: ThreadMessagingService,
+    public overlayService: ProfileOverlayService
   ) { }
+
+  closeProfileCard(): void {
+    this.overlayService.close();
+  }
 
   chatMessages = [
     {
@@ -105,7 +113,7 @@ export class DashboardComponent {
     this.checkDashboardRouting();
   }
 
-    checkDashboardRouting() {
+  checkDashboardRouting() {
     this.router.events
       .pipe(
         filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
