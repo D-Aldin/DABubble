@@ -221,35 +221,56 @@ export class NewMessageComponent implements OnInit {
     return null;
   }
 
-  channelMessaging(recipientData: Channel) {
+  async channelMessaging(recipientData: Channel) {
     const userId = this.getCurrentUserId?.();
     if (userId) {
-      this.channelMessageService.sendMessage(recipientData.id, userId, this.messageText);
+      await this.channelMessageService.sendMessage(recipientData.id, userId, this.messageText);
       this.redirectURL = `/dashboard/channel/${recipientData.id}`;
       this.showRedirectButton = true;
     }
   }
 
-  directMessaging(recipientData: UserDropDown) {
-    if (this.getCurrentUserId !== null) {
-      // this.directMessageService.sendDirectMsg()
-    }
+  async directMessaging(recipientData: UserDropDown): Promise<void> {
+    const currentUserId = this.getCurrentUserId(); // Get current user ID
+    const selectedUserId = recipientData?.id;
+
+    if (!currentUserId || !selectedUserId) return;
+
+    // 1. Generate consistent conversation ID
+    const conversationId = this.directMessageService.generateConversationId(currentUserId, selectedUserId);
+
+    // 2. Ensure the conversation exists
+    await this.directMessageService.createConversation(conversationId, [currentUserId, selectedUserId]);
+
+    // 3. Prepare message text
+    const trimmedMessage = this.messageText.trim();
+    if (!trimmedMessage) return;
+
+    // 4. Send the message via messaging service
+    await this.directMessageService.sendDirectMsg(
+      conversationId,
+      currentUserId,
+      selectedUserId,
+      trimmedMessage
+    );
+    // 5. Clear the message input
+    this.showRedirectButton = true;
+    this.messageText = '';
+    this.redirectURL = `/dashboard/direct-message/${recipientData.id}`;
   }
+
+
 
   onMessageSend(message: string): void {
     this.messageText = message;
-
     if (!this.messageText.trim()) return;
-
     const recipient = this.inputValue.trim();
     const recipientData = this.getSelectedRecipientData(recipient);
-
     if (recipientData) {
       this.sendMessage(recipientData);
       this.handleToast(true);
     } else {
       this.handleToast(false);
-      console.warn('No valid recipient selected.');
     }
   }
 
@@ -261,7 +282,6 @@ export class NewMessageComponent implements OnInit {
       this.toastMessage = 'Es ist ein Fehler aufgetreten';
       this.wasMessageSentSuccessfully = false;
     }
-
     this.messageSentSuccessfully = true;
   }
 
