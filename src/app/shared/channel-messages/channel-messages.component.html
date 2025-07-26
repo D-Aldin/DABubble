@@ -1,4 +1,4 @@
-<div class="main-content">
+<!-- <div class="main-content"> -->
   <div class="message-wrapper" #scrollContainer *ngIf="!isLoading">
     @for (group of groupedMessages; track group.dateString) {
     <app-timestamp-line [date]="handlingDateTime(group.date)" />
@@ -70,7 +70,7 @@
     }
     }
   </div>
-</div>
+<!-- </div> -->
 
 <div class="profile-card-overlay" *ngIf="showProfileCard" (click)="closeProfileCard()">
   <app-profile-card *ngIf="selectedUserForProfileCard as user" [name]="selectedUserForProfileCard.name"
