@@ -9,6 +9,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transform-origin: left;
+    animation: curtainSlideIn 0.18s ease-out forwards;
 
     // Header styling
     header {

@@ -9,6 +9,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    transform-origin: left;
+    animation: curtainSlideIn 0.18s ease-out forwards;
 }
 
 // Channel Header styling
@@ -362,10 +364,10 @@
 }
 
 app-channel-messages {
-  flex: 1;
-  overflow: hidden; // don't let it grow too much
-  display: flex;
-  flex-direction: column;
+    flex: 1;
+    overflow: hidden; // don't let it grow too much
+    display: flex;
+    flex-direction: column;
 }
 
 .message {
@@ -389,6 +391,7 @@ h3 {
     height: 100%;
     width: 100%;
 }
+
 .members-popup {
     background-color: #fff;
     border-radius: 24px;
@@ -461,35 +464,35 @@ h3 {
         }
     }
 
-   .add-users-btn {
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       gap: 8px;
-       margin-top: 0.5rem;
-       padding: 10px 16px;
-       background-color: #f5f7ff;
-       border: none;
-       border-radius: 999px; // pill shape
-       font-size: 1rem;
-       font-weight: 500;
-       color: #444df2;
-       cursor: pointer;
-       transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    .add-users-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 0.5rem;
+        padding: 10px 16px;
+        background-color: #f5f7ff;
+        border: none;
+        border-radius: 999px; // pill shape
+        font-size: 1rem;
+        font-weight: 500;
+        color: #444df2;
+        cursor: pointer;
+        transition: background-color 0.2s ease, box-shadow 0.2s ease;
 
-       img {
-           width: 20px;
-           height: 20px;
-           filter: brightness(0) saturate(100%) invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
-       }
+        img {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) saturate(100%) invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+        }
 
-       &:hover {
-           background-color: #eceefe;
-           box-shadow: 0 0 0 2px rgba(68, 77, 242, 0.2);
-       }
+        &:hover {
+            background-color: #eceefe;
+            box-shadow: 0 0 0 2px rgba(68, 77, 242, 0.2);
+        }
 
-       &:active {
-           background-color: #dde1fd;
-       }
-   }
+        &:active {
+            background-color: #dde1fd;
+        }
+    }
 }

@@ -71,3 +71,17 @@
     transform: translateX(0);
   }
 }
+
+@keyframes curtainSlideIn {
+    0% {
+        transform: scaleX(0);
+        transform-origin: left;
+        opacity: 0;
+    }
+
+    100% {
+        transform: scaleX(1);
+        transform-origin: left;
+        opacity: 1;
+    }
+}

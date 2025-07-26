@@ -18,6 +18,7 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { DashboardIntroComponent } from './dashboard-intro/dashboard-intro.component';
 import { filter } from 'rxjs';
+import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -29,8 +30,9 @@ import { filter } from 'rxjs';
     RouterModule,
     RouterOutlet,
     ThreadComponent,
-    DashboardIntroComponent
-  ],
+    DashboardIntroComponent,
+    ProfileCardComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

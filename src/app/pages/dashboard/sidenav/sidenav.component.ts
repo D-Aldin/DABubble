@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule, RouterModule, SpinnerComponent, ProfileCardComponent],
+  imports: [CommonModule, RouterModule, SpinnerComponent],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })

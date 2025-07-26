@@ -1,6 +1,19 @@
 @import "./../../../styles/mixins";
 @import "./../../../styles/variables";
 
+.main-content {
+  background-color: #ffffff;
+  border-radius: 36px;
+  height: calc(100vh - 140px);
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform-origin: left;
+  animation: curtainSlideIn 0.18s ease-out forwards;
+}
+
 .message-wrapper {
   flex: 1;
   overflow-y: auto;

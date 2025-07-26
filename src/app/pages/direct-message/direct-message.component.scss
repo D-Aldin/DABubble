@@ -11,6 +11,8 @@ section {
   height: 100%;
   background: white;
   border-radius: 36px;
+  transform-origin: left;
+  animation: curtainSlideIn 0.18s ease-out forwards;
 }
 
 .headline {
