@@ -5,6 +5,9 @@ import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
 import { User } from '../../core/interfaces/user';
 import { UserService } from '../../core/services/user.service';
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { ProfileCard } from '../../core/interfaces/profile-card';
+import { DirectMessageComponent } from '../../pages/direct-message/direct-message.component';
 
 @Component({
   selector: 'app-chat-box',
@@ -31,10 +34,12 @@ export class ChatBoxComponent {
   showOptions: boolean = false;
   channels: Channel[] = [];
   users: User[] = [];
+  clickedTag = "";
 
   constructor(
     private channelService: ChannelService,
-    private userService: UserService
+    private userService: UserService,
+    private profileOverlayService: ProfileOverlayService
   ) {
     this.channelService.getChannels().subscribe((channels: Channel[]) => {
       this.channels = channels;
@@ -118,7 +123,8 @@ export class ChatBoxComponent {
         userId: '',
       });
     }
-
+    
+    
     return result;
   }
 
@@ -132,7 +138,18 @@ export class ChatBoxComponent {
     return found?.id;
   }
 
-  testFunction() {
-    console.log('hello');
+processMentionedUse(event: Event): void {
+  const regex =  /@(\w+(?:\s\w+)?)/;
+  const targetElement = event.target as HTMLElement;
+  this.clickedTag = targetElement.innerText.trim();
+  const match = this.clickedTag.match(regex);
+
+  if (match) {
+    const getUserName = `${match[1]}`;
+    const userId = this.findUserByName(getUserName);
+    console.log(userId);
+  } else {
+    console.warn('No valid tag found:', this.clickedTag);
   }
+}
 }
