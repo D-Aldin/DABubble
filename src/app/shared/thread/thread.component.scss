@@ -356,3 +356,40 @@ app-message-field {
     }
   }
 }
+.edit-message-box {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  textarea {
+    width: 300px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+  }
+
+  .edit-buttons {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+
+    .cancel-btn,
+    .save-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .cancel-btn {
+      background-color: #f0f0f0;
+    }
+
+    .save-btn {
+      background-color: #444df2;
+      color: white;
+    }
+  }
+}

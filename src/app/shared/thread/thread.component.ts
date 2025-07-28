@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { MessageFieldComponent } from '../message-field/message-field.component';
-import { Firestore, collection, addDoc, query, orderBy, onSnapshot,  doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, query, orderBy, onSnapshot,  doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
@@ -59,8 +59,8 @@ export class ThreadComponent {
   }
 
   startEditingThread(message: any) {
-  this.editingMessageId = message.id;
-  this.editedMessageText = message.text;
+    this.editingMessageId = message.id;
+    this.editedMessageText = message.text;
   }
   
   reactToThreadMessage(replyId: string, emoji: string) {
@@ -68,16 +68,27 @@ export class ThreadComponent {
   }
   
   cancelEditing() {
-  this.editingMessageId = null;
-  this.editedMessageText = '';
-}
+    this.editingMessageId = null;
+    this.editedMessageText = '';
+  }
 
-saveEditedMessage(messageId: string) {
-  // 🔁 Replace with Firestore update logic
-  console.log('Saving message', messageId, 'with new text:', this.editedMessageText);
-  this.cancelEditing();
-}
+  async saveEditedMessage(messageId: string) {
+    if (!this.channelId || !this.messageId) {
+      console.warn('Missing channelId or parentMessageId');
+      return;
+    }
 
+    const threadReplyRef = doc(this.firestore,
+      `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`);
+
+    try {
+      await updateDoc(threadReplyRef, { text: this.editedMessageText.trim() });
+      console.log('Thread reply updated:', this.editedMessageText);
+      this.cancelEditing();
+    } catch (error) {
+      console.error('Error updating thread reply:', error);
+    }
+  }
 
   loadChannelUsers(channelId: string) {
     const channelRef = doc(this.firestore, `channels/${channelId}`);

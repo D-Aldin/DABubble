@@ -35,20 +35,19 @@
             <p>{{ parentMessage.text }}</p>
           </div>
 
-        @if (hoveredMessageId === parentMessage.id) {
-          <div class="message-toolbar">
-            <button (click)="reactToThreadMessage(parentMessage.id!, '👍')">
-              <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
-            </button>
-
-            @if (parentMessage.senderId === currentUserId) {
-              <button (click)="startEditingThread(parentMessage)" title="Nachricht bearbeiten">
-                <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+          @if (hoveredMessageId === parentMessage.id) {
+            <div class="message-toolbar">
+              <button (click)="reactToThreadMessage(parentMessage.id!, '👍')">
+                <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
               </button>
-            }
-          </div>
-        }
 
+              @if (parentMessage.senderId === currentUserId) {
+                <button (click)="startEditingThread(parentMessage)" title="Nachricht bearbeiten">
+                  <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+                </button>
+              }
+            </div>
+          }
         </div>
       }
 
@@ -75,9 +74,20 @@
                     <h3 class="reply-author">{{ getUserName(reply.senderId) }}</h3>
                     <span class="reply-time">{{ reply.timestamp?.toDate() | date:'shortTime' }}</span>
                   </div>
-                  <div class="reply-text message">
-                    {{ reply.text }}
-                  </div>
+
+                  @if (editingMessageId === reply.id) {
+                    <div class="edit-message-box">
+                      <textarea [(ngModel)]="editedMessageText" rows="3" autofocus></textarea>
+                      <div class="edit-buttons">
+                        <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
+                        <button class="save-btn" (click)="saveEditedMessage(reply.id)">Speichern</button>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="reply-text message">
+                      {{ reply.text }}
+                    </div>
+                  }
                 </div>
 
                 @if (hoveredMessageId === reply.id) {
@@ -93,7 +103,6 @@
                     }
                   </div>
                 }
-
               </div>
             }
           }
