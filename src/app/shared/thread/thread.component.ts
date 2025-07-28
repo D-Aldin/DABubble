@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { MessageFieldComponent } from '../message-field/message-field.component';
-import { Firestore, collection, addDoc, query, orderBy, onSnapshot,  doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, query, orderBy, onSnapshot,  doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
@@ -29,6 +29,10 @@ export class ThreadComponent {
   channelName: string = '';
   selectedChannelUsers: { name: string; avatarPath: string }[] = [];
   currentUserId: string = '';
+  hoveredMessageId: string | null = null;
+  editingMessageId: string | null = null;
+  editedMessageText: string = '';
+  emojiPickerForMessageId: string | null = null;
 
   constructor(
     private firestore: Firestore,
@@ -53,6 +57,87 @@ export class ThreadComponent {
         console.warn('ThreadComponent missing channelId or messageId.');
       }
     });
+  }
+
+  startEditingThread(message: any) {
+    this.editingMessageId = message.id;
+    this.editedMessageText = message.text;
+  }
+  
+  async reactToThreadMessage(messageId: string, emoji: string) {
+    const isParent = messageId === this.messageId;
+    const refPath = isParent
+      ? `channels/${this.channelId}/messages/${messageId}`
+      : `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`;
+    const messageRef = doc(this.firestore, refPath);
+    const docSnap = await getDoc(messageRef);
+    if (!docSnap.exists()) return;
+
+    const data = docSnap.data();
+    const reactions = data['reactions'] || {};
+    const currentUserId = this.authService.currentUserId;
+
+    if (reactions[currentUserId] === emoji) {
+      delete reactions[currentUserId];
+    } else {
+      reactions[currentUserId] = emoji;
+    }
+    await updateDoc(messageRef, { reactions });
+  }
+
+  getReactionArray(reactions: { [userId: string]: string }) {
+    const countMap = new Map<string, number>();
+
+    for (const emoji of Object.values(reactions || {})) {
+      countMap.set(emoji, (countMap.get(emoji) || 0) + 1);
+    }
+
+    return Array.from(countMap.entries()).map(([emoji, count]) => ({ emoji, count }));
+  }
+
+
+  selectEmojiForMessage(messageId: string) {
+    this.emojiPickerForMessageId = messageId;
+  }
+
+  async addEmojiToMessage(event: any, messageId: string) {
+    const emoji = event.emoji.native;
+    const currentUser = await this.authService.getCurrentUser();
+    if (!currentUser) return;
+    // Determine if messageId is for parentMessage or a reply
+    const isParentMessage = this.parentMessage?.id === messageId;
+    const docPath = isParentMessage
+      ? `channels/${this.channelId}/messages/${messageId}`
+      : `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`;
+    const docRef = doc(this.firestore, docPath);
+
+    await updateDoc(docRef, {
+      [`reactions.${currentUser.uid}`]: emoji
+    });
+    this.emojiPickerForMessageId = null; // close emoji picker
+  }
+
+  cancelEditing() {
+    this.editingMessageId = null;
+    this.editedMessageText = '';
+  }
+
+  async saveEditedMessage(messageId: string) {
+    if (!this.channelId || !this.messageId) {
+      console.warn('Missing channelId or parentMessageId');
+      return;
+    }
+
+    const threadReplyRef = doc(this.firestore,
+      `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`);
+
+    try {
+      await updateDoc(threadReplyRef, { text: this.editedMessageText.trim() });
+      console.log('Thread reply updated:', this.editedMessageText);
+      this.cancelEditing();
+    } catch (error) {
+      console.error('Error updating thread reply:', error);
+    }
   }
 
   loadChannelUsers(channelId: string) {
