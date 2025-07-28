@@ -1,4 +1,4 @@
-<div class="thread" [ngClass]="{'d-none': isClose}">
+<div class="thread" [ngClass]="{ 'd-none': isClose }">
   <div class="headline">
     <div class="headline-content">
       <h2>Thread</h2>
@@ -21,19 +21,32 @@
   <div class="main-content-wrapper">
     <div class="main-content">
       @if (parentMessage && userMap[parentMessage.senderId]) {
-         <div class="thread-message">
-            <div class="avatar">
-               <img [src]="getAvatarPath(parentMessage.senderId)" alt="Avatar" />
-            </div>
-            <div class="user-name">{{ getUserName(parentMessage.senderId) }}</div>
-            <div class="time">{{ parentMessage.timestamp?.toDate() | date: 'shortTime' }}</div>
-            <div class="message">
-               <p>{{ parentMessage.text }}</p>
-            </div>
-         </div>
-         }
+        <div
+          class="thread-message"
+          (mouseenter)="hoveredMessageId = parentMessage.id"
+          (mouseleave)="hoveredMessageId = null"
+        >
+          <div class="avatar">
+            <img [src]="getAvatarPath(parentMessage.senderId)" alt="Avatar" />
+          </div>
+          <div class="user-name">{{ getUserName(parentMessage.senderId) }}</div>
+          <div class="time">{{ parentMessage.timestamp?.toDate() | date: 'shortTime' }}</div>
+          <div class="message">
+            <p>{{ parentMessage.text }}</p>
+          </div>
 
-
+          @if (hoveredMessageId === parentMessage.id) {
+            <div class="message-toolbar">
+              <button (click)="reactToThreadMessage(parentMessage.id!, '👍')">
+                <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
+              </button>
+              <button (click)="startEditingThread(parentMessage)">
+                <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+              </button>
+            </div>
+          }
+        </div>
+      }
 
       <div class="answer-wrapper">
         <div class="number-of-answers">
@@ -44,7 +57,12 @@
         <div class="answer-content">
           @for (reply of replies; track reply.id) {
             @if (userMap[reply.senderId]) {
-              <div class="thread-reply" [ngClass]="{'me': reply.senderId === currentUserId}">
+              <div
+                class="thread-reply"
+                [ngClass]="{ 'me': reply.senderId === currentUserId }"
+                (mouseenter)="hoveredMessageId = reply.id"
+                (mouseleave)="hoveredMessageId = null"
+              >
                 <div class="avatar">
                   <img [src]="getAvatarPath(reply.senderId)" alt="Avatar" />
                 </div>
@@ -57,12 +75,21 @@
                     {{ reply.text }}
                   </div>
                 </div>
+
+                @if (hoveredMessageId === reply.id) {
+                  <div class="message-toolbar">
+                    <button (click)="reactToThreadMessage(reply.id!, '👍')">
+                      <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
+                    </button>
+                    <button (click)="startEditingThread(reply)">
+                      <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+                    </button>
+                  </div>
+                }
               </div>
             }
           }
         </div>
-
-
       </div>
     </div>
 

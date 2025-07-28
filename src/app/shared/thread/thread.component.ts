@@ -29,6 +29,9 @@ export class ThreadComponent {
   channelName: string = '';
   selectedChannelUsers: { name: string; avatarPath: string }[] = [];
   currentUserId: string = '';
+  hoveredMessageId: string | null = null;
+  editingMessageId: string | null = null;
+  editedMessageText: string = '';
 
   constructor(
     private firestore: Firestore,
@@ -54,6 +57,27 @@ export class ThreadComponent {
       }
     });
   }
+
+  startEditingThread(message: any) {
+  this.editingMessageId = message.id;
+  this.editedMessageText = message.text;
+  }
+  
+  reactToThreadMessage(replyId: string, emoji: string) {
+  // Your Firestore update logic here
+  }
+  
+  cancelEditing() {
+  this.editingMessageId = null;
+  this.editedMessageText = '';
+}
+
+saveEditedMessage(messageId: string) {
+  // 🔁 Replace with Firestore update logic
+  console.log('Saving message', messageId, 'with new text:', this.editedMessageText);
+  this.cancelEditing();
+}
+
 
   loadChannelUsers(channelId: string) {
     const channelRef = doc(this.firestore, `channels/${channelId}`);
