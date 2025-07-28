@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
@@ -7,11 +7,14 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { user } from '@angular/fire/auth';
+import { FormsModule } from '@angular/forms';
+import { SearchService } from '../../core/services/search.service';
+
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProfileCardComponent, SpinnerComponent],
+  imports: [CommonModule, RouterModule, ProfileCardComponent, SpinnerComponent, FormsModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -34,11 +37,14 @@ export class HeaderComponent {
   DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
   CHANNEL_PREFIX: string = '/dashboard/channel';
   currentURL: string = '';
+  inputSearchBar:string = "";
+
 
   constructor(
     public router: Router,
     private userAuthService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private searchService: SearchService
   ) {
     this.handleHeaderAppearancesForRoutes();
   }

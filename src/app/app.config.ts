@@ -17,17 +17,8 @@ export const firebaseConfig = {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideFirebaseApp(() =>
-      initializeApp({
-        projectId: 'dabubble-64746',
-        appId: '1:944811862636:web:432e48e014e312351c8649',
-        storageBucket: 'dabubble-64746.firebasestorage.app',
-        apiKey: 'AIzaSyD168Ov3OPIuwF4NX-8K-tilgOrNwntkuE',
-        authDomain: 'dabubble-64746.firebaseapp.com',
-        messagingSenderId: '944811862636',
-      })
-    ),
+    provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-  ],
+  ]
 };

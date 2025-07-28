@@ -8,6 +8,7 @@ import { UserService } from '../../core/services/user.service';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessageComponent } from '../../pages/direct-message/direct-message.component';
+import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 
 @Component({
   selector: 'app-chat-box',
@@ -39,7 +40,7 @@ export class ChatBoxComponent {
   constructor(
     private channelService: ChannelService,
     private userService: UserService,
-    private profileOverlayService: ProfileOverlayService
+    private openProfileCardService: OpenProfileCardService
   ) {
     this.channelService.getChannels().subscribe((channels: Channel[]) => {
       this.channels = channels;
@@ -147,7 +148,7 @@ processMentionedUse(event: Event): void {
   if (match) {
     const getUserName = `${match[1]}`;
     const userId = this.findUserByName(getUserName);
-    console.log(userId);
+    this.openProfileCardService.openProfileCard(userId)
   } else {
     console.warn('No valid tag found:', this.clickedTag);
   }
