@@ -3,7 +3,6 @@ import { InputFieldComponent } from "../../shared/input-field/input-field.compon
 import { MessageFieldComponent } from "../../shared/message-field/message-field.component";
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
-import { User } from '../../core/interfaces/user';
 import { Observable } from 'rxjs';
 import { Channel } from '../../core/interfaces/channel';
 import { ChannelService } from '../../core/services/channel.service';
@@ -27,6 +26,7 @@ export class NewMessageComponent implements OnInit {
   userDocData: UserDropDown[] = [];
   channels$!: Observable<Channel[]>;
   channelDocData: Channel[] = [];
+  selectedRecipients: (UserDropDown | Channel)[] = [];
   inputValue: string = '';
   filteredList: any[] = [];
   showDropdown: boolean = false;
@@ -39,6 +39,7 @@ export class NewMessageComponent implements OnInit {
   wasMessageSentSuccessfully: boolean = false;
   redirectURL: string = '';
   showRedirectButton: boolean = false;
+  showRecipientList: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -137,11 +138,10 @@ export class NewMessageComponent implements OnInit {
 
   getInputType(value: string = this.inputValue): 'channel' | 'user' | 'email' | 'invalid' {
     const trimmed = value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (trimmed.startsWith('#')) return 'channel';
     if (trimmed.startsWith('@')) return 'user';
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailRegex.test(trimmed)) return 'email';
 
     return 'invalid';
@@ -150,9 +150,10 @@ export class NewMessageComponent implements OnInit {
   getRecipientError(): string | null {
     const value = this.inputValue.trim();
     const type = this.getInputType();
-
     if (!this.hasTyped || value === '') return null;
-
+    if (this.isRecipientDuplicate(value)) {
+      return 'Dieser Empfänger wurde bereits hinzugefügt.';
+    }
     switch (type) {
       case 'channel':
         return this.channelDocData.some(c => `#${c.title}` === value)
@@ -171,10 +172,24 @@ export class NewMessageComponent implements OnInit {
     }
   }
 
+  private isRecipientDuplicate(value: string): boolean {
+    const recipientData = this.getSelectedRecipientData(value);
+    if (!recipientData) return false;
+
+    return this.selectedRecipients.some(r => {
+      if ('avatarPath' in r && 'avatarPath' in recipientData) {
+        return r.id === recipientData.id;
+      } else if (!('avatarPath' in r) && !('avatarPath' in recipientData)) {
+        return r.id === recipientData.id;
+      }
+      return false;
+    });
+  }
+
   isRecipientValid(): boolean {
     const value = this.inputValue.trim();
-    const type = this.getInputType();
-
+    const type = this.getInputType(value);
+    if (this.isRecipientDuplicate(value)) return false;
     switch (type) {
       case 'channel':
         return this.channelDocData.some(c => `#${c.title}` === value);
@@ -197,7 +212,6 @@ export class NewMessageComponent implements OnInit {
     const recipientData = this.getSelectedRecipientData(this.selectedRecipient);
   }
 
-
   getSelectedRecipientData(recipient: string): UserDropDown | Channel | null {
     const type = this.getInputType(recipient);
 
@@ -218,10 +232,8 @@ export class NewMessageComponent implements OnInit {
 
   sendMessage(recipientData: UserDropDown | Channel) {
     if ('avatarPath' in recipientData) {
-      // it's a UserDropDown
       this.directMessaging(recipientData);
     } else {
-      // it's a Channel
       this.channelMessaging(recipientData);
     }
   }
@@ -246,45 +258,39 @@ export class NewMessageComponent implements OnInit {
   async directMessaging(recipientData: UserDropDown): Promise<void> {
     const currentUserId = this.getCurrentUserId(); // Get current user ID
     const selectedUserId = recipientData?.id;
-
     if (!currentUserId || !selectedUserId) return;
-
-    // 1. Generate consistent conversation ID
     const conversationId = this.directMessageService.generateConversationId(currentUserId, selectedUserId);
-
-    // 2. Ensure the conversation exists
     await this.directMessageService.createConversation(conversationId, [currentUserId, selectedUserId]);
-
-    // 3. Prepare message text
     const trimmedMessage = this.messageText.trim();
-    if (!trimmedMessage) return;
+    await this.sendDirectMsgWithService(conversationId, currentUserId, selectedUserId, trimmedMessage);
+    this.directMessagingAftermath(recipientData);
+  }
 
-    // 4. Send the message via messaging service
+  async sendDirectMsgWithService(conversationId: string, currentUserId: string, selectedUserId: string, trimmedMessage: string) {
     await this.directMessageService.sendDirectMsg(
       conversationId,
       currentUserId,
       selectedUserId,
       trimmedMessage
     );
-    // 5. Clear the message input
+  }
+
+  directMessagingAftermath(recipientData: UserDropDown) {
     this.showRedirectButton = true;
     this.messageText = '';
     this.redirectURL = `/dashboard/direct-message/${recipientData.id}`;
   }
 
-
-
   onMessageSend(message: string): void {
     this.messageText = message;
     if (!this.messageText.trim()) return;
-    const recipient = this.inputValue.trim();
-    const recipientData = this.getSelectedRecipientData(recipient);
-    if (recipientData) {
+    if (this.selectedRecipients.length === 0) return;
+    for (const recipientData of this.selectedRecipients) {
       this.sendMessage(recipientData);
-      this.handleToast(true);
-    } else {
-      this.handleToast(false);
     }
+    this.handleToast(true);
+    this.selectedRecipients = [];
+    this.inputValue = '';
   }
 
   handleToast(success: boolean): void {
@@ -300,5 +306,53 @@ export class NewMessageComponent implements OnInit {
 
   redirectToMsg(): void {
     this.router.navigateByUrl(this.redirectURL);
+  }
+
+  addRecipientToList(): void {
+    const recipientData = this.getSelectedRecipientData(this.inputValue.trim());
+    if (!recipientData) return;
+
+    if (!this.isRecipientAlreadyAdded(recipientData)) {
+      this.selectedRecipients.push(recipientData);
+      this.sortRecipientsList();
+      this.inputValue = '';
+      this.filteredList = [];
+      this.hasTyped = false;
+    }
+  }
+
+  private sortRecipientsList(): void {
+    this.selectedRecipients.sort((a, b) => {
+      const isAUser = 'avatarPath' in a;
+      const isBUser = 'avatarPath' in b;
+
+      if (!isAUser && isBUser) return -1; // channel before user
+      if (isAUser && !isBUser) return 1;  // user after channel
+
+      const aName = isAUser ? a.name.toLowerCase() : a.title.toLowerCase();
+      const bName = isBUser ? b.name.toLowerCase() : b.title.toLowerCase();
+      return aName.localeCompare(bName);
+    });
+  }
+
+  isRecipientAlreadyAdded(recipientData: UserDropDown | Channel): boolean {
+    return this.selectedRecipients.some(r => {
+      if ('avatarPath' in r && 'avatarPath' in recipientData) {
+        return r.id === recipientData.id;
+      } else if (!('avatarPath' in r) && !('avatarPath' in recipientData)) {
+        return r.id === recipientData.id;
+      }
+      return false;
+    });
+  }
+
+  get processedRecipients(): { isUser: boolean; display: string; src: string | boolean }[] {
+    return this.selectedRecipients.map((recipient) => {
+      if ('avatarPath' in recipient) {
+        return { isUser: true, display: recipient.name, src: recipient.avatarPath };
+      } else {
+        return { isUser: false, display: `<b>#</b>${recipient.title}`, src: false };
+      }
+    });
   }
 }

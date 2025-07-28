@@ -18,19 +18,16 @@ import { ChatBoxComponent } from '../chat-box/chat-box.component';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
-import { combineLatest, map, switchMap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import { ChannelMessagingService } from '../../core/services/channel-messaging.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
-import { Timestamp } from 'firebase/firestore';
-import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { Router, RouterLink, RouterModule, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
-import { Zone } from 'zone.js/lib/zone-impl';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 
 @Component({
@@ -43,7 +40,6 @@ import { ProfileOverlayService } from '../../core/services/profile-overlay.servi
     PickerModule,
     FormsModule,
     TimestampLineComponent,
-    ProfileCardComponent,
     SpinnerComponent,
   ],
   templateUrl: './channel-messages.component.html',

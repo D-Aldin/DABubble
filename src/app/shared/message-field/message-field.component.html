@@ -20,7 +20,7 @@
       }
    </div>
    <div class="message-wrapper">
-      <textarea #inputRef name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" ></textarea>
+      <textarea [disabled]="disabled" #inputRef name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" ></textarea>
       <div class="button-bar">
          <div class="left-side">
             <button class="emoji-button" (click)="toggleEmojiPicker()"></button>

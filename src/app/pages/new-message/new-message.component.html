@@ -7,6 +7,12 @@
           (blur)="hideDropdownWithDelay()" [errorMsg]="getRecipientError()" [autocomplete]="'new-password'"
           [placeholder]="'An: #Channel, oder @jemand oder E-Mail Adresse'"></app-input-field>
       </div>
+
+      <div class="add-recipient-btn-wrapper">
+        <button class="button-style" [disabled]="!isRecipientValid()" (click)="addRecipientToList()">Empfänger
+          hinzufügen</button>
+      </div>
+
       <ul class="dropdown-menu" *ngIf="showDropdown && filteredList.length > 0">
         <li *ngFor="let item of filteredList" (mousedown)="selectItem(item)">
           <!-- Channel -->
@@ -31,13 +37,27 @@
     </div>
   </header>
 
-  <div class="button-wrapper" *ngIf="showRedirectButton">
+  <div class="recipient-list-wrapper">
+    <div class="recipient-list" *ngIf="processedRecipients.length > 0">
+      <h3>Empfänger:</h3>
+      <ul>
+        <li *ngFor="let item of processedRecipients">
+          <img *ngIf="item.isUser" [src]="item.src" alt="Avatar" class="avatar" />
+          <span *ngIf="item.isUser">{{ item.display }}</span>
+          <span *ngIf="!item.isUser" [innerHTML]="item.display"></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="button-wrapper" *ngIf="false">
     <button (click)="redirectToMsg()" class="go-to-msg-button">Hier klicken um die gesendete Nachricht
       anzusehen.</button>
   </div>
 
-  <div class="message-field-wrapper" *ngIf="isRecipientValid()">
-    <app-message-field (messageSend)="onMessageSend($event)"></app-message-field>
+  <div class="message-field-wrapper">
+    <app-message-field [disabled]="!processedRecipients.length"
+      (messageSend)="onMessageSend($event)"></app-message-field>
   </div>
 </div>
 

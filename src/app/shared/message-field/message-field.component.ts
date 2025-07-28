@@ -27,6 +27,7 @@ export class MessageFieldComponent implements AfterViewInit {
   channelArr: Channel[] = [];
   isVisible: boolean = false;
   searchTerm: string = '';
+  @Input() disabled: boolean = false;
 
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 

@@ -107,6 +107,15 @@
         }
     }
 
+    app-message-field {
+        ::ng-deep textarea:disabled {
+            // background-color: rgb(255, 203, 203);
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    }
+
     .message-field-wrapper {
         width: 100%;
         bottom: 10px;
@@ -142,6 +151,95 @@
 
             &:hover {
                 background-color: $input-field-focus-color;
+            }
+        }
+    }
+
+    .add-recipient-btn-wrapper {
+        margin-top: 10px;
+
+        button {
+            background-color: rgb(68, 77, 242);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.125s ease;
+            width: auto;
+            height: auto;
+            border-radius: 50px;
+            gap: 10px;
+            opacity: 1;
+            padding-top: 12px;
+            padding-right: 25px;
+            padding-bottom: 12px;
+            padding-left: 25px;
+            border-width: 1px;
+            font-weight: 700;
+            font-style: Bold;
+            font-size: 18px;
+            line-height: 100%;
+            letter-spacing: 0%;
+            text-align: center;
+        }
+    }
+
+    .recipient-list-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .recipient-list {
+            margin-top: 32px;
+            margin-right: 45px;
+            margin-bottom: 20px;
+            margin-left: 45px;
+            padding: 10px;
+            background: white;
+            // border: 1px solid $input-field-focus-color;
+            border-radius: 8px;
+            width: fit-content;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-top: 8px;
+
+            h3 {
+                margin: 0 0 8px 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                max-height: 220px;
+                overflow-y: auto;
+
+                li {
+                    padding: 8px 12px;
+                    border-radius: 36px;
+                    border: 1px solid transparent;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    &:hover {
+                        background-color: $secondary-color;
+                    }
+
+                    span {
+                        font-size: 14px;
+                        color: #333;
+                    }
+
+                    .avatar {
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+                }
             }
         }
     }

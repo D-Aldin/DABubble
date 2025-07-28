@@ -24,7 +24,7 @@ import { ProfileCard } from '../../core/interfaces/profile-card';
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent, ProfileCardComponent, RouterModule],
+  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent, RouterModule],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
