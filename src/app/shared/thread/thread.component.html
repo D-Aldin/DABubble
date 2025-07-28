@@ -36,7 +36,7 @@
           </div>
 
           <div class="reactions">
-            @for (reaction of getReactionArray(parentMessage.reactions); track reaction.userId) {
+           @for (reaction of getReactionArray(parentMessage.reactions); track reaction.emoji) {
               <span>{{ reaction.emoji }}</span>
             }
           </div>
@@ -92,8 +92,11 @@
                     </div>
                   }
                   <div class="reactions">
-                    @for (reaction of getReactionArray(reply.reactions); track reaction.userId) {
-                      <span>{{ reaction.emoji }}</span>
+                    @for (reaction of getReactionArray(reply.reactions); track reaction.emoji) {
+                      <div class="reaction-pill">
+                        <span class="emoji">{{ reaction.emoji }}</span>
+                        <span class="count">{{ reaction.count }}</span>
+                      </div>
                     }
                   </div>
                 </div>

@@ -85,9 +85,16 @@ export class ThreadComponent {
     await updateDoc(messageRef, { reactions });
   }
 
-  getReactionArray(reactions: Record<string, string> | undefined): { userId: string, emoji: string }[] {
-    return reactions ? Object.entries(reactions).map(([userId, emoji]) => ({ userId, emoji })) : [];
+  getReactionArray(reactions: { [userId: string]: string }) {
+    const countMap = new Map<string, number>();
+
+    for (const emoji of Object.values(reactions || {})) {
+      countMap.set(emoji, (countMap.get(emoji) || 0) + 1);
+    }
+
+    return Array.from(countMap.entries()).map(([emoji, count]) => ({ emoji, count }));
   }
+
 
   selectEmojiForMessage(messageId: string) {
     this.emojiPickerForMessageId = messageId;
