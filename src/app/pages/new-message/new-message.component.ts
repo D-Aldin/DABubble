@@ -355,4 +355,15 @@ export class NewMessageComponent implements OnInit {
       }
     });
   }
+
+  setTitleOfTextArea(): string {
+    if (!this.processedRecipients.length) {
+      return 'Einen oder mehrere Empfänger auswählen, um eine Nachricht zu verfassen.'
+    }
+    return 'Nachricht schreiben'
+  }
+
+  removeRecipientByIndex(index: number): void {
+    this.selectedRecipients.splice(index, 1);
+  }
 }

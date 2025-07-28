@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { AuthService } from '../../core/services/auth.service';
@@ -14,17 +14,24 @@ import { MessageFieldComponent } from "../../shared/message-field/message-field.
 import { SpinnerComponent } from "../../shared/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
 import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
-import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
-import { take } from 'rxjs';
-import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { ProfileCard } from '../../core/interfaces/profile-card';
+import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent, RouterModule],
+  imports: [
+    AddChannelComponent,
+    AddPeopleComponent,
+    CommonModule,
+    MessageFieldComponent,
+    SpinnerComponent,
+    FormsModule,
+    ThreadComponent,
+    ChannelMessagesComponent,
+    RouterModule],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
@@ -49,7 +56,6 @@ export class ChannelComponent implements OnInit {
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
-  // channelDataBuffer: Partial<Channel> = {};
   isEditingChannelName = false;
   isEditingDescription = false;
   editedChannelName = '';
@@ -70,7 +76,8 @@ export class ChannelComponent implements OnInit {
     private router: Router,
     public authService: AuthService,
     private threadService: ThreadMessagingService,
-    public overlayService: ProfileOverlayService
+    public overlayService: ProfileOverlayService,
+    private openCardService: OpenProfileCardService
   ) { }
 
   ngOnInit(): void {
@@ -79,10 +86,7 @@ export class ChannelComponent implements OnInit {
       if (id) {
         this.channelId = id;
         this.selectedChannelId = id;
-        // console.log('ChannelComponent loaded with ID:', this.channelId);
-
         this.isLoadingChannel = true;
-
         this.channelService.getChannelById(id).subscribe(channel => {
           if (!channel) {
             console.warn('Channel not found in Firestore for ID:', id);
@@ -126,8 +130,6 @@ export class ChannelComponent implements OnInit {
       this.showAddChannelDialog = true;
     });
   }
-
-
 
   leaveChannel() {
     const currentUserId = this.authService.currentUserId;
@@ -281,7 +283,6 @@ export class ChannelComponent implements OnInit {
     this.showAddUserToChannelPopup = false;
   }
 
-
   openAddChannelDialog() {
     this.showAddChannelDialog = true;
   }
@@ -411,26 +412,6 @@ export class ChannelComponent implements OnInit {
   }
 
   openProfileCard(userId: string | undefined): void {
-    if (!userId) {
-      return;
-    }
-    const initialProfile: ProfileCard = {
-      name: '...',
-      email: '',
-      avatarPath: '',
-      online: false,
-      direktMessageLink: `/dashboard/direct-message/${userId}`
-    };
-    this.overlayService.open(initialProfile);
-    this.userService.getUserById(userId).subscribe(userDoc => {
-      if (!userDoc) return;
-      this.overlayService.updatePartial({
-        name: userDoc.name,
-        email: userDoc.email,
-        avatarPath: userDoc.avatarPath,
-        online: userDoc.online,
-        direktMessageLink: `/dashboard/direct-message/${userId}`
-      });
-    });
+    this.openCardService.openProfileCard(userId)
   }
 }

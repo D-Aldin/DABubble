@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
-import { map, Subscription, take } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -20,10 +20,8 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
-import { ProfileCardComponent } from '../../shared/profile-card/profile-card.component';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
-import { ProfileCard } from '../../core/interfaces/profile-card';
 import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 
 interface CurrentUserId {
@@ -253,7 +251,6 @@ export class DirectMessageComponent
   closeProfileCard(): void {
     this.overlayService.close();
   }
-
 
   openProfileCard(userId: string | undefined): void {
     this.openCardService.openProfileCard(userId)

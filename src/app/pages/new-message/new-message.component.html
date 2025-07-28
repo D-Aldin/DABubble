@@ -41,10 +41,13 @@
     <div class="recipient-list" *ngIf="processedRecipients.length > 0">
       <h3>Empfänger:</h3>
       <ul>
-        <li *ngFor="let item of processedRecipients">
-          <img *ngIf="item.isUser" [src]="item.src" alt="Avatar" class="avatar" />
-          <span *ngIf="item.isUser">{{ item.display }}</span>
-          <span *ngIf="!item.isUser" [innerHTML]="item.display"></span>
+        <li *ngFor="let item of processedRecipients; let i = index">
+          <div class="left-side">
+            <img *ngIf="item.isUser" [src]="item.src" alt="Avatar" class="avatar" />
+            <span *ngIf="item.isUser">{{ item.display }}</span>
+            <span *ngIf="!item.isUser" [innerHTML]="item.display"></span>
+          </div>
+          <button class="close" (click)="removeRecipientByIndex(i)"></button>
         </li>
       </ul>
     </div>
@@ -56,8 +59,8 @@
   </div>
 
   <div class="message-field-wrapper">
-    <app-message-field [disabled]="!processedRecipients.length"
-      (messageSend)="onMessageSend($event)"></app-message-field>
+    <app-message-field [disabled]="!processedRecipients.length" (messageSend)="onMessageSend($event)"
+      [title]="setTitleOfTextArea()"></app-message-field>
   </div>
 </div>
 

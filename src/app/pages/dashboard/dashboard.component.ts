@@ -1,20 +1,11 @@
-import { Component, inject, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
-import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { NavigationEnd, Router, RouterModule, Event } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
-import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
-import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
-import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
-import { ChatUser } from '../../core/interfaces/chat-user';
-import { UserService } from '../../core/services/user.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../core/services/auth.service';
-import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { DashboardIntroComponent } from './dashboard-intro/dashboard-intro.component';
 import { filter } from 'rxjs';
@@ -46,7 +37,7 @@ export class DashboardComponent {
   channelDataBuffer: Partial<Channel> = {};
   channelName = '';
   channelDescription = '';
-  currentUrl: string = ''; // use this to keep track of current URL, which is tracked in onInit()
+  currentUrl: string = '';
   showAddUserToChannelPopup = false;
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
   selectedChannelIdForUserAdd: string = '';
@@ -60,11 +51,7 @@ export class DashboardComponent {
   @Output() replyToThread = new EventEmitter<string>();
 
   constructor(
-    private channelService: ChannelService,
-    private firestore: Firestore,
-    private userService: UserService,
     private router: Router,
-    private authService: AuthService,
     private threadService: ThreadMessagingService,
     public overlayService: ProfileOverlayService
   ) { }
@@ -72,30 +59,6 @@ export class DashboardComponent {
   closeProfileCard(): void {
     this.overlayService.close();
   }
-
-  chatMessages = [
-    {
-      src: './../../../assets/images/profile-images/head-1.png',
-      userName: 'Muzammal',
-      time: '12:12 Uhr',
-      message: 'first msg',
-      userMe: false,
-    },
-    {
-      src: './../../../assets/images/profile-images/head-1.png',
-      userName: 'Muzammal',
-      time: '12:12 Uhr',
-      message: 'Hello World',
-      userMe: true,
-    },
-    {
-      src: './../../../assets/images/profile-images/head-1.png',
-      userName: 'Shardzhil',
-      time: '12:12 Uhr',
-      message: 'Welcome',
-      userMe: false,
-    },
-  ];
 
   ngOnInit(): void {
     this.threadService.threadState$.subscribe((state) => {
@@ -158,7 +121,7 @@ export class DashboardComponent {
       this.channelDescription = data.description;
       this.createdChannelName = data.name;
     }
-    this.addUserMode = 'create-channel'; //Needed for correct dialog mode
+    this.addUserMode = 'create-channel';
     this.showAddChannelDialog = false;
     this.showPeopleDialog = true;
   }
