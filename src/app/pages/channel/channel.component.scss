@@ -394,15 +394,16 @@ h3 {
 
 .members-popup {
     background-color: #fff;
-    border-radius: 24px;
-    padding: 1.5rem;
-    width: 320px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    font-family: inherit;
-    position: relative;
+    width: 415px;
+    height: 411px;
+    padding: 40px;
+    gap: 20px;
+    border-top-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
 
     .popup-header {
         display: flex;
@@ -410,17 +411,26 @@ h3 {
         align-items: center;
 
         h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 0;
+            font-weight: 700;
+            font-style: Bold;
+            font-size: 24px;
+            line-height: 100%;
+            letter-spacing: 0%;
         }
 
         .close-btn {
-            background: transparent;
+            background-color: white;
+            width: 35px;
+            height: 35px;
             border: none;
-            font-size: 1.4rem;
+            background-image: url("../../../assets/icons/close.png");
+            background-repeat: no-repeat;
+            background-size: cover;
             cursor: pointer;
-            line-height: 1;
+
+            &:hover {
+                background-image: url("../../../assets/icons/close-hover.png");
+            }
         }
     }
 
@@ -436,10 +446,18 @@ h3 {
             align-items: center;
             gap: 12px;
             position: relative;
+            cursor: pointer;
+            width: fit-content;
+            border-radius: 36px;
+            padding: 4px 20px;
+
+            &:hover {
+                background-color: $secondary-color;
+            }
 
             .user-avatar {
-                width: 40px;
-                height: 40px;
+                width: 50px;
+                height: 50px;
                 border-radius: 50%;
                 object-fit: cover;
             }
@@ -449,16 +467,17 @@ h3 {
             }
 
             .online-indicator {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                background-color: #ccc;
                 position: absolute;
-                left: 32px;
-                bottom: 4px;
+                left: 58px;
+                bottom: 7px;
+                width: 14px;
+                height: 14px;
+                border: 2px solid #fff;
+                border-radius: 50%;
+                background-color: grey;
 
                 &.online {
-                    background-color: #34c759; // green dot
+                    background-color: rgb(146, 200, 62);
                 }
             }
         }

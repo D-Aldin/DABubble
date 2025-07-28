@@ -97,10 +97,7 @@ header {
       width: 989px;
       height: 70px;
       justify-content: space-between;
-      padding-top: 17.5px;
-      padding-right: 45px;
-      padding-bottom: 17.5px;
-      padding-left: 45px;
+      padding: 17.5px 45px;
       border-radius: 42px;
 
       input {
@@ -134,7 +131,12 @@ header {
           background-image: url("/assets/icons/searchbar-hover.svg");
         }
       }
+
+      &:focus-within .search-icon {
+        background-image: url("/assets/icons/searchbar-hover.svg");
+      }
     }
+
 
     .profile-container {
       display: flex;

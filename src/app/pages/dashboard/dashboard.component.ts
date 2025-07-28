@@ -55,8 +55,8 @@ export class DashboardComponent {
   selectedMessageId: string = '';
   selectedChannelId: string = '';
   isIntroSectionVisible: boolean = true;
-  showProfileCard$ = this.overlayService.isVisible$;
-  selectedUser$ = this.overlayService.selectedUser$;
+  public showProfileCard$ = this.overlayService.isVisible$;
+  public selectedUser$ = this.overlayService.selectedUser$;
   @Output() replyToThread = new EventEmitter<string>();
 
   constructor(

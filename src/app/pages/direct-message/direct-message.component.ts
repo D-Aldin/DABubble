@@ -22,6 +22,8 @@ import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
 import { ProfileCardComponent } from '../../shared/profile-card/profile-card.component';
 import { ActivatedRoute } from '@angular/router';
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { ProfileCard } from '../../core/interfaces/profile-card';
 
 interface CurrentUserId {
   userId: string;
@@ -36,7 +38,6 @@ interface CurrentUserId {
     SpinnerComponent,
     ChatBoxComponent,
     TimestampLineComponent,
-    ProfileCardComponent,
   ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
@@ -69,28 +70,11 @@ export class DirectMessageComponent
     private userService: UserService,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private overlayService: ProfileOverlayService
   ) { }
 
   ngOnInit() {
-    // this.sharedService.sharedData$.subscribe((user) => {
-    //   if (user) {
-    //     this.areMessagesLoaded = false;
-    //     this.hasSelectedUser = true;
-    //     this.selectedUser = user;
-    //     this.loadCurrentUserId();
-    //     const currentUserId = this.currentUser?.userId;
-    //     const selectedUserId = this.selectedUser?.uid;
-    //     if (currentUserId && selectedUserId) {
-    //       this.createConversation(currentUserId, selectedUserId);
-    //     }
-    //   }
-    // });
-    // this.subscription = this.messagingService
-    //   .getMessages(this.conversation)
-    //   .subscribe((msg) => {
-    //     this.messages = msg;
-    //   });
     this.loadCurrentUserId();
     this.route.paramMap.subscribe(async (params) => {
       const selectedUid = params.get('uid');
@@ -262,5 +246,33 @@ export class DirectMessageComponent
   toggleProfileCardOnClick(userId: string): void {
     this.showProfileCard = !this.showProfileCard;
     // this.selectedUserId = this.userNamesMap[userId]
+  }
+
+  closeProfileCard(): void {
+    this.overlayService.close();
+  }
+
+  openProfileCard(userId: string | undefined): void {
+    if (!userId) {
+      return;
+    }
+    const initialProfile: ProfileCard = {
+      name: '...',
+      email: '',
+      avatarPath: '',
+      online: false,
+      direktMessageLink: `/dashboard/direct-message/${userId}`
+    };
+    this.overlayService.open(initialProfile);
+    this.userService.getUserById(userId).subscribe(userDoc => {
+      if (!userDoc) return;
+      this.overlayService.updatePartial({
+        name: userDoc.name,
+        email: userDoc.email,
+        avatarPath: userDoc.avatarPath,
+        online: userDoc.online,
+        direktMessageLink: `/dashboard/direct-message/${userId}`
+      });
+    });
   }
 }

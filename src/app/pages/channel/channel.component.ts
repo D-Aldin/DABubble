@@ -17,11 +17,14 @@ import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { take } from 'rxjs';
+import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { ProfileCard } from '../../core/interfaces/profile-card';
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent],
+  imports: [AddChannelComponent, AddPeopleComponent, CommonModule, MessageFieldComponent, SpinnerComponent, FormsModule, ThreadComponent, ChannelMessagesComponent, ProfileCardComponent, RouterModule],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
@@ -56,6 +59,8 @@ export class ChannelComponent implements OnInit {
   showChannelMemberPopup = false;
   fullChannelMembers: ChatUser[] = [];
   channelId: string = '';
+  showProfileCard$ = this.overlayService.isVisible$;
+  selectedUser$ = this.overlayService.selectedUser$;
 
   constructor(
     private channelService: ChannelService,
@@ -65,6 +70,7 @@ export class ChannelComponent implements OnInit {
     private router: Router,
     public authService: AuthService,
     private threadService: ThreadMessagingService,
+    public overlayService: ProfileOverlayService
   ) { }
 
   ngOnInit(): void {
@@ -150,25 +156,22 @@ export class ChannelComponent implements OnInit {
   }
 
   openThread(channelId: string, messageId: string) {
-  this.threadService.openThread(channelId, messageId); 
-}
-
-  onReplyToMessage(messageId: string) {
-  if (!this.channelId) {
-    console.warn('Missing channelId in channel component');
-    return;
+    this.threadService.openThread(channelId, messageId);
   }
 
-  this.threadService.openThread(this.channelId, messageId);
+  onReplyToMessage(messageId: string) {
+    if (!this.channelId) {
+      console.warn('Missing channelId in channel component');
+      return;
+    }
 
-  this.router.navigate([], {
-    queryParams: { thread: messageId },
-    queryParamsHandling: 'merge'
-  });
-}
+    this.threadService.openThread(this.channelId, messageId);
 
-
-
+    this.router.navigate([], {
+      queryParams: { thread: messageId },
+      queryParamsHandling: 'merge'
+    });
+  }
 
   closeThread() {
     this.openedThreadMessageId = null;
@@ -339,7 +342,6 @@ export class ChannelComponent implements OnInit {
 
 
     this.channelService.createChannel(finalChannel).then(() => {
-      console.log('Channel created with users:', finalMembers);
       this.closePeopleDialog();
     });
   }
@@ -402,7 +404,33 @@ export class ChannelComponent implements OnInit {
     } else {
       this.closePeopleDialog();
     }
-    console.log('dialog closed');
+  }
 
+  closeProfileCard(): void {
+    this.overlayService.close();
+  }
+
+  openProfileCard(userId: string | undefined): void {
+    if (!userId) {
+      return;
+    }
+    const initialProfile: ProfileCard = {
+      name: '...',
+      email: '',
+      avatarPath: '',
+      online: false,
+      direktMessageLink: `/dashboard/direct-message/${userId}`
+    };
+    this.overlayService.open(initialProfile);
+    this.userService.getUserById(userId).subscribe(userDoc => {
+      if (!userDoc) return;
+      this.overlayService.updatePartial({
+        name: userDoc.name,
+        email: userDoc.email,
+        avatarPath: userDoc.avatarPath,
+        online: userDoc.online,
+        direktMessageLink: `/dashboard/direct-message/${userId}`
+      });
+    });
   }
 }
