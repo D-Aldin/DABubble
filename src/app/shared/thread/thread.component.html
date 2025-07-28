@@ -35,16 +35,20 @@
             <p>{{ parentMessage.text }}</p>
           </div>
 
-          @if (hoveredMessageId === parentMessage.id) {
-            <div class="message-toolbar">
-              <button (click)="reactToThreadMessage(parentMessage.id!, '👍')">
-                <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
-              </button>
-              <button (click)="startEditingThread(parentMessage)">
+        @if (hoveredMessageId === parentMessage.id) {
+          <div class="message-toolbar">
+            <button (click)="reactToThreadMessage(parentMessage.id!, '👍')">
+              <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
+            </button>
+
+            @if (parentMessage.senderId === currentUserId) {
+              <button (click)="startEditingThread(parentMessage)" title="Nachricht bearbeiten">
                 <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
               </button>
-            </div>
-          }
+            }
+          </div>
+        }
+
         </div>
       }
 
@@ -81,11 +85,15 @@
                     <button (click)="reactToThreadMessage(reply.id!, '👍')">
                       <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
                     </button>
-                    <button (click)="startEditingThread(reply)">
-                      <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
-                    </button>
+
+                    @if (reply.senderId === currentUserId) {
+                      <button (click)="startEditingThread(reply)" title="Nachricht bearbeiten">
+                        <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+                      </button>
+                    }
                   </div>
                 }
+
               </div>
             }
           }
