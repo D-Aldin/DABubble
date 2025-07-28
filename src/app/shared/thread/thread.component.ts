@@ -32,6 +32,7 @@ export class ThreadComponent {
   hoveredMessageId: string | null = null;
   editingMessageId: string | null = null;
   editedMessageText: string = '';
+  emojiPickerForMessageId: string | null = null;
 
   constructor(
     private firestore: Firestore,
@@ -63,10 +64,52 @@ export class ThreadComponent {
     this.editedMessageText = message.text;
   }
   
-  reactToThreadMessage(replyId: string, emoji: string) {
-  // Your Firestore update logic here
+  async reactToThreadMessage(messageId: string, emoji: string) {
+    const isParent = messageId === this.messageId;
+    const refPath = isParent
+      ? `channels/${this.channelId}/messages/${messageId}`
+      : `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`;
+    const messageRef = doc(this.firestore, refPath);
+    const docSnap = await getDoc(messageRef);
+    if (!docSnap.exists()) return;
+
+    const data = docSnap.data();
+    const reactions = data['reactions'] || {};
+    const currentUserId = this.authService.currentUserId;
+
+    if (reactions[currentUserId] === emoji) {
+      delete reactions[currentUserId];
+    } else {
+      reactions[currentUserId] = emoji;
+    }
+    await updateDoc(messageRef, { reactions });
   }
-  
+
+  getReactionArray(reactions: Record<string, string> | undefined): { userId: string, emoji: string }[] {
+    return reactions ? Object.entries(reactions).map(([userId, emoji]) => ({ userId, emoji })) : [];
+  }
+
+  selectEmojiForMessage(messageId: string) {
+    this.emojiPickerForMessageId = messageId;
+  }
+
+  async addEmojiToMessage(event: any, messageId: string) {
+    const emoji = event.emoji.native;
+    const currentUser = await this.authService.getCurrentUser();
+    if (!currentUser) return;
+    // Determine if messageId is for parentMessage or a reply
+    const isParentMessage = this.parentMessage?.id === messageId;
+    const docPath = isParentMessage
+      ? `channels/${this.channelId}/messages/${messageId}`
+      : `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`;
+    const docRef = doc(this.firestore, docPath);
+
+    await updateDoc(docRef, {
+      [`reactions.${currentUser.uid}`]: emoji
+    });
+    this.emojiPickerForMessageId = null; // close emoji picker
+  }
+
   cancelEditing() {
     this.editingMessageId = null;
     this.editedMessageText = '';

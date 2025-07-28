@@ -35,19 +35,22 @@
             <p>{{ parentMessage.text }}</p>
           </div>
 
-          @if (hoveredMessageId === parentMessage.id) {
-            <div class="message-toolbar">
-              <button (click)="reactToThreadMessage(parentMessage.id!, '👍')">
-                <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
-              </button>
+          <div class="reactions">
+            @for (reaction of getReactionArray(parentMessage.reactions); track reaction.userId) {
+              <span>{{ reaction.emoji }}</span>
+            }
+          </div>
 
-              @if (parentMessage.senderId === currentUserId) {
+          @if (hoveredMessageId === parentMessage.id) {
+            @if (parentMessage.senderId === currentUserId) {
+              <div class="message-toolbar">
                 <button (click)="startEditingThread(parentMessage)" title="Nachricht bearbeiten">
                   <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
                 </button>
-              }
-            </div>
+              </div>
+            }
           }
+
         </div>
       }
 
@@ -88,14 +91,25 @@
                       {{ reply.text }}
                     </div>
                   }
+                  <div class="reactions">
+                    @for (reaction of getReactionArray(reply.reactions); track reaction.userId) {
+                      <span>{{ reaction.emoji }}</span>
+                    }
+                  </div>
                 </div>
 
                 @if (hoveredMessageId === reply.id) {
                   <div class="message-toolbar">
-                    <button (click)="reactToThreadMessage(reply.id!, '👍')">
+                    <button (click)="selectEmojiForMessage(reply.id!)">
                       <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
                     </button>
-
+                    @if (emojiPickerForMessageId === reply.id) {
+                        <emoji-mart
+                          set="apple"
+                          title="Pick your emoji"
+                          (emojiSelect)="addEmojiToMessage($event, reply.id!)"
+                        ></emoji-mart>
+                    }
                     @if (reply.senderId === currentUserId) {
                       <button (click)="startEditingThread(reply)" title="Nachricht bearbeiten">
                         <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
