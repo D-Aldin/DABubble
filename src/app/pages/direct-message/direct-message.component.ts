@@ -24,6 +24,7 @@ import { ProfileCardComponent } from '../../shared/profile-card/profile-card.com
 import { ActivatedRoute } from '@angular/router';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { ProfileCard } from '../../core/interfaces/profile-card';
+import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 
 interface CurrentUserId {
   userId: string;
@@ -71,7 +72,8 @@ export class DirectMessageComponent
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
-    private overlayService: ProfileOverlayService
+    private overlayService: ProfileOverlayService,
+    private openCardService: OpenProfileCardService
   ) { }
 
   ngOnInit() {
@@ -252,27 +254,8 @@ export class DirectMessageComponent
     this.overlayService.close();
   }
 
+
   openProfileCard(userId: string | undefined): void {
-    if (!userId) {
-      return;
-    }
-    const initialProfile: ProfileCard = {
-      name: '...',
-      email: '',
-      avatarPath: '',
-      online: false,
-      direktMessageLink: `/dashboard/direct-message/${userId}`
-    };
-    this.overlayService.open(initialProfile);
-    this.userService.getUserById(userId).subscribe(userDoc => {
-      if (!userDoc) return;
-      this.overlayService.updatePartial({
-        name: userDoc.name,
-        email: userDoc.email,
-        avatarPath: userDoc.avatarPath,
-        online: userDoc.online,
-        direktMessageLink: `/dashboard/direct-message/${userId}`
-      });
-    });
+    this.openCardService.openProfileCard(userId)
   }
 }
