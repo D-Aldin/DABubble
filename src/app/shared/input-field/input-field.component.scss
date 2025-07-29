@@ -69,3 +69,11 @@
         font-weight: 500;
     }
 }
+
+@media (max-width: 590px) {
+    .input-wrapper {
+        .custom-input {
+            width: unset;
+        }
+    }
+}

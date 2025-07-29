@@ -2,7 +2,7 @@
 @use "../../../styles/mixins";
 
 .login-container {
-  min-height: 100vh;
+  // min-height: 100vh;
   width: 100%;
   display: flex;
   // justify-content: center;
@@ -202,15 +202,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: calc(50% - 463.795px);
+  // position: absolute;
+  // top: calc(50% - 463.795px);
 }
 
 .section-wrapper {
   position: relative;
   overflow: hidden;
   max-width: 100vw;
-  max-height: 100vh;
+  // max-height: 100vh;
 }
 
 .intro-animation {
@@ -219,14 +219,12 @@
   z-index: 1;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(
-    to bottom,
-    #797ef3,
-    #6d72f3,
-    #6066f3,
-    #535af3,
-    #444df2
-  );
+  background-image: linear-gradient(to bottom,
+      #797ef3,
+      #6d72f3,
+      #6066f3,
+      #535af3,
+      #444df2);
   animation: fadeOut 1s ease-in-out forwards;
   animation-delay: 2s;
   position: absolute;
@@ -333,5 +331,32 @@
   to {
     display: none;
     opacity: 0;
+  }
+}
+
+@media (max-width: 590px) {
+  .section-wrapper {
+    overflow: unset;
+  }
+
+  app-input-field {
+    width: 100%;
+  }
+
+  .login-card {
+    width: 97%;
+
+    form {
+      gap: 0.85rem;
+    }
+  }
+
+  .login-card-wrapper {
+    position: relative;
+    top: unset;
+  }
+
+  .login-container {
+    min-height: unset;
   }
 }

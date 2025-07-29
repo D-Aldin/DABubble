@@ -265,3 +265,25 @@ app-profile-card {
     margin-top: 36px;
   }
 }
+
+@media (max-width: 660px) {
+  header {
+    .header-content {
+      justify-content: center;
+
+      .logo {
+        padding-left: 0px;
+      }
+    }
+  }
+
+  .signup-link-box {
+    display: none;
+  }
+}
+
+@media (max-width: 660px) {
+  header {
+    min-height: 130px !important;
+  }
+}
