@@ -14,7 +14,9 @@ import {
   where,
   QuerySnapshot,
   DocumentData,
-  getDocs,
+ getDocs,
+  getDoc,
+  
 } from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
 import { Channel } from '../interfaces/channel';
@@ -151,15 +153,20 @@ export class ChannelService {
   }
 
   async updateParentMessageThreadInfo(channelId: string, messageId: string): Promise<void> {
-    const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
-    const threadCollection = collection(parentRef, 'threads');
-    const snapshot = await getDocs(threadCollection);
+  const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+  const parentSnap = await getDoc(parentRef);
 
-    await updateDoc(parentRef, {
-      replyCount: snapshot.size,
-      lastReplyTimestamp: new Date(),
-       replyUpdatedAt: Date.now() //new dummy field to force update
-    });
+  if (!parentSnap.exists()) {
+    console.warn(`❗️Parent message not found for update: ${messageId}`);
+    return;
   }
+
+  const currentCount = parentSnap.data()?.['replyCount'] || 0;
+  await updateDoc(parentRef, {
+    replyCount: currentCount + 1,
+    lastReplyTimestamp: new Date()
+  });
+}
+
   
 }

@@ -158,7 +158,7 @@ export class ChannelComponent implements OnInit {
   }
 
   openThread(channelId: string, messageId: string) {
-    this.threadService.openThread(channelId, messageId);
+    this.threadService.openThread(channelId, messageId, 'channel');
   }
 
   onReplyToMessage(messageId: string) {
@@ -167,7 +167,7 @@ export class ChannelComponent implements OnInit {
       return;
     }
 
-    this.threadService.openThread(this.channelId, messageId);
+    this.threadService.openThread(this.channelId, messageId, 'channel');
 
     this.router.navigate([], {
       queryParams: { thread: messageId },

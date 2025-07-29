@@ -25,13 +25,78 @@
                </div>
             </ng-container>
 
-            <app-chat-box *ngIf="areMessagesLoaded && areMessagesRendered && !isMessagesArrayEmpty"
-               [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
-               [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
-               [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
-               [userMe]="checkIfMessageIsFromLoggedInUser(i)" (profileClick)="openProfileCard(item.messageFrom)"
-               [userId]="item.messageFrom">
-            </app-chat-box>
+            <div class="message-content"
+                 (mouseenter)="hoveredMessageId = item.id ?? null"
+                 (mouseleave)="hoveredMessageId = null">
+
+              <ng-container *ngIf="editingMessageId === item.id; else normalMessage">
+                <div class="edit-message-box">
+                  <textarea [(ngModel)]="editedMessageText" rows="3"></textarea>
+
+                  <div class="edit-message-toolbar">
+                    <button class="emoji-btn" (click)="toggleEmojiPicker(item.id)">
+                      <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
+                    </button>
+                  </div>
+
+                  <div *ngIf="showEmojiPickerFor === item.id">
+                    <emoji-mart set="apple" (emojiSelect)="appendEmojiToEdit($event.emoji.native)">
+                    </emoji-mart>
+                  </div>
+
+                  <div class="edit-buttons">
+                    <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
+                    <button class="save-btn" (click)="saveEditedMessage(item.id)">Speichern</button>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-template #normalMessage>
+                <app-chat-box *ngIf="areMessagesLoaded && areMessagesRendered && !isMessagesArrayEmpty"
+                  [src]="userAvatarsMap[item.messageFrom] || 'assets/images/register/default-profile-img.svg'"
+                  [userName]="userNamesMap[item.messageFrom] || 'Loading...'"
+                  [time]="convertTimestampToString(item.timestamp)"
+                  [message]="item.message"
+                  [userMe]="checkIfMessageIsFromLoggedInUser(i)"
+                  (profileClick)="openProfileCard(item.messageFrom)"
+                  [userId]="item.messageFrom"
+                >
+                </app-chat-box>
+
+                <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount">
+                  <div class="reply-info">
+                    <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
+                      {{ item.replyCount || 0 }} Antwort{{ (item.replyCount || 0) > 1 ? 'en' : '' }}
+                    </a>
+
+                    <ng-container *ngIf="item.reactions && objectKeys(item.reactions).length > 0">
+                      <span class="reaction" *ngFor="let emoji of objectKeys(groupReactions(item.reactions))">
+                        {{ emoji }} {{ groupReactions(item.reactions)[emoji] }}
+                      </span>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <div class="message-toolbar" *ngIf="hoveredMessageId === item.id">
+                  <button (click)="reactToMessage(item.id, '👍')">👍</button>
+                  <button (click)="reactToMessage(item.id, '✅')">✅</button>
+                  <button (click)="toggleEmojiPicker(item.id)">
+                    <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
+                  </button>
+                  <button (click)="openThread(item.id)">
+                    <img src="/assets/images/sidenav-img/comment.svg" alt="">
+                  </button>
+                  <button (click)="startEditing(item)">
+                    <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachricht bearbeiten">
+                  </button>
+                </div>
+
+                <div *ngIf="showEmojiPickerFor === item.id">
+                  <emoji-mart set="apple" (emojiSelect)="reactToMessage(item.id, $any($event).emoji.native)">
+                  </emoji-mart>
+                </div>
+              </ng-template>
+            </div>
          </ng-container>
       </div>
 

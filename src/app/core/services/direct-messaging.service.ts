@@ -1,15 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import {
-  Firestore,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  collectionData,
-  docData,
-} from '@angular/fire/firestore';
-
+import { Firestore, doc, getDocs, setDoc, collection, collectionData, getDoc, updateDoc} from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { Observable, map, of, timestamp } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
@@ -25,6 +16,54 @@ export class DirectMessagingService {
   private authService = inject(AuthService);
 
   constructor() { }
+
+  async sendReplyToThread(conversationId: string, messageId: string, reply: Message): Promise<void> {
+    const parentRef = doc(this.firestore, `directMessages/${conversationId}/messages/${messageId}`);
+    const parentSnap = await getDoc(parentRef);
+
+    if (!parentSnap.exists()) {
+      console.warn('Parent message does not exist.');
+      return;
+    }
+
+    const threadCollection = collection(parentRef, 'threads');
+
+    await addDoc(threadCollection, {
+      ...reply,
+      timestamp: serverTimestamp(),
+    });
+
+    await updateDoc(parentRef, {
+      replyCount: (parentSnap.data()['replyCount'] || 0) + 1,
+      lastReplyTimestamp: serverTimestamp(),
+    });
+  }
+
+
+  async toggleReaction(conversationId: string, messageId: string, emoji: string, userId: string): Promise<void> {
+    const messageRef = doc(this.firestore, `direct-messages/${conversationId}/messages/${messageId}`);
+    const messageSnap = await getDoc(messageRef);
+
+    if (!messageSnap.exists()) return;
+
+    const messageData = messageSnap.data() as any;
+    const reactions = messageData.reactions || {};
+
+    if (reactions[userId] === emoji) {
+      // remove reaction
+      delete reactions[userId];
+    } else {
+      // add or change reaction
+      reactions[userId] = emoji;
+    }
+
+    await updateDoc(messageRef, { reactions });
+  }
+
+  async updateDirectMessage(conversationId: string, messageId: string, newText: string): Promise<void> {
+    const msgRef = doc(this.firestore, `direct-messages/${conversationId}/messages/${messageId}`);
+    await updateDoc(msgRef, { message: newText });
+  }
 
   getAllUsersExceptCurrent(): Observable<ChatUser[]> {
     const usersRef = collection(this.firestore, 'users');
@@ -118,4 +157,25 @@ export class DirectMessagingService {
     const matches = message.match(/#[a-zA-Z0-9\-]+/g);
     return matches ? matches.map((tag) => tag.slice(1).toLowerCase()) : [];
   }
+
+  async updateParentMessageThreadInfo(conversationId: string, messageId: string): Promise<void> {
+    const parentRef = doc(this.firestore, `directMessages/${conversationId}/messages/${messageId}`);
+    const parentSnap = await getDoc(parentRef);
+
+    if (!parentSnap.exists()) {
+      console.warn('No parent message found to update');
+      return;
+    }
+
+    const threadCollectionRef = collection(this.firestore, `directMessages/${conversationId}/messages/${messageId}/threads`);
+    const threadSnap = await getDocs(threadCollectionRef); //
+
+    const replyCount = threadSnap.size;
+
+    await updateDoc(parentRef, {
+      replyCount: replyCount,
+      lastReplyTimestamp: serverTimestamp(),
+    });
+  }
+
 }

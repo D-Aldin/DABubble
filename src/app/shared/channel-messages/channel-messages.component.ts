@@ -30,6 +30,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { Timestamp } from 'firebase/firestore';
+import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 
 @Component({
   selector: 'app-channel-messages',
@@ -83,7 +84,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private overlayService: ProfileOverlayService
+    private overlayService: ProfileOverlayService,
+    private threadService: ThreadMessagingService,
   ) { }
 
   ngOnInit(): void {
@@ -236,13 +238,16 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   openThread(messageId: string) {
-    this.replyToMessage.emit(messageId);
+  this.replyToMessage.emit(messageId);
 
-    this.router.navigate([], {
-      queryParams: { thread: messageId },
-      queryParamsHandling: 'merge',
-    });
-  }
+  this.router.navigate([], {
+    queryParams: { thread: messageId },
+    queryParamsHandling: 'merge',
+  });
+
+  this.threadService.openThread(this.channelId, messageId, 'channel');
+}
+
 
   objectKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];

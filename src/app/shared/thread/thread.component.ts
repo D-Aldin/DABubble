@@ -8,6 +8,10 @@ import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { ChannelService } from '../../core/services/channel.service';
+import { ThreadState } from '../../core/interfaces/thread-state';
+import { DirectMessagingService } from '../../core/services/direct-messaging.service';
+
+
 
 @Component({
   selector: 'app-thread',
@@ -35,31 +39,119 @@ export class ThreadComponent {
   editedMessageText: string = '';
   emojiPickerForMessageId: string | null = null;
 
+
   constructor(
     private firestore: Firestore,
     private authService: AuthService,
     private userService: UserService,
     private threadService: ThreadMessagingService,
     private cdr: ChangeDetectorRef,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+     private directMessagingService: DirectMessagingService
+
   ) {}
 
   ngOnInit(): void {
-    this.threadService.threadState$.subscribe(thread => {
+      this.threadService.threadState$.subscribe((thread: ThreadState | null) => {
       if (thread?.channelId && thread?.messageId) {
         this.channelId = thread.channelId;
         this.messageId = thread.messageId;
         this.currentUserId = this.authService.currentUserId;
-        
-        this.loadChannelUsers(this.channelId); 
-        this.loadChannelName(this.channelId); 
-        this.loadThreadMessages(this.channelId, this.messageId);
-        this.loadParentMessage(this.channelId, this.messageId);
-      } else {
-        console.warn('ThreadComponent missing channelId or messageId.');
+
+        if (thread.threadType === 'channel') {
+          this.loadChannelUsers(this.channelId); 
+          this.loadChannelName(this.channelId); 
+          this.loadThreadMessages(this.channelId, this.messageId);
+          this.loadParentMessage(this.channelId, this.messageId);
+        } else if (thread.threadType === 'direct') {
+          this.loadDirectThreadMessages(this.channelId, this.messageId);
+          this.loadDirectParentMessage(this.channelId, this.messageId);
+        }
       }
     });
+
   }
+
+  loadDirectThreadMessages(conversationId: string, messageId: string) {
+  const threadCollection = collection(
+    this.firestore,
+    `directMessages/${conversationId}/messages/${messageId}/threads`
+  );
+
+  const q = query(threadCollection, orderBy('timestamp', 'asc'));
+
+  onSnapshot(q, snapshot => {
+    this.replies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    if (this.replies.length && this.parentMessage?.senderId) {
+      this.loadUserProfilesForThread();
+    }
+  });
+}
+
+  loadDirectParentMessage(conversationId: string, messageId: string) {
+  const parentRef = doc(
+    this.firestore,
+    `directMessages/${conversationId}/messages/${messageId}`
+  );
+
+  getDoc(parentRef).then(snap => {
+    if (snap.exists()) {
+      this.parentMessage = { id: snap.id, ...snap.data() };
+
+      if (this.replies.length > 0) {
+        this.loadUserProfilesForThread();
+      }
+    }
+  });
+  }
+  
+  async sendDirectThreadMessage(text: string) {
+    if (!text.trim()) return;
+    if (!this.channelId || !this.messageId) {
+      console.warn('Missing conversationId or messageId for direct thread');
+      return;
+    }
+
+    const currentUser = await this.authService.getCurrentUser();
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const threadCollection = collection(
+      this.firestore,
+      `directMessages/${this.channelId}/messages/${this.messageId}/threads`
+    );
+
+    try {
+      await addDoc(threadCollection, {
+        text: text.trim(),
+        senderId: currentUser.uid,
+        timestamp: new Date()
+      });
+
+      // Update parent message with replyCount and lastReplyTimestamp
+      const parentDocRef = doc(
+        this.firestore,
+        `directMessages/${this.channelId}/messages/${this.messageId}`
+      );
+
+      const parentSnap = await getDoc(parentDocRef);
+      const replyCount = ((parentSnap.data() || {})['replyCount'] || 0) + 1;
+
+      await updateDoc(parentDocRef, {
+        replyCount,
+        lastReplyTimestamp: new Date()
+      });
+
+      console.log('Direct thread reply saved:', text);
+    } catch (error) {
+      console.error('❌ Error saving direct thread reply:', error);
+    }
+  }
+
+
 
   startEditingThread(message: any) {
     this.editingMessageId = message.id;
@@ -231,43 +323,50 @@ loadUserProfilesForThread() {
 
 async sendThreadMessage(text: string) {
   if (!text.trim()) return;
-  if (!this.channelId || !this.messageId) {
-    console.warn('Missing channelId or messageId');
-    return;
-  }
   const currentUser = await this.authService.getCurrentUser();
   if (!currentUser) {
     console.error('User not authenticated');
     return;
   }
-  const threadCollection = collection(
-    this.firestore,
-    `channels/${this.channelId}/messages/${this.messageId}/threads`
-  );
+
+  const thread = this.threadService.getCurrentThread(); // uses threadStateSubject
+  if (!thread?.channelId || !thread?.messageId || !thread.threadType) {
+    console.warn('Missing thread context');
+    return;
+  }
+
+  const { channelId, messageId, threadType } = thread;
+
+  const basePath =
+    threadType === 'channel'
+      ? `channels/${channelId}/messages/${messageId}/threads`
+      : `directMessages/${channelId}/messages/${messageId}/threads`;
+
+  const threadCollection = collection(this.firestore, basePath);
+
   try {
     await addDoc(threadCollection, {
       text: text.trim(),
       senderId: currentUser.uid,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    // Step 1: Update both replyCount and lastReplyTimestamp in the parent message
-    await this.channelService.updateParentMessageThreadInfo(this.channelId, this.messageId);
-    setTimeout(async () => {
-      const parentDocRef = doc(
-        this.firestore,
-        `channels/${this.channelId}/messages/${this.messageId}`
-      );
-      const snapshot = await getDoc(parentDocRef);
-      const lastReplyTimestamp = snapshot.data()?.['lastReplyTimestamp'];
-      const replyCount = snapshot.data()?.['replyCount'];
-    }, 1000);
 
-    console.log('Thread reply saved:', text);
+    if (threadType === 'channel') {
+      await this.channelService.updateParentMessageThreadInfo(channelId, messageId);
+    } else {
+      await this.directMessagingService.updateParentMessageThreadInfo(channelId, messageId);
+    }
+
+    console.log('✅ Thread reply saved:', text);
   } catch (error) {
     console.error('❌ Error saving thread reply:', error);
   }
 }
 
+
+getCurrentThread(): ThreadState | null {
+  return this.threadService.getCurrentThread();
+}
 
 
 

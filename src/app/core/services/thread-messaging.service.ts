@@ -3,15 +3,26 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ThreadMessagingService {
-  private threadStateSubject = new BehaviorSubject<{ messageId: string; channelId: string } | null>(null);
-  threadState$ = this.threadStateSubject.asObservable();
+  private threadStateSubject = new BehaviorSubject<{ 
+    messageId: string; 
+    channelId: string; 
+    threadType: 'channel' | 'direct'; 
+  } | null>(null);
+   public threadState$ = this.threadStateSubject.asObservable();
 
-  openThread(channelId: string, messageId: string) {
-    this.threadStateSubject.next({ messageId, channelId });
+
+  openThread(channelId: string, messageId: string, threadType: 'channel' | 'direct') {
+    this.threadStateSubject.next({ messageId, channelId, threadType });
   }
+
 
   closeThread() {
     this.threadStateSubject.next(null);
   }
+
+  getCurrentThread() {
+    return this.threadStateSubject.getValue();
+  }
+
 }
 

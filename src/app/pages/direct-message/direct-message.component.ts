@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  ViewChild,
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild,
 } from '@angular/core';
 import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
@@ -20,9 +12,15 @@ import { ChatBoxComponent } from '../../shared/chat-box/chat-box.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserService } from '../../core/services/user.service';
 import { TimestampLineComponent } from '../../shared/timestamp-line/timestamp-line.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
+import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { Output, EventEmitter } from '@angular/core';
+import { FormsModule } from '@angular/forms'; import { Firestore, collection, collectionData, query, orderBy } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+
 
 interface CurrentUserId {
   userId: string;
@@ -37,6 +35,8 @@ interface CurrentUserId {
     SpinnerComponent,
     ChatBoxComponent,
     TimestampLineComponent,
+    PickerModule,
+    FormsModule
   ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
@@ -59,8 +59,14 @@ export class DirectMessageComponent
 
   @ViewChild('scrollContainer')
   private scrollContainer?: ElementRef<HTMLElement>;
-
   @ViewChild('messageInput') messageFieldComponent!: MessageFieldComponent;
+
+  hoveredMessageId: string | null = null;
+  showEmojiPickerFor: string | null = null;
+  editingMessageId: string | null = null;
+  editedMessageText: string = '';
+  @Output() replyToMessage = new EventEmitter<string>();
+
 
   constructor(
     private sharedService: SharedService,
@@ -71,7 +77,10 @@ export class DirectMessageComponent
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private overlayService: ProfileOverlayService,
-    private openCardService: OpenProfileCardService
+    private openCardService: OpenProfileCardService,
+    private threadService: ThreadMessagingService,
+    private router: Router,
+    private firestore: Firestore
   ) { }
 
   ngOnInit() {
@@ -96,6 +105,80 @@ export class DirectMessageComponent
       }
     });
   }
+
+  groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
+    const counts: { [emoji: string]: number } = {};
+    Object.values(reactions).forEach((emoji) => {
+      counts[emoji] = (counts[emoji] || 0) + 1;
+    });
+    return counts;
+  }
+
+  objectKeys(obj: any): string[] {
+    return obj ? Object.keys(obj) : [];
+  }
+
+  getThreadReplies(conversationId: string, messageId: string): Observable<Message[]> {
+    const threadCollection = collection(
+      this.firestore,
+      `directMessages/${conversationId}/messages/${messageId}/threads`
+    );
+
+    const sortByTime = query(threadCollection, orderBy('timestamp', 'asc'));
+    return collectionData(sortByTime, { idField: 'id' }) as Observable<Message[]>;
+  }
+
+
+openThread(messageId: string) {
+  if (!messageId) return;
+
+  this.replyToMessage.emit(messageId);
+  this.threadService.openThread(this.conversation, messageId, 'direct');
+
+  this.router.navigate([], {
+    queryParams: { thread: messageId, threadType: 'direct' },
+    queryParamsHandling: 'merge',
+  });
+}
+
+
+  toggleEmojiPicker(messageId: string) {
+  this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
+}
+
+startEditing(msg: Message) {
+  this.editingMessageId = msg.id!;
+  this.editedMessageText = msg.message;
+  this.showEmojiPickerFor = null;
+  this.hoveredMessageId = null;
+}
+
+cancelEditing() {
+  this.editingMessageId = null;
+  this.editedMessageText = '';
+}
+
+appendEmojiToEdit(emoji: string) {
+  this.editedMessageText += emoji;
+}
+
+async saveEditedMessage(msgId: string) {
+  if (!msgId || !this.editedMessageText.trim()) return;
+  await this.messagingService.updateDirectMessage(this.conversation, msgId, this.editedMessageText.trim());
+  this.cancelEditing();
+}
+
+async reactToMessage(messageId: string, emoji: string) {
+  if (!this.currentUser?.userId || !this.conversation) return;
+
+  await this.messagingService.toggleReaction(
+    this.conversation,
+    messageId,
+    emoji,
+    this.currentUser.userId
+  );
+  this.showEmojiPickerFor = null;
+}
 
   /** called once view is created; useful for initial deep‑link load */
   ngAfterViewInit(): void {
