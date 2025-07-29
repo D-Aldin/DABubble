@@ -159,7 +159,6 @@ export class ThreadComponent {
     });
   }
 
-
   loadChannelName(channelId: string) {
     const channelRef = doc(this.firestore, `channels/${channelId}`);
     getDoc(channelRef).then(snap => {
@@ -168,7 +167,6 @@ export class ThreadComponent {
       }
     });
   }
-
 
   loadThreadMessages(channelId: string, messageId: string) {
     const threadCollection = collection(this.firestore, `channels/${channelId}/messages/${messageId}/threads`);
@@ -233,51 +231,43 @@ loadUserProfilesForThread() {
 
 async sendThreadMessage(text: string) {
   if (!text.trim()) return;
-
   if (!this.channelId || !this.messageId) {
     console.warn('Missing channelId or messageId');
     return;
   }
-
   const currentUser = await this.authService.getCurrentUser();
   if (!currentUser) {
     console.error('User not authenticated');
     return;
   }
-
   const threadCollection = collection(
     this.firestore,
     `channels/${this.channelId}/messages/${this.messageId}/threads`
   );
-
   try {
     await addDoc(threadCollection, {
       text: text.trim(),
       senderId: currentUser.uid,
       timestamp: new Date()
     });
-
-    // Step 1: Update parent message's lastReplyTimestamp using serverTimestamp()
-    await this.channelService.updateLastReplyTimestamp(this.channelId, this.messageId);
-    console.log('lastReplyTimestamp update triggered');
-
-    // Step 2: Wait a bit and confirm if the timestamp is really written
+    // Step 1: Update both replyCount and lastReplyTimestamp in the parent message
+    await this.channelService.updateParentMessageThreadInfo(this.channelId, this.messageId);
     setTimeout(async () => {
       const parentDocRef = doc(
         this.firestore,
         `channels/${this.channelId}/messages/${this.messageId}`
       );
       const snapshot = await getDoc(parentDocRef);
-     const lastReplyTimestamp = snapshot.data()?.['lastReplyTimestamp'];
-
-      console.log('Firestore confirmed lastReplyTimestamp:', lastReplyTimestamp);
-    }, 1000); // adjust delay if needed
+      const lastReplyTimestamp = snapshot.data()?.['lastReplyTimestamp'];
+      const replyCount = snapshot.data()?.['replyCount'];
+    }, 1000);
 
     console.log('Thread reply saved:', text);
   } catch (error) {
-    console.error('Error saving thread reply:', error);
+    console.error('❌ Error saving thread reply:', error);
   }
 }
+
 
 
 

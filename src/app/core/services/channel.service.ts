@@ -150,4 +150,16 @@ export class ChannelService {
     });
   }
 
+  async updateParentMessageThreadInfo(channelId: string, messageId: string): Promise<void> {
+    const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+    const threadCollection = collection(parentRef, 'threads');
+    const snapshot = await getDocs(threadCollection);
+
+    await updateDoc(parentRef, {
+      replyCount: snapshot.size,
+      lastReplyTimestamp: new Date(),
+       replyUpdatedAt: Date.now() //new dummy field to force update
+    });
+  }
+  
 }

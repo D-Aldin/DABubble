@@ -14,24 +14,22 @@ export class ChannelMessagingService {
   constructor() { }
 
   getChannelMessages(channelId: string): Observable<ChannelMessage[]> {
-  const messagesRef = collection(this.firestore, `channels/${channelId}/messages`);
-  const q = query(messagesRef, orderBy('timestamp', 'asc'));
-
-  return new Observable<ChannelMessage[]>((observer) => {
-    return onSnapshot(q, (snapshot) => {
-      const messages = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          lastReplyTimestamp: (data as any)['lastReplyTimestamp'] ?? null,
-        } as ChannelMessage;
-      });
-      observer.next(messages);
-    }, (error) => observer.error(error));
-  });
-}
-
+    const messagesRef = collection(this.firestore, `channels/${channelId}/messages`);
+    const q = query(messagesRef, orderBy('timestamp', 'asc'));
+    return new Observable<ChannelMessage[]>((observer) => {
+      return onSnapshot(q, (snapshot) => {
+        const messages = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            lastReplyTimestamp: (data as any)['lastReplyTimestamp'] ?? null,
+          } as ChannelMessage;
+        });
+        observer.next(messages);
+      }, (error) => observer.error(error));
+    });
+  } 
 
   sendMessage(channelId: string, senderId: string, text: string) {
     const ref = collection(this.firestore, `channels/${channelId}/messages`);

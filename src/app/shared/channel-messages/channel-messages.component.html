@@ -32,30 +32,33 @@
       [time]="(msg.timestamp.toDate() | date:'shortTime') || ''" [message]="msg.text"
       [userMe]="msg.senderId !== currentUserId" [userId]="msg.senderId" (profileClick)="openProfileCard($event)" />
 
-    @if (msg.reactions) {
-      <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
-        <div class="reply-info">
-          <!-- One reply count + thread open link -->
-          <a class="reply-count" (click)="openThread(msg.id!)">
-            {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
-          </a>
+    <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
+  <div class="reply-info">
 
-          <!-- Emoji reactions -->
-          @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
-            <span class="reaction">
-              {{ emoji }} {{ groupReactions(msg.reactions)[emoji] }}
-            </span>
-          }
+    <!-- Always show Antwort (even if 0) -->
+    <a class="reply-count" (click)="openThread(msg.id!)">
+      {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+    </a>
 
-          <!-- Timestamp only once -->
-          @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
-            <span class="last-reply-time">
-              Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
-            </span>
-          }
-        </div>
-      </div>
+    <!-- Only show emoji reactions if they exist -->
+    @if (msg.reactions && objectKeys(msg.reactions).length > 0) {
+      @for (emoji of objectKeys(groupReactions(msg.reactions)); track emoji) {
+        <span class="reaction">
+          {{ emoji }} {{ groupReactions(msg.reactions)[emoji] }}
+        </span>
+      }
     }
+
+    <!-- Only show timestamp if at least 1 reply -->
+    @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
+      <span class="last-reply-time">
+        Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
+      </span>
+    }
+
+  </div>
+</div>
+
 
 
     @if (hoveredMessageId === msg.id) {

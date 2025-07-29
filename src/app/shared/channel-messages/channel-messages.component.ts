@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../core/services/channel.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { AsyncPipe } from '@angular/common';
-import { Observable, take, tap } from 'rxjs';
+import { Observable, Subscription, take, tap } from 'rxjs';
 import { Output, EventEmitter } from '@angular/core';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
 import { UserService } from '../../core/services/user.service';
@@ -92,7 +92,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     this.hasScrolledAfterLoad = false;
 
     this.userService.getAllUsers().pipe(
-      // Step 1: load and store users
       tap((users) => {
         this.usersMap = {};
         users.forEach((user) => {
@@ -104,34 +103,24 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
           };
         });
       }),
-
-      // Step 2: load messages
-      switchMap(() => this.messagingService.getChannelMessages(this.channelId)),
-
-      // Step 3: fetch reply counts for each message
-      switchMap((messages) => {
-        const tasks = messages.map((msg) =>
-          from(this.messagingService.getReplyCount(this.channelId, msg.id!)).pipe(
-            map((count) => ({ ...msg, replyCount: count ?? 0, lastReplyTimestamp: msg.lastReplyTimestamp }))
-          )
-        );
-        return forkJoin(tasks);
-      })
+      switchMap(() =>
+        this.messagingService.getChannelMessages(this.channelId)
+      )
     ).subscribe((msgs) => {
-    console.log('✅ FINAL messages in ChannelMessagesComponent:');
-msgs.forEach(msg => {
-  console.log({
-    id: msg.id,
-    text: msg.text,
-    replyCount: msg.replyCount,
-    lastReplyTimestamp: msg.lastReplyTimestamp,
-    reactions: msg.reactions
-  });
-});
+      const withReplyCounts = msgs.map(async (msg) => {
+        const replyCount = await this.messagingService.getReplyCount(this.channelId, msg.id!);
+        return {
+          ...msg,
+          replyCount,
+          lastReplyTimestamp: msg.lastReplyTimestamp ?? undefined
+        };
+      });
 
-      this.groupedMessages = this.groupMessagesByDate(msgs);
-      this.cdRef.detectChanges();
-      this.isLoading = false;
+      Promise.all(withReplyCounts).then((results) => {
+        this.groupedMessages = this.groupMessagesByDate(results);
+        this.cdRef.detectChanges();
+        this.isLoading = false;
+      });
     });
 
     this.getObserveableProfileCardData();
@@ -171,7 +160,7 @@ msgs.forEach(msg => {
 
     messages.forEach((msg) => {
       if (!msg.timestamp || typeof msg.timestamp.toDate !== 'function') {
-        console.warn('Skipping message with invalid timestamp:', msg);
+        // console.warn('Skipping message with invalid timestamp:', msg);
         return;
       }
 
