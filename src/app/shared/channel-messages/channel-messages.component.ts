@@ -29,6 +29,7 @@ import { DirectMessagingService } from '../../core/services/direct-messaging.ser
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-channel-messages',
@@ -70,6 +71,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   hasScrolledAfterLoad: boolean = false;
   @ViewChild('scrollContainer', { static: false })
   scrollContainer?: ElementRef<HTMLElement>;
+  lastReplyTimestamp?: Timestamp | Date;
 
   constructor(
     private channelService: ChannelService,
@@ -110,19 +112,54 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       switchMap((messages) => {
         const tasks = messages.map((msg) =>
           from(this.messagingService.getReplyCount(this.channelId, msg.id!)).pipe(
-            map((count) => ({ ...msg, replyCount: count }))
+            map((count) => ({ ...msg, replyCount: count ?? 0, lastReplyTimestamp: msg.lastReplyTimestamp }))
           )
         );
         return forkJoin(tasks);
       })
     ).subscribe((msgs) => {
-      // Final step: assign and render
+    console.log('✅ FINAL messages in ChannelMessagesComponent:');
+msgs.forEach(msg => {
+  console.log({
+    id: msg.id,
+    text: msg.text,
+    replyCount: msg.replyCount,
+    lastReplyTimestamp: msg.lastReplyTimestamp,
+    reactions: msg.reactions
+  });
+});
+
       this.groupedMessages = this.groupMessagesByDate(msgs);
       this.cdRef.detectChanges();
       this.isLoading = false;
     });
 
     this.getObserveableProfileCardData();
+  }
+
+  getLastReplyTime(messages: ChannelMessage[]): Date | null {
+  const timestamps = messages
+    .map(m => {
+      const ts = m.lastReplyTimestamp;
+      if (ts instanceof Timestamp) {
+        return ts.toDate();
+      }
+      return ts as Date;
+    })
+    .filter(Boolean);
+
+  if (timestamps.length === 0) return null;
+
+  return timestamps.sort((a, b) => b.getTime() - a.getTime())[0];
+  }
+  
+  getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
+    if (!timestamp) return '';
+    const date = timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
+    return new Intl.DateTimeFormat('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
   }
 
   groupMessagesByDate(messages: ChannelMessage[]): {

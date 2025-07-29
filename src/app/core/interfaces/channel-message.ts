@@ -8,4 +8,5 @@ export interface ChannelMessage {
   reactions?: { [userId: string]: string };
   threadId?: string;
   replyCount?: number;
+  lastReplyTimestamp?: Timestamp | Date;
 }

@@ -7,6 +7,7 @@ import { Firestore, collection, addDoc, query, orderBy, onSnapshot,  doc, getDoc
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
+import { ChannelService } from '../../core/services/channel.service';
 
 @Component({
   selector: 'app-thread',
@@ -39,7 +40,8 @@ export class ThreadComponent {
     private authService: AuthService,
     private userService: UserService,
     private threadService: ThreadMessagingService,
-     private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private channelService: ChannelService
   ) {}
 
   ngOnInit(): void {
@@ -229,37 +231,54 @@ loadUserProfilesForThread() {
   });
 }
 
-
-
 async sendThreadMessage(text: string) {
-    // console.log('Thread message received from MessageField:', text);
-    if (!text.trim()) return;
+  if (!text.trim()) return;
 
-    if (!this.channelId || !this.messageId) {
-      console.warn('Missing channelId or messageId');
-      return;
-    }
+  if (!this.channelId || !this.messageId) {
+    console.warn('Missing channelId or messageId');
+    return;
+  }
 
-    const currentUser = await this.authService.getCurrentUser();
-    if (!currentUser) {
-      console.error('User not authenticated');
-      return;
-    }
+  const currentUser = await this.authService.getCurrentUser();
+  if (!currentUser) {
+    console.error('User not authenticated');
+    return;
+  }
 
-    const threadCollection = collection(this.firestore,
-      `channels/${this.channelId}/messages/${this.messageId}/threads`);
+  const threadCollection = collection(
+    this.firestore,
+    `channels/${this.channelId}/messages/${this.messageId}/threads`
+  );
 
-    try {
-      await addDoc(threadCollection, {
-        text: text.trim(),
-        senderId: currentUser.uid,
-        timestamp: new Date()
-      });
-      console.log('Thread reply saved:', text);
-    } catch (error) {
-      console.error('Error saving thread reply:', error);
-    }
+  try {
+    await addDoc(threadCollection, {
+      text: text.trim(),
+      senderId: currentUser.uid,
+      timestamp: new Date()
+    });
+
+    // Step 1: Update parent message's lastReplyTimestamp using serverTimestamp()
+    await this.channelService.updateLastReplyTimestamp(this.channelId, this.messageId);
+    console.log('lastReplyTimestamp update triggered');
+
+    // Step 2: Wait a bit and confirm if the timestamp is really written
+    setTimeout(async () => {
+      const parentDocRef = doc(
+        this.firestore,
+        `channels/${this.channelId}/messages/${this.messageId}`
+      );
+      const snapshot = await getDoc(parentDocRef);
+     const lastReplyTimestamp = snapshot.data()?.['lastReplyTimestamp'];
+
+      console.log('Firestore confirmed lastReplyTimestamp:', lastReplyTimestamp);
+    }, 1000); // adjust delay if needed
+
+    console.log('Thread reply saved:', text);
+  } catch (error) {
+    console.error('Error saving thread reply:', error);
+  }
 }
+
 
 
   close(event: Event) {

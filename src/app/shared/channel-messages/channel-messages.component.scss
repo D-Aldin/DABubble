@@ -92,10 +92,24 @@ emoji-mart {
   align-items: center;
   gap: 8px;
 
+.reply-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    margin-top: 6px;
+    margin-left: 60px; // adjust based on layout
+  }
+
   .reply-count {
-    font-size: 1.2rem;
-    color: #5b69ff;
+    color: #3c55dd;
+    font-weight: 500;
     cursor: pointer;
+  }
+
+  .last-reply-time {
+    color: #666;
+    font-size: 13px;
   }
 
   .reaction {

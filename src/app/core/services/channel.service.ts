@@ -140,4 +140,14 @@ export class ChannelService {
       threadId,
     });
   }
+
+  async updateLastReplyTimestamp(channelId: string, messageId: string): Promise<void> {
+    const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+    console.log('Updating timestamp at path:', `channels/${channelId}/messages/${messageId}`);
+
+    await updateDoc(parentRef, {
+      lastReplyTimestamp: serverTimestamp(),
+    });
+  }
+
 }
