@@ -1,0 +1,35 @@
+<div class="search-bar">
+   <input
+   type="text"
+   [(ngModel)]="searchTerm"
+   (input)="onSearch()"
+   placeholder="Search users, channels or messages..."
+   />
+   <div class="results" *ngIf="searchTerm.trim()">
+      <div *ngIf="users.length > 0">
+         <h3>👤 Users</h3>
+         <ul>
+            <li *ngFor="let user of users">{{ user.name }}</li>
+         </ul>
+      </div>
+      <div *ngIf="channelMessages.length > 0">
+         <h3>💬 Channel Messages</h3>
+         <ul>
+            <li *ngFor="let msg of channelMessages">
+               {{ msg.text }} 
+            </li>
+         </ul>
+      </div>
+      <div *ngIf="directMessages.length > 0">
+         <h3>🔒 Your Direct Messages</h3>
+         <ul>
+            <li *ngFor="let msg of directMessages">
+               {{ msg.message }} 
+            </li>
+         </ul>
+      </div>
+      <div *ngIf="users.length + channelMessages.length + directMessages.length === 0">
+         <p>No results found.</p>
+      </div>
+   </div>
+</div>

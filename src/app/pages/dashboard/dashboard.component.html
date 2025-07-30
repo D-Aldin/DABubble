@@ -48,7 +48,7 @@
 </div>
 
 <div *ngIf="showProfileCard$ | async" class="profile-card-overlay" (click)="closeProfileCard()">
-  <app-profile-card *ngIf="(selectedUser$ | async) as user" [name]="user.name" [email]="user.email"
+  <app-profile-card *ngIf="(selectedUser$ | async) as user" [name]="user.name" [email]="user.email || ''"
     [src]="user.avatarPath || ''" [active]="user.online" [isInsertedInHeader]="false" (click)="$event.stopPropagation()"
     (closeCard)="closeProfileCard()">
     <div class="button-container">

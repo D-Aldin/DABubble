@@ -5,10 +5,7 @@
             <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-name-img" src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
         </div>
 
-        <div class="search-bar" *ngIf="showSearchBar">
-            <input type="text" placeholder="Devspace durchsuchen"  [(ngModel)]="inputSearchBar"/>
-            <div class="search-icon" role="img" aria-label="Suche"></div>
-        </div>
+       <app-search-bar></app-search-bar>
 
         <div class="signup-link-box" *ngIf="showSignUpLink">
             <p class="signup-text">Neu bei DABubble?</p>
