@@ -61,3 +61,24 @@
         opacity: 0;
     }
 }
+
+@media (max-width: 576px) {
+    .success-toast {
+        width: auto;
+        height: 70px;
+        opacity: 1;
+        gap: 8px;
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        border-bottom-left-radius: 30px;
+        padding-top: 18px;
+        padding-right: 30px;
+        padding-bottom: 18px;
+        padding-left: 28px;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 18px;
+        line-height: 100%;
+        letter-spacing: 0%;
+    }
+}

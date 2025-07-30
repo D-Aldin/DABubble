@@ -22,7 +22,7 @@ html {
 
 body {
   font-family: "Nunito", sans-serif;
-  // overflow: hidden;
+  overflow: hidden;
   background-color: rgb(236, 238, 254);
   height: 100vh;
 }
@@ -119,5 +119,41 @@ input:-internal-autofill-selected {
       color: $primary-button-color;
       border: 1px solid $primary-color;
     }
+  }
+}
+
+@media (max-width: 1400px) {
+  body {
+    overflow: unset !important;
+  }
+}
+
+@media (max-width: 576px) {
+
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 12px;
+    color: #999;
+  }
+
+  input::-webkit-input-placeholder,
+  textarea::-webkit-input-placeholder {
+    font-size: 12px;
+  }
+
+  input::-moz-placeholder,
+  textarea::-moz-placeholder {
+    font-size: 12px;
+    opacity: 1;
+  }
+
+  input:-ms-input-placeholder,
+  textarea:-ms-input-placeholder {
+    font-size: 12px;
+  }
+
+  input::-ms-input-placeholder,
+  textarea::-ms-input-placeholder {
+    font-size: 12px;
   }
 }

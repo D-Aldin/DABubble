@@ -145,3 +145,44 @@ form {
         letter-spacing: 0%;
     }
 }
+
+@media (max-width: 700px) {
+    .reset-container {
+        width: 97%;
+        padding: 18px;
+
+        .title {
+            font-size: 27px;
+            text-align: center;
+            width: 100%;
+        }
+    }
+
+    form {
+        width: 100%;
+        height: auto;
+    }
+
+    app-input-field {
+        width: 100% !important;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .reset-container {
+        .heading-container {
+            width: 100%;
+            justify-content: center;
+            align-items: baseline;
+            flex-direction: column;
+            gap: 0px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            margin: 0px;
+        }
+    }
+}

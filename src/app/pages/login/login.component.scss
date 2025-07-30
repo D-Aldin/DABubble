@@ -1,6 +1,10 @@
 @use "../../../styles/variables" as *;
 @use "../../../styles/mixins";
 
+body {
+  overflow: auto !important;
+}
+
 .login-container {
   // min-height: 100vh;
   width: 100%;
@@ -211,6 +215,7 @@
   overflow: hidden;
   max-width: 100vw;
   // max-height: 100vh;
+  overflow: auto;
 }
 
 .intro-animation {
@@ -229,7 +234,7 @@
   animation-delay: 2s;
   position: absolute;
   height: 100%;
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
 .wrapper-animation {
@@ -358,5 +363,11 @@
 
   .login-container {
     min-height: unset;
+  }
+}
+
+@media (max-width: 590px) {
+  .login-card {
+    padding: 1.5rem 1rem;
   }
 }
