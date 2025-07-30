@@ -38,6 +38,7 @@ export class ThreadComponent {
   editingMessageId: string | null = null;
   editedMessageText: string = '';
   emojiPickerForMessageId: string | null = null;
+  threadType: 'channel' | 'direct' = 'channel';
 
 
   constructor(
@@ -47,30 +48,30 @@ export class ThreadComponent {
     private threadService: ThreadMessagingService,
     private cdr: ChangeDetectorRef,
     private channelService: ChannelService,
-     private directMessagingService: DirectMessagingService
-
+    private directMessagingService: DirectMessagingService
   ) {}
 
   ngOnInit(): void {
-      this.threadService.threadState$.subscribe((thread: ThreadState | null) => {
+    this.threadService.threadState$.subscribe((thread: ThreadState | null) => {
       if (thread?.channelId && thread?.messageId) {
         this.channelId = thread.channelId;
         this.messageId = thread.messageId;
+        this.threadType = thread.threadType; // make sure this is saved!
         this.currentUserId = this.authService.currentUserId;
 
-        if (thread.threadType === 'channel') {
-          this.loadChannelUsers(this.channelId); 
-          this.loadChannelName(this.channelId); 
-          this.loadThreadMessages(this.channelId, this.messageId);
+        this.loadThreadMessages(this.channelId, this.messageId, this.threadType); //always load thread
+
+        if (this.threadType === 'channel') {
+          this.loadChannelUsers(this.channelId);
+          this.loadChannelName(this.channelId);
           this.loadParentMessage(this.channelId, this.messageId);
-        } else if (thread.threadType === 'direct') {
-          this.loadDirectThreadMessages(this.channelId, this.messageId);
+        } else {
           this.loadDirectParentMessage(this.channelId, this.messageId);
         }
       }
     });
-
   }
+
 
   loadDirectThreadMessages(conversationId: string, messageId: string) {
   const threadCollection = collection(
@@ -266,8 +267,12 @@ export class ThreadComponent {
     });
   }
 
-  loadThreadMessages(channelId: string, messageId: string) {
-    const threadCollection = collection(this.firestore, `channels/${channelId}/messages/${messageId}/threads`);
+ loadThreadMessages(channelId: string, messageId: string, threadType: 'channel' | 'direct') {
+    const basePath = threadType === 'direct'
+      ? `directMessages/${channelId}/messages/${messageId}/threads`
+      : `channels/${channelId}/messages/${messageId}/threads`;
+
+    const threadCollection = collection(this.firestore, basePath);
     const q = query(threadCollection, orderBy('timestamp', 'asc'));
 
     onSnapshot(q, snapshot => {
@@ -275,10 +280,11 @@ export class ThreadComponent {
 
       // Wait until parent message is also loaded
       if (this.replies.length && this.parentMessage?.senderId) {
-    this.loadUserProfilesForThread();
-  }
+        this.loadUserProfilesForThread();
+      }
     });
   }
+
 
 loadParentMessage(channelId: string, messageId: string) {
   const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
