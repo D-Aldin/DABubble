@@ -8,42 +8,23 @@ import {
   Query
 } from '@angular/fire/firestore';
 import { Observable, map } from 'rxjs';
+import { ChannelMessage } from '../interfaces/channel-message';
+import { ChatUser } from '../interfaces/chat-user';
+import { DirectMessage } from '../interfaces/direct-message';
 
-// Interfaces
-export interface User {
-  id?: string;
-  name: string;
-  avatarPath: string;
-  online: boolean;
-  email?: string | " ";
-}
 
-export interface ChannelMessages {
-  id?: string;
-  senderId: string;
-  text: string;
-  timestamp: Date;
-}
 
-export interface DirectMessage {
-  id?: string;
-  message: string;
-  messageFrom: string;
-  messageTo: string;
-  tags: string[];
-  timestamp: Date;
-}
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
   private firestore = inject(Firestore);
 
 
-  searchUsers(term: string): Observable<User[]> {
-    const usersRef = collection(this.firestore, 'users') as unknown as CollectionReference<User>;
+  searchUsers(term: string): Observable<ChatUser[]> {
+    const usersRef = collection(this.firestore, 'users') as unknown as CollectionReference<ChatUser>;
     return collectionData(usersRef, { idField: 'id' }).pipe(
       map(users =>
-        users.filter((user: User) =>
+        users.filter((user: ChatUser) =>
           user.name.toLowerCase().includes(term.toLowerCase())
         )
       )
@@ -51,11 +32,11 @@ export class SearchService {
   }
 
 
-  searchChannelMessages(term: string): Observable<ChannelMessages[]> {
-    const messagesRef = collectionGroup(this.firestore, 'messages') as Query<ChannelMessages>// durchsucht alle /messages
-    return collectionData<ChannelMessages>(messagesRef, { idField: 'id' }).pipe(
+  searchChannelMessages(term: string): Observable<ChannelMessage[]> {
+    const messagesRef = collectionGroup(this.firestore, 'messages') as Query<ChannelMessage>// durchsucht alle /messages
+    return collectionData<ChannelMessage>(messagesRef, { idField: 'id' }).pipe(
       map(messages =>
-        messages.filter((msg: ChannelMessages) =>
+        messages.filter((msg: ChannelMessage) =>
           msg.text.toLowerCase().includes(term.toLowerCase())
         )
       )
