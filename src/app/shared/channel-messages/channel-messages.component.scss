@@ -85,44 +85,38 @@ emoji-mart {
   &.me {
     justify-content: flex-end;
   }
-}
 
-.message-reactions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-.reply-info {
+  .reply-info {
     display: flex;
     align-items: center;
     gap: 12px;
     font-size: 14px;
     margin-top: 6px;
-    margin-left: 60px; // adjust based on layout
-  }
+    margin-left: 0; // Already covered by container padding
 
-  .reply-count {
-    color: #3c55dd;
-    font-weight: 500;
-    cursor: pointer;
-  }
+    .reply-count {
+      color: #3c55dd;
+      font-size: 18px;
+      cursor: pointer;
+    }
 
-  .last-reply-time {
-    color: #666;
-    font-size: 13px;
-  }
+    .reaction {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      padding: 2px 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      user-select: none;
+    }
 
-  .reaction {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 16px;
-    padding: 2px 8px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    user-select: none;
+    .last-reply-time {
+      color: #666;
+      font-size: 13px !important;
+    }
   }
 }
 
