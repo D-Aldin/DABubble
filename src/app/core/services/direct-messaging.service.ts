@@ -41,7 +41,7 @@ export class DirectMessagingService {
 
 
   async toggleReaction(conversationId: string, messageId: string, emoji: string, userId: string): Promise<void> {
-    const messageRef = doc(this.firestore, `direct-messages/${conversationId}/messages/${messageId}`);
+    const messageRef = doc(this.firestore, `directMessages/${conversationId}/messages/${messageId}`);
     const messageSnap = await getDoc(messageRef);
 
     if (!messageSnap.exists()) return;
@@ -61,7 +61,7 @@ export class DirectMessagingService {
   }
 
   async updateDirectMessage(conversationId: string, messageId: string, newText: string): Promise<void> {
-    const msgRef = doc(this.firestore, `direct-messages/${conversationId}/messages/${messageId}`);
+    const msgRef = doc(this.firestore, `directMessages/${conversationId}/messages/${messageId}`);
     await updateDoc(msgRef, { message: newText });
   }
 

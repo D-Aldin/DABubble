@@ -217,13 +217,18 @@ export class ThreadComponent {
   }
 
   async saveEditedMessage(messageId: string) {
-    if (!this.channelId || !this.messageId) {
-      console.warn('Missing channelId or parentMessageId');
+    const thread = this.threadService.getCurrentThread();
+
+    if (!thread?.channelId || !thread?.messageId || !thread.threadType) {
+      console.warn('Missing thread context');
       return;
     }
-
-    const threadReplyRef = doc(this.firestore,
-      `channels/${this.channelId}/messages/${this.messageId}/threads/${messageId}`);
+    const { channelId, messageId: parentId, threadType } = thread;
+    const basePath =
+      threadType === 'channel'
+        ? `channels/${channelId}/messages/${parentId}/threads/${messageId}`
+        : `directMessages/${channelId}/messages/${parentId}/threads/${messageId}`;
+    const threadReplyRef = doc(this.firestore, basePath);
 
     try {
       await updateDoc(threadReplyRef, { text: this.editedMessageText.trim() });
@@ -233,6 +238,7 @@ export class ThreadComponent {
       console.error('Error updating thread reply:', error);
     }
   }
+
 
   loadChannelUsers(channelId: string) {
     const channelRef = doc(this.firestore, `channels/${channelId}`);
