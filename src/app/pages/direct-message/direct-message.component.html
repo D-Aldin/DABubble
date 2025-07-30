@@ -74,6 +74,14 @@
                         {{ emoji }} {{ groupReactions(item.reactions)[emoji] }}
                       </span>
                     </ng-container>
+
+                     <!-- Only show timestamp if at least 1 reply -->
+                     @if ((item.replyCount ?? 0) > 0 && item.lastReplyTimestamp) {
+                        <span class="last-reply-time">
+                           Letzte Antwort {{ getFormattedLastReplyTime(item.lastReplyTimestamp) }}
+                        </span>
+                     }
+
                   </div>
                 </div>
 

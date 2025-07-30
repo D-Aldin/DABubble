@@ -67,6 +67,8 @@ export class DirectMessageComponent
   editedMessageText: string = '';
   @Output() replyToMessage = new EventEmitter<string>();
   currentUserId: string = '';
+  replyCount: number = 0;
+  lastReplyTimestamp: Timestamp | Date | null = null;
 
 
   constructor(
@@ -106,6 +108,16 @@ export class DirectMessageComponent
       }
     });
   }
+
+  getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
+    if (!timestamp) return '';
+    const date = timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
+    return new Intl.DateTimeFormat('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  }
+
 
   groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
     const counts: { [emoji: string]: number } = {};
