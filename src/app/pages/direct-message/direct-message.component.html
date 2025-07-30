@@ -63,7 +63,7 @@
                 >
                 </app-chat-box>
 
-                <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount">
+                <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount" [ngClass]="{'me': item.messageFrom === currentUserId}">
                   <div class="reply-info">
                     <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
                       {{ item.replyCount || 0 }} Antwort{{ (item.replyCount || 0) > 1 ? 'en' : '' }}
