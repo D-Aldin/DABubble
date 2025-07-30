@@ -114,6 +114,162 @@ h3 {
   letter-spacing: 0%;
 }
 
+.message-content {
+  position: relative;
+}
+
+.message-toolbar {
+  position: absolute;
+  top: -1.2rem;
+  display: flex;
+  gap: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 1.5rem;
+  padding: 4px 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+
+  // Default position for other users
+  left: 1rem;
+
+  &.me {
+    left: auto;
+    right: 1rem;
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}
+emoji-mart {
+  position: absolute;
+  top: 2.5rem;
+  right: 1rem;
+  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.message-reactions-container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 60px;
+  margin-top: 4px;
+
+  &.me {
+    justify-content: flex-end;
+  }
+}
+
+.message-reactions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .reply-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    margin-top: 6px;
+    margin-left: 60px; // adjust based on layout
+  }
+
+  .reply-count {
+    color: #3c55dd;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .last-reply-time {
+    color: #666;
+    font-size: 13px;
+  }
+
+  .reaction {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 2px 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    user-select: none;
+  }
+}
+
+.edit-message-box {
+  border: 1px solid #4c6ef5;
+  background-color: #f5f7ff;
+  border-radius: 24px;
+  padding: 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 8px;
+    outline: none;
+    background-color: white;
+  }
+
+  .edit-message-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    .emoji-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+
+  .edit-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .cancel-btn {
+      background: white;
+      color: #0056d2;
+      border: 1px solid #0056d2;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .save-btn {
+      background-color: #0056d2;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+  }
+}
+
 .spinner-container {
   display: flex;
   justify-content: center;

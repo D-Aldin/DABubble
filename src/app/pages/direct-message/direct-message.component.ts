@@ -66,6 +66,7 @@ export class DirectMessageComponent
   editingMessageId: string | null = null;
   editedMessageText: string = '';
   @Output() replyToMessage = new EventEmitter<string>();
+  currentUserId: string = '';
 
 
   constructor(
@@ -199,8 +200,10 @@ async reactToMessage(messageId: string, emoji: string) {
       this.currentUser = {
         userId: userFromAuthService.uid,
       };
+      this.currentUserId = userFromAuthService.uid; 
     }
   }
+
 
   async createConversation(currentUserId: string, selectedUserId: string): Promise<void> {
     const conversationId = this.messagingService.generateConversationId(currentUserId, selectedUserId);
