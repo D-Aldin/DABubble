@@ -1,62 +1,61 @@
 @use "../../../styles/variables" as *;
 @use "../../../styles/mixins";
 
-  
-  
-  .search-bar {
-    position: relative;
-      display: flex;
-      align-items: center;
-      position: relative;
-      background-color: white;
-      width: 989px;
-      height: 70px;
-      justify-content: space-between;
-      padding: 17.5px 45px;
-      border-radius: 42px;
 
-      input {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 24px;
-        background: transparent;
+.search-bar {
+	position: relative;
+	display: flex;
+	align-items: center;
+	position: relative;
+	background-color: white;
+	width: 989px;
+	height: 70px;
+	justify-content: space-between;
+	padding: 17.5px 45px;
+	border-radius: 42px;
 
-        &::placeholder {
-          color: $placeholder-color;
-          font-weight: 400;
-          font-style: Regular;
-          font-size: 24px;
-          line-height: 100%;
-          letter-spacing: 0%;
-        }
-      }
+	input {
+		flex: 1;
+		border: none;
+		outline: none;
+		font-size: 24px;
+		background: transparent;
 
-      .search-icon {
-        position: absolute;
-        right: 1rem;
-        width: 35px;
-        height: 35px;
-        cursor: pointer;
-        background-image: url("/assets/icons/searchbar.svg");
-        background-size: contain;
-        background-repeat: no-repeat;
+		&::placeholder {
+			color: $placeholder-color;
+			font-weight: 400;
+			font-style: Regular;
+			font-size: 24px;
+			line-height: 100%;
+			letter-spacing: 0%;
+		}
+	}
 
-        &:hover {
-          background-image: url("/assets/icons/searchbar-hover.svg");
-        }
-      }
+	.search-icon {
+		position: absolute;
+		right: 1rem;
+		width: 35px;
+		height: 35px;
+		cursor: pointer;
+		background-image: url("/assets/icons/searchbar.svg");
+		background-size: contain;
+		background-repeat: no-repeat;
 
-      &:focus-within .search-icon {
-        background-image: url("/assets/icons/searchbar-hover.svg");
-      }
-    }
+		&:hover {
+			background-image: url("/assets/icons/searchbar-hover.svg");
+		}
+	}
+
+	&:focus-within .search-icon {
+		background-image: url("/assets/icons/searchbar-hover.svg");
+	}
+}
 
 .results {
-      position: absolute;
-    top: 80px;
-    z-index: 999;
-    border: 1px solid;
-    padding: 30px;
-    background: white;
+	position: absolute;
+	top: 80px;
+	z-index: 999;
+	border-radius: 20px;
+	padding: 30px;
+	background: white;
 }
