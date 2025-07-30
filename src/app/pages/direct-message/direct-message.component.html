@@ -77,7 +77,8 @@
                   </div>
                 </div>
 
-                <div class="message-toolbar" *ngIf="hoveredMessageId === item.id">
+                <div class="message-toolbar" *ngIf="hoveredMessageId === item.id"
+                  [ngClass]="{'me': item.messageFrom !== currentUser?.userId, 'other': item.messageFrom !== currentUser?.userId}">
                   <button (click)="reactToMessage(item.id, '👍')">👍</button>
                   <button (click)="reactToMessage(item.id, '✅')">✅</button>
                   <button (click)="toggleEmojiPicker(item.id)">
