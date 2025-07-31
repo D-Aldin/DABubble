@@ -25,7 +25,7 @@ export class SearchService {
     return collectionData(usersRef, { idField: 'id' }).pipe(
       map(users =>
         users.filter((user: ChatUser) =>
-          user.name.toLowerCase().includes(term.toLowerCase())
+          user.name?.toLowerCase().includes(term.toLowerCase())
         )
       )
     );
@@ -33,11 +33,11 @@ export class SearchService {
 
 
   searchChannelMessages(term: string): Observable<ChannelMessage[]> {
-    const messagesRef = collectionGroup(this.firestore, 'messages') as Query<ChannelMessage>// durchsucht alle /messages
+    const messagesRef = collectionGroup(this.firestore, 'messages') as Query<ChannelMessage>
     return collectionData<ChannelMessage>(messagesRef, { idField: 'id' }).pipe(
       map(messages =>
         messages.filter((msg: ChannelMessage) =>
-          msg.text.toLowerCase().includes(term.toLowerCase())
+          msg.text?.toLowerCase().includes(term.toLowerCase())
         )
       )
     );
@@ -50,7 +50,7 @@ export class SearchService {
       map(messages =>
         messages.filter((msg: DirectMessage) =>
           (msg.messageFrom === currentUserId || msg.messageTo === currentUserId) &&
-          msg.message.toLowerCase().includes(term.toLowerCase())
+          msg.message?.toLowerCase().includes(term.toLowerCase())
         )
       )
     );

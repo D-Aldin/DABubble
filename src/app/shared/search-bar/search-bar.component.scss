@@ -63,9 +63,11 @@
 .link-list {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 
   a {
     text-decoration: none;
     color: black;
+    cursor: pointer;
   }
 }

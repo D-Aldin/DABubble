@@ -13,7 +13,7 @@
          <h3>👤 Users</h3>
          <div class="link-list">
             @for (user of users; track user) {
-               <a href="">{{user.name}}</a>
+               <a (click)="openDirectChat(user.id || '')">{{user.name}}</a>
             }
          </div>
       }
@@ -22,7 +22,8 @@
          <h3>💬 Channel Messages</h3>
          <div class="link-list">
             @for (msg of channelMessages; track msg) {
-               <a href="">{{msg.text}}</a>
+               <a >{{msg.text}}</a>
+               
             }
          </div>
       }
