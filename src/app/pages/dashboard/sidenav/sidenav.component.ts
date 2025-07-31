@@ -38,6 +38,8 @@ export class SidenavComponent implements OnInit {
   ) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
+  @Output() channelSelected = new EventEmitter<string>();
+  @Output() userSelected = new EventEmitter<string>();
   showChannels = true;
   showDMs = true;
 
@@ -145,5 +147,13 @@ export class SidenavComponent implements OnInit {
     setTimeout(() => {
       this.bounceMap[uid] = false;
     }, 250);
+  }
+
+  onChannelClick(channelId: string): void {
+    this.channelSelected.emit(channelId);
+  }
+
+  onUserClick(userId: string): void {
+    this.userSelected.emit(userId);
   }
 }

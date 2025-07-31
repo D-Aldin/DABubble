@@ -1,8 +1,21 @@
 @use "../../../styles/variables" as *;
+@use "../../../styles/mixins";
+
+body {
+  overflow: hidden !important;
+}
 
 .content-wrapper {
   display: flex;
   flex-direction: column;
+}
+
+.sidenav.slide-up {
+  animation: slideUpFromBottom 0.4s ease-out;
+}
+
+.sidenav.slide-down {
+  animation: slideDownFromTop 0.4s ease-out;
 }
 
 section {
@@ -58,6 +71,7 @@ section {
   height: 400px;
   width: 56px;
   transition: transform 0.3s ease-in-out;
+  animation: slideUpFromBottom 0.5s ease-out;
 
   &:hover {
     transform: scaleX(1.1);
@@ -375,5 +389,36 @@ app-message-field {
     width: 100%;
     display: flex;
     justify-content: center;
+  }
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.3s ease-out forwards;
+}
+
+.slide-to-left {
+  animation: slideToLeft 0.3s ease-in forwards;
+}
+
+@media (min-width: 980px) and (max-width: 1400px) {
+  .sidenav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45); // overlay
+    z-index: 1000;
+  }
+
+  .sidenav-absolute {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: auto;
+    height: 100%;
+    z-index: 1001;
+    background-color: white;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
   }
 }

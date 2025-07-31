@@ -2,10 +2,21 @@
   <app-header></app-header>
   <section>
     <div class="dashboard-wrapper">
-      <!-- Sidenav -->
-      @if (showSidenav) {
-      <app-sidenav class="sidenav"></app-sidenav>
+      <!-- For overlay (absolute) -->
+      <div class="sidenav-overlay" *ngIf="showSidenav && isMediumScreen" (click)="toggleSidenav()">
+        <app-sidenav class="sidenav sidenav-absolute" [ngClass]="sidenavAnimationClass"
+          (click)="$event.stopPropagation()" (channelSelected)="onChannelSelected($event)"
+          (userSelected)="onUserSelected($event)">
+        </app-sidenav>
+      </div>
+
+      <!-- For large screens -->
+      @if (!isMediumScreen && showSidenav) {
+      <app-sidenav class="sidenav" [ngClass]="sidenavAnimationClass" (channelSelected)="onChannelSelected($event)"
+        (userSelected)="onUserSelected($event)">
+      </app-sidenav>
       }
+
       <!-- Main content container -->
       <div class="main-container" [class.expanded]="!showSidenav">
 

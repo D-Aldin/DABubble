@@ -34,7 +34,8 @@
 
             <ng-template #usersLoaded>
               @for (channel of channels$ | async; track channel.id) {
-              <div class="channel-item" (click)="selectChannel(channel); triggerBounce(channel.id)"
+              <div class="channel-item"
+                (click)="onChannelClick(channel.id); selectChannel(channel); triggerBounce(channel.id)"
                 [ngClass]="{'selected' : channel.id == selectedChannel && isURLChannel, 'bounce-x': bounceMap[channel.id] && isURLChannel}">
                 <b>#</b>
                 <span>{{ channel.title }}</span>
@@ -73,7 +74,8 @@
               @for (user of users$ | async; track user.uid) {
               <div class="dm-item"
                 [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
-                [routerLink]="'direct-message'" (click)="selectUser(user.name); triggerBounce(user.uid)">
+                [routerLink]="'direct-message'"
+                (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
                 <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
                 <span>
                   {{ user.name }}

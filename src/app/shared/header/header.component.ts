@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
@@ -37,14 +37,12 @@ export class HeaderComponent {
   DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
   CHANNEL_PREFIX: string = '/dashboard/channel';
   currentURL: string = '';
-  public inputSearchBar:string = "";
-
+  public inputSearchBar: string = "";
 
   constructor(
     public router: Router,
     private userAuthService: AuthService,
     private userService: UserService,
-   
   ) {
     this.handleHeaderAppearancesForRoutes();
   }
