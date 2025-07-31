@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
@@ -29,7 +29,9 @@ import { ProfileOverlayService } from '../../core/services/profile-overlay.servi
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  showSidenav = true;
+  isMediumScreen: boolean = false;
+  showSidenav = false;
+  sidenavAnimationClass: string = '';
   hovered = false;
   showAddChannelDialog = false;
   showPeopleDialog = false;
@@ -50,6 +52,12 @@ export class DashboardComponent {
   public selectedUser$ = this.overlayService.selectedUser$;
   @Output() replyToThread = new EventEmitter<string>();
 
+  @HostListener('window:resize')
+  onResize() {
+    const width = window.innerWidth;
+    this.isMediumScreen = width >= 980 && width <= 1400;
+  }
+
   constructor(
     private router: Router,
     private threadService: ThreadMessagingService,
@@ -61,6 +69,7 @@ export class DashboardComponent {
   }
 
   ngOnInit(): void {
+    this.onResize(); // initial check
     this.threadService.threadState$.subscribe((state) => {
       if (state) {
         this.selectedMessageId = state.messageId;
@@ -72,7 +81,7 @@ export class DashboardComponent {
         this.showThread = false;
       }
     });
-
+    this.toggleSidenav()
     this.checkDashboardRouting();
   }
 
@@ -102,8 +111,23 @@ export class DashboardComponent {
     this.replyToThread.emit(messageId);
   }
 
-  toggleSidenav() {
-    this.showSidenav = !this.showSidenav;
+  toggleSidenav(): void {
+    if (this.showSidenav) {
+      // Close logic
+      this.sidenavAnimationClass = this.isMediumScreen ? 'slide-to-left' : 'slide-down';
+
+      setTimeout(() => {
+        this.showSidenav = false;
+        this.sidenavAnimationClass = '';
+      }, 400); // match animation duration
+    } else {
+      // Open logic
+      this.showSidenav = true;
+
+      setTimeout(() => {
+        this.sidenavAnimationClass = this.isMediumScreen ? 'slide-in-left' : 'slide-up';
+      }, 10); // slight delay ensures DOM is painted
+    }
   }
 
   openAddChannelDialog() {
@@ -130,4 +154,23 @@ export class DashboardComponent {
     this.createdChannelName = '';
     this.showPeopleDialog = false;
   }
+
+  onChannelSelected(channelId: string): void {
+    this.closeSidenavWithAnimation();
+  }
+
+  onUserSelected(userId: string): void {
+    this.closeSidenavWithAnimation();
+  }
+  closeSidenavWithAnimation(): void {
+    if (this.isMediumScreen && this.showSidenav) {
+      this.sidenavAnimationClass = 'slide-to-left';
+
+      setTimeout(() => {
+        this.showSidenav = false;
+        this.sidenavAnimationClass = '';
+      }, 400);
+    }
+  }
+
 }

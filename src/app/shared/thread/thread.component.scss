@@ -6,7 +6,9 @@
 }
 
 .thread {
-  width: 490px;
+  width: 100%;
+  max-width: 400px;
+  min-width: 300px;
   height: calc(100vh - 140px);
   border: none;
   background-color: white;
@@ -184,8 +186,8 @@
 
     .avatar img {
       width: 70px;
-        height: 70px;
-        border-radius: 50%;
+      height: 70px;
+      border-radius: 50%;
     }
 
     .reply-body {
@@ -301,12 +303,13 @@ app-message-field {
   &:hover {
     background-color: #eceefe;
     cursor: pointer;
+
     .message {
-        background-color: #fff;
-      }
+      background-color: #fff;
+    }
   }
-  
- .message,
+
+  .message,
   .reply-body {
     // background-color: #fff;
     border-radius: 16px;
@@ -356,6 +359,7 @@ app-message-field {
     }
   }
 }
+
 .edit-message-box {
   background-color: #fff;
   border-radius: 12px;
@@ -393,6 +397,7 @@ app-message-field {
     }
   }
 }
+
 .reactions {
   display: flex;
   gap: 6px;
