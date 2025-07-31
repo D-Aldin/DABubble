@@ -6,7 +6,7 @@
           <img src="/assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
           <h1>Devspace</h1>
         </div>
-        <button [routerLink]="'/dashboard/new-message'" class="edit-btn">
+        <button (click)="onChannelClick('');" [routerLink]="'/dashboard/new-message'" class="edit-btn">
           <span class="edit-icon"></span>
         </button>
       </div>

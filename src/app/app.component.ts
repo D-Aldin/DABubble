@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 import { SuccessToastComponent } from './shared/success-toast/success-toast.component';
 
@@ -17,7 +17,21 @@ export class AppComponent implements OnInit {
   toastMessage: string = '';
   successCondition: boolean = true;
 
-  constructor(private userAuthService: AuthService, private router: Router) { }
+  constructor(
+    private userAuthService: AuthService,
+    private router: Router,
+    private renderer: Renderer2
+  ) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (event.url.includes('/dashboard')) {
+          this.renderer.removeClass(document.body, 'mobile-unlock');
+        } else {
+          this.renderer.addClass(document.body, 'mobile-unlock');
+        }
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.userAuthService.user$.subscribe((user) => {

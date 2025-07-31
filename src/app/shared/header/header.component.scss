@@ -293,11 +293,15 @@ app-search-bar {
   }
 }
 
-@media (min-width: 1000px) and (max-width: 1200px) {
+@media (min-width: 980px) and (max-width: 1200px) {
   header {
     .header-content {
       .profile-container {
         .user-name {
+          display: none;
+        }
+
+        .chevron-icon {
           display: none;
         }
       }

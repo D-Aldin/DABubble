@@ -27,6 +27,10 @@ body {
   height: 100vh;
 }
 
+body.mobile-unlock {
+  overflow: unset !important;
+}
+
 .button-style {
   cursor: pointer;
   transition: background-color 0.125s ease;
@@ -119,12 +123,6 @@ input:-internal-autofill-selected {
       color: $primary-button-color;
       border: 1px solid $primary-color;
     }
-  }
-}
-
-@media (max-width: 1400px) {
-  body {
-    overflow: unset !important;
   }
 }
 

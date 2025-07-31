@@ -162,6 +162,7 @@ export class DashboardComponent {
   onUserSelected(userId: string): void {
     this.closeSidenavWithAnimation();
   }
+  
   closeSidenavWithAnimation(): void {
     if (this.isMediumScreen && this.showSidenav) {
       this.sidenavAnimationClass = 'slide-to-left';
