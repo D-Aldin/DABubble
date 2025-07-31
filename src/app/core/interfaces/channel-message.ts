@@ -9,4 +9,5 @@ export interface ChannelMessage {
   threadId?: string;
   replyCount?: number;
   lastReplyTimestamp?: Timestamp | Date;
+  channelId: string;
 }

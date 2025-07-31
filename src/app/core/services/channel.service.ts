@@ -106,6 +106,7 @@ export class ChannelService {
       senderId,
       text,
       timestamp: serverTimestamp(),
+      channelId: channelId,
     });
   }
 
