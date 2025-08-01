@@ -25,6 +25,7 @@ export class SearchBarComponent implements AfterViewInit{
   directMessages: DirectMessage[] = [];
   currentUserId: string | undefined;
   @ViewChild('#scrollContainer') scrollContainer!: ElementRef;
+  isActive = false;
 
   ngAfterViewInit(): void {
     
@@ -60,12 +61,24 @@ export class SearchBarComponent implements AfterViewInit{
 
   openDirectChat(userId:string) {
     this.router.navigate(['/dashboard/direct-message', userId]);
+    this.isActive = true;
+    this.searchTerm = ""
+
+     if(this.searchTerm.length == 0) {
+    this.isActive = false
+  }
   }
 
   openChannelMessage(channelId?: string, messageId?: string) {
   this.router.navigate(['/dashboard/channel', channelId], {
     queryParams: { highlight: messageId }
   });
+  this.isActive = true;
+  this.searchTerm = "";
+
+  if(this.searchTerm.length == 0) {
+    this.isActive = false
+  }
   
 }
 

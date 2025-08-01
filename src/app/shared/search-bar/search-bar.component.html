@@ -6,10 +6,11 @@
    placeholder="Search users, channels or messages..."
    />
 
-   @if (searchTerm.trim()) {
+   @if (searchTerm.length > 0 && isActive == false) {
+      
    <div class="results">
    
-      @if (users.length > 0) {
+      @if (users.length > 0 ) {
          <h3>👤 Users</h3>
          <div class="link-list">
             @for (user of users; track user) {
