@@ -21,6 +21,7 @@ import { Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms'; import { Firestore, collection, collectionData, query, orderBy } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { ReactionService } from '../../core/services/reaction.service';
+import { ChatUser } from '../../core/interfaces/chat-user';
 
 
 interface CurrentUserId {
@@ -70,7 +71,8 @@ export class DirectMessageComponent
   currentUserId: string = '';
   replyCount: number = 0;
   lastReplyTimestamp: Timestamp | Date | null = null;
-
+  usersMap: { [userId: string]: ChatUser } = {};
+  directMessages: Message[] = [];
 
   constructor(
     private sharedService: SharedService,
@@ -89,27 +91,46 @@ export class DirectMessageComponent
   ) { }
 
   ngOnInit() {
-    this.loadCurrentUserId();
-    this.route.paramMap.subscribe(async (params) => {
-      const selectedUid = params.get('uid');
+  this.loadCurrentUserId();
 
-      if (this.currentUser?.userId && selectedUid) {
-        this.areMessagesLoaded = false; // 🔁 show spinner
-        const userDoc = await this.userService.getUserDocument(selectedUid);
+  this.route.paramMap.subscribe(async (params) => {
+    const selectedUid = params.get('uid');
 
-        if (userDoc) {
-          this.selectedUser = {
-            uid: selectedUid,
-            ...userDoc,
-          };
+    if (this.currentUser?.userId && selectedUid) {
+      this.areMessagesLoaded = false;
 
-          await this.createConversation(this.currentUser.userId, selectedUid);
-          this.areMessagesLoaded = true; // ✅ spinner off when done
+      const userDoc = await this.userService.getUserDocument(selectedUid);
+      if (userDoc) {
+        this.selectedUser = {
+          uid: selectedUid,
+          ...userDoc,
+        };
+
+        await this.createConversation(this.currentUser.userId, selectedUid);
+
+        this.messagingService.getMessages(this.conversation)
+        .subscribe((messages: Message[]) => {
+          this.directMessages = messages;
+
+          const userIds = new Set<string>();
+          this.directMessages.forEach((m: Message) => {
+            if (m.reactions) {
+              Object.keys(m.reactions).forEach(uid => userIds.add(uid));
+            }
+          });
+
+          if (userIds.size > 0) {
+            this.loadUserProfiles(Array.from(userIds));
+          }
+
+          this.areMessagesLoaded = true;
           this.cdr.detectChanges();
-        }
+        });
       }
-    });
-  }
+    }
+  });
+}
+
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
     if (!timestamp) return '';
@@ -120,14 +141,6 @@ export class DirectMessageComponent
     }).format(date);
   }
 
-
-  groupReactions(reactions: { [userId: string]: string }): { [emoji: string]: number } {
-    const counts: { [emoji: string]: number } = {};
-    Object.values(reactions).forEach((emoji) => {
-      counts[emoji] = (counts[emoji] || 0) + 1;
-    });
-    return counts;
-  }
 
   objectKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];
@@ -191,17 +204,45 @@ async saveEditedMessage(msgId: string) {
   }
 
 
-async reactToMessage(messageId: string, emoji: string) {
-  if (!this.currentUser?.userId || !this.conversation) return;
+  async reactToMessage(messageId: string, emoji: string) {
+    if (!this.currentUser?.userId || !this.conversation) return;
 
-  await this.messagingService.toggleReaction(
-    this.conversation,
-    messageId,
-    emoji,
-    this.currentUser.userId
-  );
-  this.showEmojiPickerFor = null;
-}
+    await this.messagingService.toggleReaction(
+      this.conversation,
+      messageId,
+      emoji,
+      this.currentUser.userId
+    );
+    this.showEmojiPickerFor = null;
+  }
+
+  getReactionGroups(reactions: { [userId: string]: string }) {
+    const groups: { [emoji: string]: string[] } = {};
+    for (const [userId, emoji] of Object.entries(reactions)) {
+      if (!groups[emoji]) groups[emoji] = [];
+      groups[emoji].push(userId);
+    }
+    return groups;
+  }
+
+  getUserNames(userIds: string[]): string {
+    return userIds.map(id => this.usersMap[id]?.name || 'Unbekannt').join(', ');
+  }
+
+  getReactionTooltip(emoji: string, userIds: string[]): string {
+    const names = userIds.map(id => this.usersMap[id]?.name || 'Unbekannt');
+    return `${emoji} ${names.join(', ')} hat reagiert`;
+  }
+
+  loadUserProfiles(userIds: string[]) {
+    this.userService.getUsersByIds(userIds).subscribe(users => {
+      users.forEach(user => {
+        this.usersMap[user.uid] = user;
+      });
+    });
+  }
+
+
 
   /** called once view is created; useful for initial deep‑link load */
   ngAfterViewInit(): void {

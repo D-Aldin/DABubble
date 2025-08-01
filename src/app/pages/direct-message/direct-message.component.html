@@ -63,18 +63,22 @@
                 >
                 </app-chat-box>
 
-                <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount" [ngClass]="{'me': item.messageFrom === currentUserId}">
+                <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount" [ngClass]="{'me': item.    messageFrom === currentUserId}">
                   <div class="reply-info">
                     <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
                       {{ item.replyCount || 0 }} Antwort{{ (item.replyCount || 0) > 1 ? 'en' : '' }}
                     </a>
 
                     <ng-container *ngIf="item.reactions && objectKeys(item.reactions).length > 0">
-                      <span class="reaction" *ngFor="let emoji of objectKeys(groupReactions(item.reactions))">
-                        {{ emoji }} {{ groupReactions(item.reactions)[emoji] }}
-                      </span>
+                      <div class="reaction-group" *ngFor="let emoji of objectKeys(getReactionGroups(item.reactions))">
+                        <div class="reaction" >
+                           {{ emoji }} {{ getReactionGroups(item.reactions)[emoji].length }}
+                           <div class="tooltip">
+                              {{ getReactionTooltip(emoji, getReactionGroups(item.reactions)[emoji]) }}
+                           </div>
+                        </div>
+                     </div>
                     </ng-container>
-
                      <!-- Only show timestamp if at least 1 reply -->
                      @if ((item.replyCount ?? 0) > 0 && item.lastReplyTimestamp) {
                         <span class="last-reply-time">

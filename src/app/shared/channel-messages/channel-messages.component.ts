@@ -74,6 +74,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollContainer', { static: false })
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
+  groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
 
   constructor(
     private channelService: ChannelService,
@@ -134,6 +135,27 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     if (!this.currentUserId || !this.channelId) return;
     this.reactionService.toggleReaction('channel', this.channelId, messageId, emoji, this.currentUserId);
   }
+
+  getReactionGroups(reactions: { [userId: string]: string }) {
+    const groups: { [emoji: string]: string[] } = {};
+    for (const [userId, emoji] of Object.entries(reactions)) {
+      if (!groups[emoji]) groups[emoji] = [];
+      groups[emoji].push(userId);
+    }
+    return groups;
+  }
+
+  getUserNames(userIds: string[]): string {
+    return userIds
+      .map((id) => this.usersMap[id]?.name || 'Unbekannt')
+      .join(', ');
+  }
+
+  getReactionTooltip(emoji: string, userIds: string[]): string {
+    const names = userIds.map(id => this.usersMap[id]?.name || 'Unbekannt');
+    return `${emoji} ${names.join(', ')} hat reagiert`;
+  }
+
 
 
   getLastReplyTime(messages: ChannelMessage[]): Date | null {
