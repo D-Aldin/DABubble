@@ -215,7 +215,7 @@
     border-color: #3c3cf0;
   }
 
-   &.error {
+  &.error {
     border-color: $error-msg-color;
   }
 }
@@ -297,5 +297,17 @@
 
   span {
     display: block;
+  }
+}
+
+@media (max-width: 580px) {
+  .profile-card {
+    width: 90%;
+  }
+
+  .email-link {
+    display: flex;
+    width: 90%;
+    overflow-x: auto;
   }
 }

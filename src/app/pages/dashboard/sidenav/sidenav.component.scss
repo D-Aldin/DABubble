@@ -286,3 +286,20 @@
 .bounce-x {
   animation: bounceX 250ms ease-out;
 }
+
+app-search-bar {
+  display: none;
+}
+
+@media (max-width: 979px) {
+  app-search-bar {
+    display: flex;
+    border: 1px solid black;
+    border-radius: 36px;
+  }
+
+  .container {
+    border-radius: 0px;
+    min-height: calc(100vh - 130px);
+  }
+}

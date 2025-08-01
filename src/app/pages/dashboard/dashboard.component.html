@@ -12,13 +12,13 @@
 
       <!-- For large screens -->
       @if (!isMediumScreen && showSidenav) {
-      <app-sidenav class="sidenav" [ngClass]="sidenavAnimationClass" (channelSelected)="onChannelSelected($event)"
-        (userSelected)="onUserSelected($event)">
+      <app-sidenav class="sidenav" (channelSelected)="onChannelSelected($event)"
+        (userSelected)="onUserSelected($event)" [ngClass]="{'active': currentView === 'sidenav', sidenavAnimationClass}">
       </app-sidenav>
       }
 
       <!-- Main content container -->
-      <div class="main-container" [class.expanded]="!showSidenav">
+      <div class="main-container" [class.expanded]="!showSidenav" [ngClass]="{'active': currentView === 'main'}">
 
         <!-- Toggle Button  -->
         <button class="sidenav-toggle-btn" (click)="toggleSidenav()" (mouseenter)="hovered = true"
@@ -51,7 +51,7 @@
       </div>
       @if (showThread) {
       <app-thread class="thread-container" [channelId]="selectedChannelId" [messageId]="selectedMessageId"
-        (closeThread)="onCloseThread()">
+        (closeThread)="onCloseThread()" [ngClass]="{'active': currentView === 'thread'}">
       </app-thread>
       }
     </div>

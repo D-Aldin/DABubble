@@ -260,3 +260,16 @@
     }
   }
 }
+
+@media (max-width: 580px) {
+  .avatar {
+    img {
+      width: 50px;
+      height: auto;
+    }
+  }
+
+  .thread-message {
+    grid-template-columns: 60px min-content auto;
+  }
+}
