@@ -95,7 +95,7 @@
                   <button (click)="openThread(item.id)">
                     <img src="/assets/images/sidenav-img/comment.svg" alt="">
                   </button>
-                  <button (click)="startEditing(item)">
+                  <button  *ngIf="item.messageFrom === currentUserId" (click)="startEditing(item)">
                     <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachricht bearbeiten">
                   </button>
                 </div>

@@ -254,6 +254,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   startEditing(msg: ChannelMessage) {
+    if (msg.senderId !== this.currentUserId) return; //only logged-in user can edit his message
     this.editingMessageId = msg.id!;
     this.editedMessageText = msg.text;
     this.showEmojiPickerFor = null;

@@ -159,12 +159,13 @@ openThread(messageId: string) {
   this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
 }
 
-startEditing(msg: Message) {
-  this.editingMessageId = msg.id!;
-  this.editedMessageText = msg.message;
-  this.showEmojiPickerFor = null;
-  this.hoveredMessageId = null;
-}
+  startEditing(msg: Message) {
+    if (msg.messageFrom !== this.currentUserId) return;//only logged-in user can edit his message
+    this.editingMessageId = msg.id!;
+    this.editedMessageText = msg.message;
+    this.showEmojiPickerFor = null;
+    this.hoveredMessageId = null;
+  }
 
 cancelEditing() {
   this.editingMessageId = null;
