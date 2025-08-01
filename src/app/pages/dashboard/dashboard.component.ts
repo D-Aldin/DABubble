@@ -86,6 +86,8 @@ export class DashboardComponent {
   }
 
   checkDashboardRouting() {
+    let lastBase = '';
+
     this.router.events
       .pipe(
         filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
@@ -93,6 +95,12 @@ export class DashboardComponent {
       .subscribe((event) => {
         this.currentUrl = event.urlAfterRedirects;
         this.isIntroSectionVisible = this.currentUrl === '/dashboard';
+        const baseRoute = this.currentUrl.split('/')[2] || '';
+
+        if (baseRoute !== lastBase) {
+          this.threadService.closeThread();
+        }
+        lastBase = baseRoute;
       });
   }
 
