@@ -155,3 +155,13 @@ input:-internal-autofill-selected {
     font-size: 12px;
   }
 }
+
+.highlight {
+  background-color: rgba(228, 228, 203, 0.548);
+  animation: flash 1s ease-in-out;
+}
+
+@keyframes flash {
+  0%   { background-color: rgba(228, 228, 203, 0.548); }
+  100% { background-color: transparent; }
+}

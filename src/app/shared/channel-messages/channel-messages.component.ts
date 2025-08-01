@@ -86,7 +86,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private overlayService: ProfileOverlayService,
     private threadService: ThreadMessagingService,
-  ) { }
+    private el: ElementRef
+  ) { 
+    this.handleHighlightScroll();
+  }
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
@@ -349,4 +352,27 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
+  handleHighlightScroll(): void {
+  this.route.queryParams.subscribe(params => {
+    const highlightId = params['highlight'];
+    if (highlightId) {
+      setTimeout(() => {
+        const target = this.el.nativeElement.querySelector(`#message-${highlightId}`);
+        const scrollContainer = this.el.nativeElement.querySelector(".message-wrapper")
+        
+        
+        
+     if (target && scrollContainer) {
+      const extraOffset = 80
+  const topOffset = target.offsetTop;
+  scrollContainer.scrollTo({ top: topOffset - extraOffset, behavior: 'smooth' });
+
+  target.classList.add('highlight');
+  setTimeout(() => target.classList.remove('highlight'), 3000);
+}
+      }, 100);
+    }
+  });
+}
 }
