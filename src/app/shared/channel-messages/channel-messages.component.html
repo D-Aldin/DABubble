@@ -65,8 +65,8 @@
     <div class="message-toolbar" 
      [ngClass]="{'me': msg.senderId !== currentUserId, 'other': msg.senderId !== currentUserId}">
 
-      <span>✅</span>
-      <span>👍</span>
+      <button (click)="reactToChannelMessage(msg.id!, '✅')">✅</button>
+      <button (click)="reactToChannelMessage(msg.id!, '👍')">👍</button>
       <button (click)="toggleEmojiPicker(msg.id!)">
         <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
       </button>

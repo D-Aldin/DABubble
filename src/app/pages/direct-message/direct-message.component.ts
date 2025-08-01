@@ -20,6 +20,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms'; import { Firestore, collection, collectionData, query, orderBy } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { ReactionService } from '../../core/services/reaction.service';
 
 
 interface CurrentUserId {
@@ -83,7 +84,8 @@ export class DirectMessageComponent
     private openCardService: OpenProfileCardService,
     private threadService: ThreadMessagingService,
     private router: Router,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private reactionService: ReactionService
   ) { }
 
   ngOnInit() {
@@ -180,7 +182,14 @@ async saveEditedMessage(msgId: string) {
   if (!msgId || !this.editedMessageText.trim()) return;
   await this.messagingService.updateDirectMessage(this.conversation, msgId, this.editedMessageText.trim());
   this.cancelEditing();
-}
+  }
+  
+  reactToDirectMessage(messageId: string, emoji: string) {
+    if (!this.currentUserId || !this.conversation) return;
+    if (!this.currentUser?.userId) return;
+    this.reactionService.toggleReaction('dm', this.conversation, messageId, emoji, this.currentUser?.userId);
+  }
+
 
 async reactToMessage(messageId: string, emoji: string) {
   if (!this.currentUser?.userId || !this.conversation) return;

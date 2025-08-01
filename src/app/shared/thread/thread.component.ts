@@ -101,8 +101,6 @@ export class ThreadComponent {
           senderId: data['senderId'] || data['messageFrom'],
           text: data['text'] || data['message'] || ''
         };
-        console.log('📦 Parent data snapshot:', data);
-
         this.loadUserProfilesForThread(); // Always call, even if no replies yet
       }
     });
