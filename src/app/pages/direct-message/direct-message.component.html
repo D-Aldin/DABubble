@@ -87,15 +87,15 @@
 
                 <div class="message-toolbar" *ngIf="hoveredMessageId === item.id"
                   [ngClass]="{'me': item.messageFrom !== currentUser?.userId, 'other': item.messageFrom !== currentUser?.userId}">
-                  <button (click)="reactToMessage(item.id, '👍')">👍</button>
-                  <button (click)="reactToMessage(item.id, '✅')">✅</button>
+                  <button (click)="reactToDirectMessage(item.id, '👍')">👍</button>
+                  <button (click)="reactToDirectMessage(item.id, '✅')">✅</button>
                   <button (click)="toggleEmojiPicker(item.id)">
                     <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
                   </button>
                   <button (click)="openThread(item.id)">
                     <img src="/assets/images/sidenav-img/comment.svg" alt="">
                   </button>
-                  <button (click)="startEditing(item)">
+                  <button  *ngIf="item.messageFrom === currentUserId" (click)="startEditing(item)">
                     <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachricht bearbeiten">
                   </button>
                 </div>

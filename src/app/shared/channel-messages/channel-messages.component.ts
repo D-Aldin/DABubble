@@ -31,6 +31,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { Timestamp } from 'firebase/firestore';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
+import { ReactionService } from '../../core/services/reaction.service';
 
 @Component({
   selector: 'app-channel-messages',
@@ -86,6 +87,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private overlayService: ProfileOverlayService,
     private threadService: ThreadMessagingService,
+    private reactionService: ReactionService
   ) { }
 
   ngOnInit(): void {
@@ -127,6 +129,12 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
     this.getObserveableProfileCardData();
   }
+
+  reactToChannelMessage(messageId: string, emoji: string) {
+    if (!this.currentUserId || !this.channelId) return;
+    this.reactionService.toggleReaction('channel', this.channelId, messageId, emoji, this.currentUserId);
+  }
+
 
   getLastReplyTime(messages: ChannelMessage[]): Date | null {
   const timestamps = messages
@@ -254,6 +262,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   startEditing(msg: ChannelMessage) {
+    if (msg.senderId !== this.currentUserId) return; //only logged-in user can edit his message
     this.editingMessageId = msg.id!;
     this.editedMessageText = msg.text;
     this.showEmojiPickerFor = null;

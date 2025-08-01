@@ -65,15 +65,15 @@
     <div class="message-toolbar" 
      [ngClass]="{'me': msg.senderId !== currentUserId, 'other': msg.senderId !== currentUserId}">
 
-      <span>✅</span>
-      <span>👍</span>
+      <button (click)="reactToChannelMessage(msg.id!, '✅')">✅</button>
+      <button (click)="reactToChannelMessage(msg.id!, '👍')">👍</button>
       <button (click)="toggleEmojiPicker(msg.id!)">
         <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
       </button>
       <button (click)="openThread(msg.id!)">
         <img src="/assets/images/sidenav-img/comment.svg" alt="">
       </button>
-      <button (click)="startEditing(msg)">
+      <button *ngIf="msg.senderId === currentUserId" (click)="startEditing(msg)">
         <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachrich bearbeiten">
       </button>
     </div>
