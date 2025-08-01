@@ -2,7 +2,14 @@
   <div class="headline">
     <div class="headline-content">
       <h2>Thread</h2>
-      <h3>#{{ channelName }}</h3>
+      <h3 class="thread-header">
+          @if (threadType === 'channel') {
+            #{{ channelName }}
+          } @else {
+            <img [src]="getAvatarPath(parentMessage?.senderId)" class="avatar-small" />
+            <span>{{ getUserName(parentMessage?.senderId) }}</span>
+          }
+        </h3>
     </div>
     <button class="close" (click)="close($event)"></button>
   </div>

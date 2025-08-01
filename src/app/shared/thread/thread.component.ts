@@ -92,15 +92,20 @@ export class ThreadComponent {
     `directMessages/${conversationId}/messages/${messageId}`
   );
 
-  getDoc(parentRef).then(snap => {
+    getDoc(parentRef).then(snap => {
       if (snap.exists()) {
-          this.parentMessage = { id: snap.id, ...snap.data() };
+        const data = snap.data();
+        this.parentMessage = {
+          id: snap.id,
+          ...data,
+          senderId: data['senderId'] || data['messageFrom'],
+          text: data['text'] || data['message'] || ''
+        };
+        console.log('📦 Parent data snapshot:', data);
 
-          if (this.replies.length > 0) {
-            this.loadUserProfilesForThread();
-          }
-        }
-      });
+        this.loadUserProfilesForThread(); // Always call, even if no replies yet
+      }
+    });
   }
   
   async sendDirectThreadMessage(text: string) {
@@ -226,8 +231,6 @@ export class ThreadComponent {
     }
   }
 
-
-
   loadChannelUsers(channelId: string) {
     const channelRef = doc(this.firestore, `channels/${channelId}`);
     getDoc(channelRef).then(async (snap) => {
@@ -277,12 +280,13 @@ loadParentMessage(channelId: string, messageId: string) {
   const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
   getDoc(parentRef).then(snap => {
     if (snap.exists()) {
-      this.parentMessage = snap.data();
-
-      // Wait until replies are also loaded
-      if (this.replies.length > 0) {
-        this.loadUserProfilesForThread();
-      }
+      const data = snap.data();
+      this.parentMessage = {
+        id: snap.id,
+        ...data,
+        senderId: data['senderId'] || data['messageFrom']
+      };
+      this.loadUserProfilesForThread();
     }
   });
 }
@@ -295,8 +299,13 @@ loadUserProfilesForThread() {
 
   this.loadUserProfiles(Array.from(userIds));
 }
-
-
+  
+getOtherParticipantId(): string {
+  if (!this.parentMessage || !this.currentUserId) return '';
+  return this.parentMessage.senderId === this.currentUserId
+    ? this.replies.find(r => r.senderId !== this.currentUserId)?.senderId || ''
+    : this.parentMessage.senderId;
+}
   getUserName(userId: string): string {
     return this.userMap[userId]?.name ?? 'Unbekannt';
   }
@@ -304,7 +313,6 @@ loadUserProfilesForThread() {
   getAvatarPath(userId: string): string {
     return this.userMap[userId]?.avatarPath ?? 'assets/images/profile-images/head-1.png';
   }
-
 
   loadUserProfiles(userIds: string[]) {
     // console.log('Loading user IDs for thread:', userIds);
@@ -315,7 +323,6 @@ loadUserProfilesForThread() {
         avatarPath: user.avatarPath || 'assets/images/default-avatar.png'
       };
     });
-      //  console.log('userMap after population:', this.userMap);
       this.cdr.detectChanges(); //to force Angular to re-render after users are loaded.
   });
 }
@@ -333,16 +340,12 @@ async sendThreadMessage(text: string) {
     console.warn('Missing thread context');
     return;
   }
-
   const { channelId, messageId, threadType } = thread;
-
   const basePath =
     threadType === 'channel'
       ? `channels/${channelId}/messages/${messageId}/threads`
       : `directMessages/${channelId}/messages/${messageId}/threads`;
-
   const threadCollection = collection(this.firestore, basePath);
-
   try {
     await addDoc(threadCollection, {
       text: text.trim(),
@@ -355,19 +358,16 @@ async sendThreadMessage(text: string) {
     } else {
       await this.directMessagingService.updateParentMessageThreadInfo(channelId, messageId);
     }
-
-    console.log('✅ Thread reply saved:', text);
-  } catch (error) {
-    console.error('❌ Error saving thread reply:', error);
+    console.log('Thread reply saved:', text);
+    } catch (error) {
+      console.error('❌ Error saving thread reply:', error);
+    }
   }
-}
 
 
-getCurrentThread(): ThreadState | null {
-  return this.threadService.getCurrentThread();
-}
-
-
+  getCurrentThread(): ThreadState | null {
+    return this.threadService.getCurrentThread();
+  }
 
   close(event: Event) {
     this.closeThread.emit();

@@ -134,6 +134,7 @@ export class DirectMessagingService {
       messageFrom: from,
       messageTo: to,
       message: message,
+      senderId: from,
       tags: tags,
       timestamp: serverTimestamp(),
     });
