@@ -62,4 +62,16 @@ export class SearchBarComponent {
   openDirectChat(userId:string) {
     this.router.navigate(['/dashboard/direct-message', userId]);
   }
+
+  openChannelMessage(channelId?: string, messageId?: string) {
+  this.router.navigate(['/dashboard/channel', channelId], {
+    // queryParams: { highlight: messageId }
+  });
+}
+
+openDirectMessage(otherUserId: string, messageId: string) {
+  this.router.navigate(['/dashboard/direct-message', otherUserId], {
+    queryParams: { highlight: messageId }
+  });
+}
 }

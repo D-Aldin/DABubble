@@ -22,7 +22,7 @@
          <h3>💬 Channel Messages</h3>
          <div class="link-list">
             @for (msg of channelMessages; track msg) {
-               <a >{{msg.text}}</a>
+               <a (click)="openChannelMessage(msg.channelId, msg.id)" >{{msg.text}}</a>
                
             }
          </div>

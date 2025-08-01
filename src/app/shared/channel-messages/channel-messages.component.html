@@ -4,7 +4,7 @@
   <app-timestamp-line [date]="handlingDateTime(group.date)" />
 
   @for (msg of group.messages; track msg.id) {
-  <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null">
+  <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null" [id]="'message-' + msg.id">
 
     <!-- EDITING MODE -->
     @if (editingMessageId === msg.id) {
