@@ -355,3 +355,78 @@ app-thread {
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
   }
 }
+
+@media (max-width: 979px) {
+  .dashboard-wrapper {
+    max-height: calc(100vh - 130px);
+    border-radius: 0px;
+  }
+
+  app-direct-message {
+    height: 100%;
+  }
+
+  app-sidenav {
+    ::ng-deep .container {
+      width: 100%;
+
+      .heading {
+        display: none !important;
+      }
+
+      .section {
+        .section-body {
+          .channel-item {
+            width: 100% !important;
+          }
+
+          .dm-item {
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+
+  app-thread {
+    width: 100%;
+    padding-left: 1rem;
+
+    ::ng-deep .thread {
+      max-width: unset;
+    }
+  }
+
+  .sidenav,
+  .main-container,
+  .thread-container {
+    display: none !important;
+    width: 100% !important;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .sidenav.active,
+  .main-container.active,
+  .thread-container.active {
+    display: flex !important; // or block, depending on your layout
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+    height: 100%;
+  }
+
+  // Optional: hide dashboard-intro on small screens if needed
+  // app-dashboard-intro {
+  //   display: none;
+  // }
+
+  // Hide the sidenav-toggle button unless in 'main' view
+  // .sidenav-toggle-btn {
+  //   display: none;
+  // }
+
+  .main-container.active .sidenav-toggle-btn {
+    display: flex; // or inline-flex depending on your style
+  }
+}

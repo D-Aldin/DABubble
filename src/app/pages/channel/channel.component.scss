@@ -520,3 +520,28 @@ h3 {
         }
     }
 }
+
+@media (max-width: 979px) {
+    .channel-popup {
+        width: 92%;
+    }
+
+    .main-content-channel {
+        height: calc(100vh - 130px);
+        border-radius: 0px;
+    }
+}
+
+@media (max-width: 580px) {
+    .channel-users {
+        .user-avatars {
+            display: none;
+        }
+    }
+}
+
+@media (max-width: 470px) {
+    .members-popup {
+        width: auto !important;
+    }
+}

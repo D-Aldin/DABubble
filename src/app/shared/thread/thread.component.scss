@@ -423,3 +423,28 @@ app-message-field {
     }
   }
 }
+
+@media (max-width: 979px) {
+  .thread {
+    border-radius: 0px;
+    min-height: calc(100vh - 130px);
+  }
+}
+
+@media (max-width: 580px) {
+  .avatar {
+    img {
+      width: 50px;
+      height: auto;
+    }
+  }
+
+  .answer-wrapper {
+    .avatar {
+      img {
+        width: 50px;
+        height: auto;
+      }
+    }
+  }
+}

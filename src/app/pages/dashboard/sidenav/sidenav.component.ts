@@ -14,11 +14,12 @@ import { ProfileCardComponent } from "../../../shared/profile-card/profile-card.
 import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { map } from 'rxjs/operators';
+import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
 
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule, RouterModule, SpinnerComponent],
+  imports: [CommonModule, RouterModule, SpinnerComponent, SearchBarComponent],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
 })

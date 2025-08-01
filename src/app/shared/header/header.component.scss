@@ -293,7 +293,7 @@ app-search-bar {
   }
 }
 
-@media (min-width: 980px) and (max-width: 1200px) {
+@media (max-width: 1200px) {
   header {
     .header-content {
       .profile-container {
@@ -306,5 +306,11 @@ app-search-bar {
         }
       }
     }
+  }
+}
+
+@media (max-width: 979px) {
+  app-search-bar {
+    display: none;
   }
 }

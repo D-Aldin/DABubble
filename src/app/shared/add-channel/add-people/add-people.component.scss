@@ -168,6 +168,10 @@
       }
     }
   }
+}
 
-
+@media (max-width: 580px) {
+  .people-dialog {
+    width: 80vw;
+  }
 }

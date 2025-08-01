@@ -42,6 +42,7 @@ export class DashboardComponent {
   currentUrl: string = '';
   showAddUserToChannelPopup = false;
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
+  currentView: 'sidenav' | 'main' | 'thread' = 'main'; // default to main view
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
   showThread = false;
@@ -70,18 +71,30 @@ export class DashboardComponent {
 
   ngOnInit(): void {
     this.onResize(); // initial check
+
     this.threadService.threadState$.subscribe((state) => {
       if (state) {
         this.selectedMessageId = state.messageId;
         this.selectedChannelId = state.channelId;
         this.showThread = true;
+
+        // Auto-switch view for mobile
+        if (window.innerWidth <= 979) {
+          this.currentView = 'thread';
+        }
       } else {
         this.selectedMessageId = '';
         this.selectedChannelId = '';
         this.showThread = false;
+
+        // Auto-switch back to main if thread closes on mobile
+        if (window.innerWidth <= 979) {
+          this.currentView = 'main';
+        }
       }
     });
-    this.toggleSidenav()
+
+    this.toggleSidenav(); // show/hide depending on screen size
     this.checkDashboardRouting();
   }
 
@@ -101,10 +114,18 @@ export class DashboardComponent {
     this.selectedChannelId = channelId;
     this.selectedMessageId = messageId;
     this.showThread = true;
+
+    if (window.innerWidth <= 979) {
+      this.currentView = 'thread';
+    }
   }
 
   onCloseThread() {
-    this.threadService.closeThread();
+    this.threadService.closeThread(); // also sets showThread = false via observable
+
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
   }
 
   onReplyToMessage(messageId: string) {
@@ -113,20 +134,26 @@ export class DashboardComponent {
 
   toggleSidenav(): void {
     if (this.showSidenav) {
-      // Close logic
       this.sidenavAnimationClass = this.isMediumScreen ? 'slide-to-left' : 'slide-down';
 
       setTimeout(() => {
         this.showSidenav = false;
         this.sidenavAnimationClass = '';
-      }, 400); // match animation duration
+
+        if (window.innerWidth <= 979) {
+          this.currentView = 'main'; // return to main when sidenav closes
+        }
+      }, 400);
     } else {
-      // Open logic
       this.showSidenav = true;
+
+      if (window.innerWidth <= 979) {
+        this.currentView = 'sidenav';
+      }
 
       setTimeout(() => {
         this.sidenavAnimationClass = this.isMediumScreen ? 'slide-in-left' : 'slide-up';
-      }, 10); // slight delay ensures DOM is painted
+      }, 10);
     }
   }
 
@@ -156,13 +183,23 @@ export class DashboardComponent {
   }
 
   onChannelSelected(channelId: string): void {
+    this.selectedChannelId = channelId;
+
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
+
     this.closeSidenavWithAnimation();
   }
 
   onUserSelected(userId: string): void {
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
+
     this.closeSidenavWithAnimation();
   }
-  
+
   closeSidenavWithAnimation(): void {
     if (this.isMediumScreen && this.showSidenav) {
       this.sidenavAnimationClass = 'slide-to-left';
@@ -172,6 +209,18 @@ export class DashboardComponent {
         this.sidenavAnimationClass = '';
       }, 400);
     }
+  }
+
+  showResponsiveSidenav() {
+    this.currentView = 'sidenav';
+  }
+
+  showResponsiveMainContainer() {
+    this.currentView = 'main';
+  }
+
+  showResponsiveThread() {
+    this.currentView = 'thread';
   }
 
 }

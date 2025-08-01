@@ -141,3 +141,56 @@
         transform: scale(1) rotate(0);
     }
 }
+
+
+@media (max-width: 979px) {
+    .main-content {
+        border-radius: 0px;
+        height: calc(100vh - 130px);
+
+        .intro-wrapper {
+            border-radius: 0;
+            height: 100%;
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .intro-wrapper h1 {
+        font-size: 1.8rem; // ↓ from 2.4rem
+    }
+
+    .intro-wrapper h2 {
+        font-size: 1.2rem; // ↓ from 1.5rem
+    }
+
+    .intro-wrapper p {
+        font-size: 1rem; // ↓ from 1.3rem
+    }
+
+    .tech-item {
+        font-size: 0.95rem; // ↓ from 1.1rem
+    }
+
+    .tech-item .ts-img {
+        width: 52px; // ↓ from 66px
+    }
+
+    .tech-item .fb-img {
+        width: 38px; // ↓ from 48px
+    }
+
+    .tech-item .ang-img {
+        width: 48px; // ↓ from 60px
+    }
+
+    .intro-wrapper {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .tech-icons {
+        gap: 20px;
+        margin-top: 16px;
+    }
+}
