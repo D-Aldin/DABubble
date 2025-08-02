@@ -1,4 +1,4 @@
-import { Component, signal, computed, effect } from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService} from '../../core/services/search.service';
@@ -6,8 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { DirectMessage } from '../../core/interfaces/direct-message';
 import { ChatUser } from '../../core/interfaces/chat-user';
-import { user } from '@angular/fire/auth';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 
 @Component({
@@ -40,7 +39,7 @@ export class SearchBarComponent {
 
     this.searchService.searchUsers(term).subscribe(results => {
       this.users = results;
-      console.log(results);
+      
       
       
     });
@@ -48,14 +47,14 @@ export class SearchBarComponent {
 
     this.searchService.searchChannelMessages(term).subscribe(results => {
       this.channelMessages = results;
-      console.log(results);
+      
       
     });
 
 
     this.searchService.searchMyDirectMessages(term, this.currentUserId).subscribe(results => {
       this.directMessages = results;
-      console.log(results);
+     
       
     });
   }
