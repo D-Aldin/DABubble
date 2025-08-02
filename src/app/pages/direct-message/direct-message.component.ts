@@ -20,6 +20,8 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms'; import { Firestore, collection, collectionData, query, orderBy } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { SearchService } from '../../core/services/search.service';
+
 
 
 interface CurrentUserId {
@@ -83,7 +85,9 @@ export class DirectMessageComponent
     private openCardService: OpenProfileCardService,
     private threadService: ThreadMessagingService,
     private router: Router,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private searchService: SearchService,
+    private el: ElementRef<HTMLElement>
   ) { }
 
   ngOnInit() {
@@ -108,6 +112,7 @@ export class DirectMessageComponent
       }
     });
   }
+
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
     if (!timestamp) return '';
@@ -198,6 +203,7 @@ async reactToMessage(messageId: string, emoji: string) {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       this.scrollToBottom();
     });
+    this.searchService.handleHighlightScroll("message", this.el, this.route)
   }
 
   ngOnDestroy() {

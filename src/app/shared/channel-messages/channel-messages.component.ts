@@ -75,9 +75,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollContainer', { static: false })
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
-
-  // private searchService = inject(SearchService)
-
+  
   constructor(
     private channelService: ChannelService,
     private userService: UserService,
