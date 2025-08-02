@@ -6,10 +6,11 @@
    placeholder="Search users, channels or messages..."
    />
 
-   @if (searchTerm.trim()) {
+   @if (searchTerm.length > 0 && isActive == false) {
+      
    <div class="results">
    
-      @if (users.length > 0) {
+      @if (users.length > 0 ) {
          <h3>👤 Users</h3>
          <div class="link-list">
             @for (user of users; track user) {
@@ -22,7 +23,7 @@
          <h3>💬 Channel Messages</h3>
          <div class="link-list">
             @for (msg of channelMessages; track msg) {
-               <a >{{msg.text}}</a>
+               <a (click)="openChannelMessage(msg.channelId, msg.id)" >{{msg.text}}</a>
                
             }
          </div>
@@ -32,7 +33,7 @@
          <h3>🔒 Your Direct Messages</h3>
          <div class="link-list">
             @for (msg of directMessages; track msg) {
-               <a href="">{{msg.message}}</a>
+               <a (click)="openDirectMessage(msg.messageTo, msg.id)">{{msg.message}}</a>
             }
          </div>
       }

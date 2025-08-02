@@ -60,6 +60,7 @@
                   [userMe]="checkIfMessageIsFromLoggedInUser(i)"
                   (profileClick)="openProfileCard(item.messageFrom)"
                   [userId]="item.messageFrom"
+                  [id]="'message-' + item.id"
                 >
                 </app-chat-box>
 

@@ -22,6 +22,8 @@ import { FormsModule } from '@angular/forms'; import { Firestore, collection, co
 import { Observable } from 'rxjs';
 import { ReactionService } from '../../core/services/reaction.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
+import { SearchService } from '../../core/services/search.service';
+
 
 
 interface CurrentUserId {
@@ -87,7 +89,9 @@ export class DirectMessageComponent
     private threadService: ThreadMessagingService,
     private router: Router,
     private firestore: Firestore,
-    private reactionService: ReactionService
+    private reactionService: ReactionService,
+    private searchService: SearchService,
+    private el: ElementRef<HTMLElement>
   ) { }
 
   ngOnInit() {
@@ -130,6 +134,7 @@ export class DirectMessageComponent
     }
   });
 }
+
 
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
@@ -249,6 +254,7 @@ async saveEditedMessage(msgId: string) {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       this.scrollToBottom();
     });
+    this.searchService.handleHighlightScroll("message", this.el, this.route)
   }
 
   ngOnDestroy() {

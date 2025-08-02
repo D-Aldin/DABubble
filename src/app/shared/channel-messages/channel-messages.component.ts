@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  inject,
   Input,
   NgZone,
   OnInit,
@@ -28,10 +29,11 @@ import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
-import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';    
 import { Timestamp } from 'firebase/firestore';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { ReactionService } from '../../core/services/reaction.service';
+import { SearchService } from '../../core/services/search.service';
 
 @Component({
   selector: 'app-channel-messages',
@@ -76,6 +78,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   lastReplyTimestamp?: Timestamp | Date;
   groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
 
+  
   constructor(
     private channelService: ChannelService,
     private userService: UserService,
@@ -88,9 +91,12 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private overlayService: ProfileOverlayService,
     private threadService: ThreadMessagingService,
-    private reactionService: ReactionService
-  ) { }
+    private reactionService: ReactionService,
+    private el: ElementRef,
+    private searchService: SearchService
 
+  ) { }
+    
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
     this.isLoading = true;
@@ -342,7 +348,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       this.scrollToBottom();
+
     });
+      this.searchService.handleHighlightScroll(".message-wrapper", this.el, this.route)
+    
   }
 
   ngAfterViewChecked(): void {
@@ -377,4 +386,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
+
 }

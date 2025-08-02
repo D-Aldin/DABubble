@@ -18,6 +18,7 @@ import { ThreadMessagingService } from '../../core/services/thread-messaging.ser
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
+import { AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-channel',
@@ -35,7 +36,7 @@ import { OpenProfileCardService } from '../../core/services/open-profile-card.se
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
-export class ChannelComponent implements OnInit {
+export class ChannelComponent implements OnInit, AfterViewInit {
   selectedChannelPreviewUsers: ChatUser[] = [];
   selectedChannel: undefined | Channel = undefined;
   showChannelOptionsPopup = false;
@@ -77,7 +78,8 @@ export class ChannelComponent implements OnInit {
     public authService: AuthService,
     private threadService: ThreadMessagingService,
     public overlayService: ProfileOverlayService,
-    private openCardService: OpenProfileCardService
+    private openCardService: OpenProfileCardService,
+    
   ) { }
 
   ngOnInit(): void {
@@ -130,6 +132,20 @@ export class ChannelComponent implements OnInit {
       this.showAddChannelDialog = true;
     });
   }
+
+    ngAfterViewInit() {
+    this.route.queryParams.subscribe(params => {
+      const highlightId = params['highlight'];
+      if (highlightId) {
+        setTimeout(() => {
+          const el = document.getElementById(`msg-${highlightId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('highlight');
+          }
+        }, 300); // Delay to ensure messages are rendered
+      }});
+    }
 
   leaveChannel() {
     const currentUserId = this.authService.currentUserId;
