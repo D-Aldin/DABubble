@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService} from '../../core/services/search.service';
@@ -6,9 +6,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { DirectMessage } from '../../core/interfaces/direct-message';
 import { ChatUser } from '../../core/interfaces/chat-user';
-import {  Router, RouterLink } from '@angular/router';
-import { ViewChild } from '@angular/core';
-import { Renderer2, AfterViewInit } from '@angular/core';
+import { user } from '@angular/fire/auth';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterLink } from '@angular/router';
 
 
 @Component({
@@ -18,20 +17,15 @@ import { Renderer2, AfterViewInit } from '@angular/core';
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss']
 })
-export class SearchBarComponent implements AfterViewInit{
+export class SearchBarComponent {
   searchTerm = '';
   users: ChatUser[] = [];
   channelMessages: ChannelMessage[] = [];
   directMessages: DirectMessage[] = [];
   currentUserId: string | undefined;
-  @ViewChild('#scrollContainer') scrollContainer!: ElementRef;
   isActive = false;
 
-  ngAfterViewInit(): void {
-    
-  }
-
-  constructor(private searchService: SearchService, private authService: AuthService, private router: Router, private renderer: Renderer2, private elementRef: ElementRef) {
+  constructor(private searchService: SearchService, private authService: AuthService, private router: Router) {
     this.loadCurrentUserId();
   }
 
@@ -46,22 +40,34 @@ export class SearchBarComponent implements AfterViewInit{
 
     this.searchService.searchUsers(term).subscribe(results => {
       this.users = results;
+      console.log(results);
+      
+      
     });
 
 
     this.searchService.searchChannelMessages(term).subscribe(results => {
       this.channelMessages = results;
+      console.log(results);
+      
     });
 
 
     this.searchService.searchMyDirectMessages(term, this.currentUserId).subscribe(results => {
       this.directMessages = results;
+      console.log(results);
+      
     });
   }
 
   openDirectChat(userId:string) {
     this.router.navigate(['/dashboard/direct-message', userId]);
     this.closeResultWindow()
+
+
+
+
+
   }
 
   openChannelMessage(channelId?: string, messageId?: string) {
@@ -69,7 +75,12 @@ export class SearchBarComponent implements AfterViewInit{
     queryParams: { highlight: messageId }
   });
   this.closeResultWindow()
-  
+
+
+
+
+
+
 }
 
 openDirectMessage(otherUserId: string, messageId: string | undefined) {
@@ -90,3 +101,4 @@ closeResultWindow() {
   }
 }
 }
+
