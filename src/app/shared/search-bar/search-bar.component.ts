@@ -62,25 +62,15 @@ export class SearchBarComponent {
 
   openDirectChat(userId:string) {
     this.router.navigate(['/dashboard/direct-message', userId]);
-    this.closeResultWindow()
-
-
-
-
-
   }
+
 
   openChannelMessage(channelId?: string, messageId?: string) {
   this.router.navigate(['/dashboard/channel', channelId], {
     queryParams: { highlight: messageId }
   });
   this.closeResultWindow()
-
-
-
-
-
-
+  
 }
 
 openDirectMessage(otherUserId: string, messageId: string | undefined) {
@@ -101,4 +91,3 @@ closeResultWindow() {
   }
 }
 }
-
