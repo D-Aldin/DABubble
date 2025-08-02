@@ -33,7 +33,7 @@
          <h3>🔒 Your Direct Messages</h3>
          <div class="link-list">
             @for (msg of directMessages; track msg) {
-               <a href="">{{msg.message}}</a>
+               <a (click)="openDirectMessage(msg.messageTo, msg.id)">{{msg.message}}</a>
             }
          </div>
       }

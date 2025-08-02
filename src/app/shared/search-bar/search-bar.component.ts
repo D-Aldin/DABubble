@@ -82,7 +82,7 @@ export class SearchBarComponent implements AfterViewInit{
   
 }
 
-openDirectMessage(otherUserId: string, messageId: string) {
+openDirectMessage(otherUserId: string, messageId: string | undefined) {
   this.router.navigate(['/dashboard/direct-message', otherUserId], {
     queryParams: { highlight: messageId }
   });
