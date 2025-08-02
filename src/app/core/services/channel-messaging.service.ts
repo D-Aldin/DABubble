@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc,collectionData, orderBy, query, serverTimestamp, doc, runTransaction, getCountFromServer, updateDoc, onSnapshot  } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, orderBy, query, serverTimestamp, doc, runTransaction, getCountFromServer, updateDoc, onSnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Message } from '../../core/interfaces/message';
 import { ChannelMessage } from '../interfaces/channel-message';
@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class ChannelMessagingService {
   private firestore = inject(Firestore);
+  private replyCountCache: { [key: string]: number } = {};
 
   constructor() { }
 
@@ -29,7 +30,7 @@ export class ChannelMessagingService {
         observer.next(messages);
       }, (error) => observer.error(error));
     });
-  } 
+  }
 
   sendMessage(channelId: string, senderId: string, text: string) {
     const ref = collection(this.firestore, `channels/${channelId}/messages`);
@@ -38,12 +39,6 @@ export class ChannelMessagingService {
       text,
       timestamp: serverTimestamp(),
     });
-  }
-
-  async getReplyCount(channelId: string, messageId: string): Promise<number> {
-    const threadRef = collection(this.firestore, `channels/${channelId}/messages/${messageId}/threads`);
-    const snapshot = await getCountFromServer(threadRef);
-    return snapshot.data().count;
   }
 
   async toggleReaction(channelId: string, messageId: string, emoji: string, userId: string): Promise<void> {
@@ -67,7 +62,7 @@ export class ChannelMessagingService {
   }
 
   async updateChannelMessageText(channelId: string, messageId: string, newText: string): Promise<void> {
-  const msgRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+    const msgRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
     await runTransaction(this.firestore, async (transaction) => {
       const snapshot = await transaction.get(msgRef);
       if (!snapshot.exists()) throw new Error('Message not found');

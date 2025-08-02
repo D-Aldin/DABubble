@@ -112,14 +112,11 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
         this.messagingService.getChannelMessages(this.channelId)
       )
     ).subscribe((msgs) => {
-      const withReplyCounts = msgs.map(async (msg) => {
-        const replyCount = await this.messagingService.getReplyCount(this.channelId, msg.id!);
-        return {
-          ...msg,
-          replyCount,
-          lastReplyTimestamp: msg.lastReplyTimestamp ?? undefined
-        };
-      });
+      const withReplyCounts = msgs.map((msg) => ({
+        ...msg,
+        replyCount: msg.replyCount ?? 0,
+        lastReplyTimestamp: msg.lastReplyTimestamp ?? undefined
+      }));
 
       Promise.all(withReplyCounts).then((results) => {
         this.groupedMessages = this.groupMessagesByDate(results);
@@ -159,21 +156,21 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
 
   getLastReplyTime(messages: ChannelMessage[]): Date | null {
-  const timestamps = messages
-    .map(m => {
-      const ts = m.lastReplyTimestamp;
-      if (ts instanceof Timestamp) {
-        return ts.toDate();
-      }
-      return ts as Date;
-    })
-    .filter(Boolean);
+    const timestamps = messages
+      .map(m => {
+        const ts = m.lastReplyTimestamp;
+        if (ts instanceof Timestamp) {
+          return ts.toDate();
+        }
+        return ts as Date;
+      })
+      .filter(Boolean);
 
-  if (timestamps.length === 0) return null;
+    if (timestamps.length === 0) return null;
 
-  return timestamps.sort((a, b) => b.getTime() - a.getTime())[0];
+    return timestamps.sort((a, b) => b.getTime() - a.getTime())[0];
   }
-  
+
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
     if (!timestamp) return '';
     const date = timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
@@ -268,15 +265,15 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   openThread(messageId: string) {
-  this.replyToMessage.emit(messageId);
+    this.replyToMessage.emit(messageId);
 
-  this.router.navigate([], {
-    queryParams: { thread: messageId },
-    queryParamsHandling: 'merge',
-  });
+    this.router.navigate([], {
+      queryParams: { thread: messageId },
+      queryParamsHandling: 'merge',
+    });
 
-  this.threadService.openThread(this.channelId, messageId, 'channel');
-}
+    this.threadService.openThread(this.channelId, messageId, 'channel');
+  }
 
 
   objectKeys(obj: any): string[] {
