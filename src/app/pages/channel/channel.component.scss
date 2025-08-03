@@ -143,7 +143,26 @@
     padding: 2rem 2rem 1.5rem;
     z-index: 200;
     animation: slideInFromRight 0.35s ease-out;
-    will-change: transform, opacity;
+
+    .members-popup {
+        display: none;
+    }
+
+    @media (max-width: 579px) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        min-height: calc(100vh - 80px);
+        max-width: none;
+        background: white;
+        border-radius: 0;
+        padding: 1.5rem 1.2rem;
+        z-index: 2000;
+        animation: none;
+        overflow-y: auto;
+    }
 
     h3 {
         font-size: 1.4rem;
@@ -309,16 +328,19 @@
 }
 
 .channel-popup-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
-    // background: rgba(0, 0, 0, 0.2) !important;
     z-index: 1999;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    overflow: hidden;
-}
+    overflow: auto;
+    padding: 86px 22px 22px;
 
+    @media (max-width: 579px) {
+        padding: 0;
+    }
+}
 
 .dialog-container {
     position: absolute;
@@ -522,13 +544,23 @@ h3 {
     }
 }
 
-@media (max-width: 979px) {
+.drag-indicator {
+    width: 50px !important;
+    height: 5px !important;
+    border-radius: 999px !important;
+    background-color: rgba(217, 217, 217, 1);
+    margin-bottom: 25px;
+    display: none;
+    margin: 0 auto 25px auto;
+}
+
+@media (max-width: 580px) {
     .channel-popup {
-        width: 92%;
+        // width: 92%;
     }
 
     .main-content-channel {
-        height: calc(100vh - 130px);
+        height: calc(100vh - 80px);
         border-radius: 0px;
     }
 }
@@ -542,11 +574,98 @@ h3 {
 
     .channel-popup {
         animation: slideInFromLeft 0.35s ease-out;
+
+        .members-popup {
+            display: flex;
+            background-color: #fff;
+            box-shadow: unset;
+            border: 1px solid #d3d3d3;
+            display: flex;
+            flex-direction: column;
+            width: 415px;
+            height: fit-content;
+            padding: 20px 16px;
+            gap: 10px;
+            border-radius: 20px;
+
+            .popup-header {
+                padding-top: 14px;
+            }
+
+            .member-list {
+                max-height: unset;
+            }
+        }
     }
 }
 
 @media (max-width: 470px) {
     .members-popup {
         width: auto !important;
+    }
+}
+
+@media (max-width: 579px) {
+    .custom-mobile-people-dialog {
+        position: fixed !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: unset !important;
+        width: 100%;
+        padding: 0 !important;
+        background: transparent;
+        z-index: 2000;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        animation: slideUpPeopleDialog 0.35s ease-out;
+
+        app-add-people {
+            width: 100%;
+        }
+
+        .drag-indicator {
+            display: flex;
+            width: 100%;
+            position: fixed;
+            top: 16px;
+        }
+    }
+
+    .people-dialog {
+        width: 92vw;
+        border-top-left-radius: 28px;
+        border-top-right-radius: 28px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+
+    .people-dialog::before {
+        content: "";
+        width: 50px;
+        height: 5px;
+        background-color: #ccc;
+        border-radius: 999px;
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes slideUpPeopleDialog {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
     }
 }

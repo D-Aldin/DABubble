@@ -1,11 +1,13 @@
 <header [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
     <div class="header-content">
         <div class="logo">
-            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" src="../../../assets/icons/logo.png" alt="Logo" />
-            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-name-img" src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
+            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" src="../../../assets/icons/logo.png"
+                alt="Logo" />
+            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-name-img"
+                src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
         </div>
 
-       <app-search-bar *ngIf="showSearchBar"></app-search-bar>
+        <app-search-bar *ngIf="showSearchBar"></app-search-bar>
 
         <div class="signup-link-box" *ngIf="showSignUpLink">
             <p class="signup-text">Neu bei DABubble?</p>
@@ -31,14 +33,18 @@
                 alt="Chevron" class="chevron-icon" />
         </div>
 
-        <div *ngIf="!showProfileMenu && showProfileAvatar" class="profile-menu">
-            <button (click)="showProfileCardContainer()">Profil</button>
-            <button (click)="logout()">Log out</button>
+        <div *ngIf="!showProfileMenu && showProfileAvatar" class="profile-overlay" (click)="closeProfileMenu()">
+            <div class="profile-menu" (click)="$event.stopPropagation()">
+                <div class="drag-indicator"></div>
+                <button (click)="showProfileCardContainer()">Profil</button>
+                <button (click)="logout()">Log out</button>
+            </div>
         </div>
 
-        <app-profile-card *ngIf="showProfileCard" [src]="avatarPath" [name]="userName" [active]="onlineStatus"
-            [email]="userEmail" [isInsertedInHeader]="true" (closeCard)="showProfileCard = false"
-            (save)="onNameSaved($event)">
-        </app-profile-card>
+        <div *ngIf="showProfileCard" class="profile-card-overlay" (click)="showProfileCard = false">
+            <app-profile-card (click)="$event.stopPropagation()" [src]="avatarPath" [name]="userName"
+                [active]="onlineStatus" [email]="userEmail" [isInsertedInHeader]="true"
+                (closeCard)="showProfileCard = false" (save)="onNameSaved($event)"></app-profile-card>
+        </div>
     </div>
 </header>

@@ -234,36 +234,60 @@ header {
           background-color: $secondary-color; // light blue hover background
           color: $button; // blue text
         }
+
       }
+
+      .drag-indicator {
+        width: 50px;
+        height: 5px;
+        border-radius: 999px;
+        background-color: rgba(217, 217, 217, 1);
+        margin-bottom: 25px;
+        display: none;
+      }
+    }
+
+    .profile-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
     }
   }
 }
 
-app-profile-card {
-  position: absolute;
-  top: 110px;
-  right: 16px;
-  z-index: 100;
+.profile-card-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 98;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 110px 16px 16px 16px;
 
-  ::ng-deep .main-content {
-    margin-top: 44px;
+  @media (max-width: 579px) {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
   }
 
-  ::ng-deep .profile-card {
-    width: 500px;
-    height: auto;
-    border-top-left-radius: 30px !important;
-    border-bottom-right-radius: 30px !important;
-    border-bottom-left-radius: 30px !important;
-    border-top-right-radius: 0px !important;
-    margin: 0;
+  app-profile-card {
+    position: relative;
+    top: 0;
+    right: 0;
 
-    animation: slideInFromRight 0.35s ease-out;
-    will-change: transform, opacity;
-  }
+    ::ng-deep .profile-card {
+      max-width: 90vw;
+      width: 100%;
+      border-radius: 30px;
+      animation: slideUp 0.35s ease-out;
 
-  ::ng-deep .profile-img {
-    margin-top: 36px;
+      @media (min-width: 580px) {
+        width: 500px;
+        animation: slideInFromRight 0.35s ease-out;
+      }
+    }
   }
 }
 
@@ -273,23 +297,28 @@ app-search-bar {
 
 @media (max-width: 660px) {
   header {
+    min-height: 80px !important;
+    padding: 0 1rem;
+
     .header-content {
-      justify-content: center;
+      justify-content: space-between;
 
       .logo {
         padding-left: 0px;
+
+        .logo-img {
+          width: 45px;
+        }
+
+        .logo-name-img {
+          width: 105px;
+        }
       }
     }
   }
 
   .signup-link-box {
     display: none;
-  }
-}
-
-@media (max-width: 660px) {
-  header {
-    min-height: 130px !important;
   }
 }
 
@@ -312,5 +341,45 @@ app-search-bar {
 @media (max-width: 979px) {
   app-search-bar {
     display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .avatar-image {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  header {
+    .header-content {
+      .profile-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: unset;
+        width: 100%;
+        height: auto;
+        padding: 30px 20px;
+        border-radius: 30px 30px 0 0;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.125s ease-in;
+        background-color: white;
+        z-index: 9999;
+        gap: 0;
+
+        button {
+          font-size: 20px;
+          padding: 16px 0;
+          padding-left: 70px;
+          padding-right: 70px;
+        }
+
+        .drag-indicator {
+          display: flex;
+          margin: 0 auto 25px auto;
+        }
+      }
+    }
   }
 }

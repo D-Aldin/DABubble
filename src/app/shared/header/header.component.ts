@@ -78,19 +78,24 @@ export class HeaderComponent {
     } else {
       this.showProfileMenu = !this.showProfileMenu;
     }
-    this.closeProfileMenu();
+    // this.closeProfileMenu();
   }
+
+  closeProfileMenu(): void {
+    this.showProfileMenu = !this.showProfileMenu;
+  }
+
 
   showProfileCardContainer() {
     this.showProfileMenu = !this.showProfileMenu;
     this.showProfileCard = !this.showProfileCard;
   }
 
-  closeProfileMenu() {
-    if (this.showProfileCard == true) {
-      this.showProfileMenu = false;
-    }
-  }
+  // closeProfileMenu() {
+  //   if (this.showProfileCard == true) {
+  //     this.showProfileMenu = false;
+  //   }
+  // }
 
   logout(): void {
     const user = this.userAuthService.getCurrentUser();

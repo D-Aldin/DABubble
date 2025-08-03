@@ -60,7 +60,7 @@ section {
   position: fixed;
   bottom: 5rem;
   left: 0;
-  z-index: 1000;
+  z-index: 97;
   background-color: white;
   border: none;
   border-radius: 0 1rem 1rem 0;
@@ -358,7 +358,7 @@ app-thread {
 
 @media (max-width: 979px) {
   .dashboard-wrapper {
-    max-height: calc(100vh - 130px);
+    max-height: calc(100vh - 80px);
     border-radius: 0px;
   }
 
