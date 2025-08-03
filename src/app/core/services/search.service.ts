@@ -75,7 +75,8 @@ export class SearchService {
     elementRef: ElementRef,
     route: ActivatedRoute
   ): void {
-    route.queryParams.subscribe((params) => {
+    setTimeout(() => {
+      route.queryParams.subscribe((params) => {
       const highlightId = params["highlight"];
       if (highlightId) {
         setTimeout(() => {
@@ -95,10 +96,12 @@ export class SearchService {
             });
 
             target.classList.add("highlight");
-            setTimeout(() => target.classList.remove("highlight"), 3000);
+            setTimeout(() => target.classList.remove("highlight"), 1500);
           }
         }, 100);
       }
     });
+    }, 2000)
+    
   }
 }
