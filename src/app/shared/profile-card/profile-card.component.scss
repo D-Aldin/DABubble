@@ -2,7 +2,7 @@
 @import "./../../../styles/variables";
 
 .profile-card {
-  margin: 30px;
+  // margin: 30px;
   width: 500px;
   height: 705px;
   background-color: white;
@@ -302,7 +302,14 @@
 
 @media (max-width: 580px) {
   .profile-card {
-    width: 90%;
+    max-width: 95vw !important;
+    height: auto;
+    padding: 40px 20px;
+    margin: 0;
+
+    .main-content,.profile-img{
+      margin-top: 50px;
+    }
   }
 
   .email-link {
