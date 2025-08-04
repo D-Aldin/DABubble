@@ -96,12 +96,13 @@ export class SearchService {
             });
 
             target.classList.add("highlight");
-            setTimeout(() => target.classList.remove("highlight"), 1500);
+            setTimeout(() => target.classList.remove("highlight"), 2500);
           }
         }, 100);
       }
     });
     }, 2000)
-    
   }
+
+
 }

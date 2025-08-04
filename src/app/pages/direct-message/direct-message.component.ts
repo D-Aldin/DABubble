@@ -254,7 +254,8 @@ async saveEditedMessage(msgId: string) {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       this.scrollToBottom();
     });
-    this.searchService.handleHighlightScroll("message", this.el, this.route)
+    this.searchService.handleHighlightScroll(".message", this.el, this.route)
+    
   }
 
   ngOnDestroy() {

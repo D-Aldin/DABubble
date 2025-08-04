@@ -25,7 +25,7 @@
                </div>
             </ng-container>
 
-            <div class="message-content"
+            <div class="message-content" [id]="'message-' + item.id"
                  (mouseenter)="hoveredMessageId = item.id ?? null"
                  (mouseleave)="hoveredMessageId = null">
 
@@ -60,7 +60,7 @@
                   [userMe]="checkIfMessageIsFromLoggedInUser(i)"
                   (profileClick)="openProfileCard(item.messageFrom)"
                   [userId]="item.messageFrom"
-                  [id]="'message-' + item.id"
+                  
                 >
                 </app-chat-box>
 

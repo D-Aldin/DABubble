@@ -7,6 +7,11 @@ import { ChannelMessage } from '../../core/interfaces/channel-message';
 import { DirectMessage } from '../../core/interfaces/direct-message';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '../../core/services/user.service';
+import { Firestore } from '@angular/fire/firestore';
+
+
+
 
 
 @Component({
@@ -24,7 +29,7 @@ export class SearchBarComponent {
   currentUserId: string | undefined;
   isActive = false;
 
-  constructor(private searchService: SearchService, private authService: AuthService, private router: Router) {
+  constructor(private searchService: SearchService, private authService: AuthService, private router: Router, private userService: UserService) {
     this.loadCurrentUserId();
   }
 
@@ -36,11 +41,8 @@ export class SearchBarComponent {
     const term = this.searchTerm.trim().toLowerCase();
     if (!term || !this.currentUserId) return;
 
-
     this.searchService.searchUsers(term).subscribe(results => {
       this.users = results;
-      
-      
       
     });
 
@@ -48,19 +50,18 @@ export class SearchBarComponent {
     this.searchService.searchChannelMessages(term).subscribe(results => {
       this.channelMessages = results;
       
-      
     });
 
 
     this.searchService.searchMyDirectMessages(term, this.currentUserId).subscribe(results => {
       this.directMessages = results;
      
-      
     });
   }
 
   openDirectChat(userId:string) {
     this.router.navigate(['/dashboard/direct-message', userId]);
+    this.closeResultWindow()
   }
 
 
@@ -89,4 +90,10 @@ closeResultWindow() {
     this.directMessages = [];
   }
 }
+
+// findUserById(id: string) {
+//   this.userService.getUserById(id).subscribe(user => {
+//     return user.name
+//   })
+// }
 }
