@@ -242,9 +242,13 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   handlingDateTime(date: Date): string {
-    return date.toLocaleDateString(); // or any other formatting logic
+    return new Intl.DateTimeFormat('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
   }
-
+  
   groupReactions(reactions: { [userId: string]: string }): {
     [emoji: string]: number;
   } {

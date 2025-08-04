@@ -44,7 +44,7 @@
 
           <div class="reactions">
            @for (reaction of getReactionArray(parentMessage.reactions); track reaction.emoji) {
-              <span>{{ reaction.emoji }}</span>
+              <!-- <span>{{ reaction.emoji }}</span> hidden the reaction in theads from parent-message -->
             }
           </div>
 

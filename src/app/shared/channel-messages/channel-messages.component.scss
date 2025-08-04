@@ -16,7 +16,7 @@
 .message-wrapper-full {
   transition: background-color 0.2s ease;
   padding: 6px 8px;
-
+  position: relative;
   &.hovered {
     background-color: #eceefe;
   }
