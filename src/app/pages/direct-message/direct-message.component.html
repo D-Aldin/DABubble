@@ -53,8 +53,8 @@
                   </ng-container>
 
                   <ng-template #normalMessage>
-                      <div class="message-toolbar" *ngIf="hoveredMessageId === item.id"
-                         [ngClass]="{ 'me': item.messageFrom !== currentUser?.userId, 'other': item.messageFrom !== currentUser?.userId }">
+                     <div class="message-toolbar" *ngIf="hoveredMessageId === item.id"
+                        [ngClass]="{ 'me': item.messageFrom !== currentUser?.userId, 'other': item.messageFrom !== currentUser?.userId }">
                         <div class="message-options">
                            <span class="emoji-button" (click)="reactToDirectMessage(item.id, '👍')">✅</span>
                            <span class="emoji-button" (click)="reactToDirectMessage(item.id, '✅')">👍</span>
@@ -76,7 +76,7 @@
                         [time]="convertTimestampToString(item.timestamp)" [message]="item.message"
                         [userMe]="checkIfMessageIsFromLoggedInUser(i)"
                         (profileClick)="openProfileCard(item.messageFrom)" [userId]="item.messageFrom"
-                        [id]="'message-' + item.id" [isParentHovered]="hoveredMessageId === item.id"></app-chat-box>
+                        [isParentHovered]="hoveredMessageId === item.id"></app-chat-box>
 
                      <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount"
                         [ngClass]="{'me': item.messageFrom === currentUserId}">
