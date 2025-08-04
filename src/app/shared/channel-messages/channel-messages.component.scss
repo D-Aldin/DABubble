@@ -13,7 +13,14 @@
   // transform-origin: left;
   // animation: curtainSlideIn 0.18s ease-out forwards;
 }
+.message-wrapper-full {
+  transition: background-color 0.2s ease;
+  padding: 6px 8px;
 
+  &.hovered {
+    background-color: #eceefe;
+  }
+}
 .message-wrapper {
   flex: 1;
   overflow-y: auto;
