@@ -36,6 +36,7 @@
          <div class="link-list">
             @for (msg of directMessages; track msg) {
                <a (click)="openDirectMessage(msg.messageTo, msg.id)">{{msg.message}}</a>
+              <!-- <span>{{findUserById(msg.messageFrom)}} / {{findUserById(msg.messageTo)}}</span> -->
             }
          </div>
       }

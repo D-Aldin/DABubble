@@ -172,11 +172,12 @@ input:-internal-autofill-selected {
 }
 
 .highlight {
-  background-color: rgba(228, 228, 203, 0.548);
-  animation: flash 1s ease-in-out;
+  animation: flash 2s ease-in-out;
 }
 
 @keyframes flash {
-  0%   { background-color: rgba(228, 228, 203, 0.548); }
+  0%   { background-color: rgba(119, 119, 119, 0.507); }
+  30%   { background-color: rgba(119, 119, 119, 0.322); }
+  60%   { background-color: rgba(119, 119, 119, 0.253); }
   100% { background-color: transparent; }
 }
