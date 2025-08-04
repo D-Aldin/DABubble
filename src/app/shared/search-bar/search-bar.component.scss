@@ -13,6 +13,7 @@
 	justify-content: space-between;
 	padding: 17.5px 45px;
 	border-radius: 42px;
+	border: 1px solid transparent;
 
 	input {
 		flex: 1;
@@ -20,6 +21,7 @@
 		outline: none;
 		font-size: 24px;
 		background: transparent;
+		padding-right: 13px;
 
 		&::placeholder {
 			color: $placeholder-color;
@@ -29,6 +31,7 @@
 			line-height: 100%;
 			letter-spacing: 0%;
 		}
+
 	}
 
 	.search-icon {
@@ -54,13 +57,22 @@
 .results {
 	position: absolute;
 	top: 80px;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid;
 	z-index: 999;
-	border-radius: 20px;
-	padding: 30px;
+	border-radius: 0px;
+	padding: 10px 16px;
 	background: white;
 	max-height: 500px;
-    overflow: scroll;
+	overflow: auto;
+	max-width: 100%;
+	min-width: 100%;
+	border-color: $message-field-focus-color;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
+
 
 .link-list {
 	display: flex;
@@ -75,6 +87,30 @@
 		&:hover {
 			background-color: rgba(3, 3, 3, 0.096); 
 			border-radius: 10px;
+		}
+	}
+}
+
+
+@media (max-width: 580px) {
+	.search-bar {
+		height: 48px;
+		padding: 8px 24px;
+		border-radius: 42px;
+		border: 1px solid rgba(173, 176, 217, 1);
+		outline: none;
+
+		&:focus-within {
+			border-color: $message-field-focus-color !important;
+		}
+
+		input {
+			padding-right: 32px;
+		}
+
+		.search-icon {
+			width: 32px;
+			height: 32px;
 		}
 	}
 }

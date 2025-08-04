@@ -116,6 +116,15 @@ h3 {
   letter-spacing: 0%;
 }
 
+.message-wrapper-full {
+  transition: background-color 0.2s ease;
+  padding: 6px 8px;
+
+  &.hovered {
+    background-color: #eceefe;
+  }
+}
+
 .message-content {
   position: relative;
 }
@@ -188,62 +197,62 @@ emoji-mart {
       cursor: pointer;
     }
 
-     .reaction-group {
-       display: inline-flex;
-       gap: 6px;
-  
-       .reaction {
-         position: relative;
-         display: inline-flex;
-         align-items: center;
-         padding: 4px 8px;
-         border-radius: 14px;
-         background-color: white;
-         border: 1px solid #a4a4ff;
-         cursor: pointer;
-         font-size: 14px;
-         transition: background-color 0.2s;
-  
-         .tooltip {
-           display: none;
-           position: absolute;
-           bottom: 130%;
-           left: 50%;
-           transform: translateX(-50%);
-           background-color: #4d4df9;
-           color: #fff;
-           padding: 8px 12px;
-           border-radius: 12px;
-           white-space: nowrap;
-           font-size: 13px;
-           font-weight: 500;
-           z-index: 20;
-  
-           &::after {
-             content: '';
-             position: absolute;
-             top: 100%;
-             left: 50%;
-             margin-left: -6px;
-             border-width: 6px;
-             border-style: solid;
-             border-color: #4d4df9 transparent transparent transparent;
-           }
-         }
-  
-         &:hover .tooltip {
-           display: block;
-         }
-  
-         &:hover {
-           background-color: #f3f3ff;
-         }
-       }
-     }
+    .reaction-group {
+      display: inline-flex;
+      gap: 6px;
+
+      .reaction {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 14px;
+        background-color: white;
+        border: 1px solid #a4a4ff;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+
+        .tooltip {
+          display: none;
+          position: absolute;
+          bottom: 130%;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: #4d4df9;
+          color: #fff;
+          padding: 8px 12px;
+          border-radius: 12px;
+          white-space: nowrap;
+          font-size: 13px;
+          font-weight: 500;
+          z-index: 20;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #4d4df9 transparent transparent transparent;
+          }
+        }
+
+        &:hover .tooltip {
+          display: block;
+        }
+
+        &:hover {
+          background-color: #f3f3ff;
+        }
+      }
+    }
 
     .last-reply-time {
       color: #666;
-      font-size: 13px !important;
+      font-size: 14px !important;
     }
   }
 }
@@ -401,6 +410,16 @@ emoji-mart {
 
 @media (max-width: 580px) {
   .headline {
-    height: 75px;
+    height: 80px;
+    padding: 16px 10px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .message-reactions-container,
+  .message-reactions-container.me {
+    padding: 0 77px;
   }
 }

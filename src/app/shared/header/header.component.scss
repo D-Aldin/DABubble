@@ -2,6 +2,16 @@
 @use "../../../styles/mixins";
 
 header {
+  .profile-overlay-wrapper {
+    position: relative;
+    justify-content: right;
+    width: 100%;
+    display: flex;
+    max-width: 1920px;
+    margin: 0 auto;
+    height: 100%;
+  }
+
   width: 100%;
   min-height: 130px;
   background-color: $secondary-color;
@@ -351,7 +361,20 @@ app-search-bar {
   }
 
   header {
+    .profile-overlay-wrapper {
+      justify-content: center;
+      height: auto;
+    }
+
     .header-content {
+      .profile-container {
+        .avatar-wrapper {
+          .online-indicator {
+            bottom: 7px;
+          }
+        }
+      }
+
       .profile-menu {
         position: fixed;
         bottom: 0;

@@ -77,7 +77,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
   groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
-
   
   constructor(
     private channelService: ChannelService,
@@ -242,9 +241,13 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   handlingDateTime(date: Date): string {
-    return date.toLocaleDateString(); // or any other formatting logic
+    return new Intl.DateTimeFormat('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
   }
-
+  
   groupReactions(reactions: { [userId: string]: string }): {
     [emoji: string]: number;
   } {
@@ -386,6 +389,4 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
-
 }

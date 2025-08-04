@@ -159,9 +159,7 @@ export class DashboardComponent {
         this.currentView = 'sidenav';
       }
 
-      setTimeout(() => {
         this.sidenavAnimationClass = this.isMediumScreen ? 'slide-in-left' : 'slide-up';
-      }, 10);
     }
   }
 
@@ -212,10 +210,8 @@ export class DashboardComponent {
     if (this.isMediumScreen && this.showSidenav) {
       this.sidenavAnimationClass = 'slide-to-left';
 
-      setTimeout(() => {
         this.showSidenav = false;
         this.sidenavAnimationClass = '';
-      }, 400);
     }
   }
 

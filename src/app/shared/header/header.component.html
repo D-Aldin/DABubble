@@ -33,18 +33,25 @@
                 alt="Chevron" class="chevron-icon" />
         </div>
 
+        <!-- Profile Menu Overlay -->
         <div *ngIf="!showProfileMenu && showProfileAvatar" class="profile-overlay" (click)="closeProfileMenu()">
-            <div class="profile-menu" (click)="$event.stopPropagation()">
-                <div class="drag-indicator"></div>
-                <button (click)="showProfileCardContainer()">Profil</button>
-                <button (click)="logout()">Log out</button>
+            <div class="profile-overlay-wrapper">
+                <div class="profile-menu" (click)="$event.stopPropagation()">
+                    <div class="drag-indicator"></div>
+                    <button (click)="showProfileCardContainer()">Profil</button>
+                    <button (click)="logout()">Log out</button>
+                </div>
             </div>
         </div>
 
+        <!-- Profile Card Overlay -->
         <div *ngIf="showProfileCard" class="profile-card-overlay" (click)="showProfileCard = false">
-            <app-profile-card (click)="$event.stopPropagation()" [src]="avatarPath" [name]="userName"
-                [active]="onlineStatus" [email]="userEmail" [isInsertedInHeader]="true"
-                (closeCard)="showProfileCard = false" (save)="onNameSaved($event)"></app-profile-card>
+            <div class="profile-overlay-wrapper">
+                <app-profile-card (click)="$event.stopPropagation()" [src]="avatarPath" [name]="userName"
+                    [active]="onlineStatus" [email]="userEmail" [isInsertedInHeader]="true"
+                    (closeCard)="showProfileCard = false" (save)="onNameSaved($event)">
+                </app-profile-card>
+            </div>
         </div>
     </div>
 </header>

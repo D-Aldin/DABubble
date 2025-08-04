@@ -21,6 +21,8 @@
                 <span>Channel-Name</span>
                 @if (!isEditingChannelName) {
                 <button class="edit-btn" (click)="isEditingChannelName = true">Bearbeiten</button>
+                <img class="mobile-edit-btn" (click)="isEditingChannelName = true" src="/assets/icons/edit_icon.svg"
+                  alt="">
                 }
               </div>
 
@@ -29,6 +31,7 @@
                 <div class="input-prefix">#</div>
                 <input class="popup-input" [(ngModel)]="editedChannelName" />
                 <button class="save-btn" (click)="saveChannelName()">Speichern</button>
+                <img class="mobile-edit-btn" (click)="saveChannelName()" src="/assets/icons/edit_save_icon.svg" alt="">
               </div>
               } @else {
               <p><b>#</b> {{ selectedChannel.title }}</p>
@@ -41,21 +44,25 @@
                 <span>Beschreibung</span>
                 @if (!isEditingDescription) {
                 <button class="edit-btn" (click)="isEditingDescription = true">Bearbeiten</button>
+                <img class="mobile-edit-btn" (click)="isEditingDescription = true" src="/assets/icons/edit_icon.svg"
+                  alt="">
                 }
               </div>
 
               @if (isEditingDescription) {
               <textarea class="popup-textarea" [(ngModel)]="editedDescription"></textarea>
               <button class="save-btn" (click)="saveChannelDescription()">Speichern</button>
+              <img class="mobile-edit-btn" (click)="saveChannelDescription()" src="/assets/icons/edit_save_icon.svg"
+                alt="">
               } @else {
               <p>{{ selectedChannel.description }}</p>
               }
             </div>
 
             <!-- Created By -->
-            <div class="popup-section">
+            <div class="popup-section responsiveBoxed">
               <span>Erstellt von</span>
-              <p class="creator-name" [ngClass]="{ 'online': creatorOnline }">{{ creatorName }}</p>
+              <p class="creator-name">{{ creatorName }}</p>
             </div>
 
             <div class="members-popup">

@@ -413,7 +413,7 @@ app-thread {
     flex-direction: column;
     position: relative;
     z-index: 2;
-    height: 100%;
+    height: calc(100vh - 130px);
   }
 
   // Optional: hide dashboard-intro on small screens if needed
@@ -428,5 +428,17 @@ app-thread {
 
   .main-container.active .sidenav-toggle-btn {
     display: flex; // or inline-flex depending on your style
+  }
+}
+
+@media (max-width: 580px) {
+  .sidenav.active,
+  .main-container.active,
+  .thread-container.active {
+    display: flex !important; // or block, depending on your layout
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+    height: 100%;
   }
 }

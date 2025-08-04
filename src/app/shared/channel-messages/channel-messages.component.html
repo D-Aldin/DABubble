@@ -4,13 +4,14 @@
   <app-timestamp-line [date]="handlingDateTime(group.date)" />
 
   @for (msg of group.messages; track msg.id) {
-  <div class="message-content" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null" [id]="'message-' + msg.id">
+  <div class="message-wrapper-full" (mouseenter)="hoveredMessageId = msg.id" (mouseleave)="hoveredMessageId = null"
+    [ngClass]="{ 'hovered': hoveredMessageId === msg.id }" [id]="'message-' + msg.id"
+    [class.hovered]="hoveredMessageId === msg.id">
 
-    <!-- EDITING MODE -->
+    <!-- Editing Mode -->
     @if (editingMessageId === msg.id) {
     <div class="edit-message-box">
       <textarea [(ngModel)]="editedMessageText" rows="3"></textarea>
-
       <div class="edit-message-toolbar">
         <button class="emoji-btn" (click)="toggleEmojiPicker(msg.id!)">
           <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
@@ -27,43 +28,46 @@
       </div>
     </div>
     } @else {
-    <!-- DEFAULT MESSAGE VIEW -->
-    <app-chat-box [src]="getAvatarPath(msg.senderId)" [userName]="getUserName(msg.senderId)"
-      [time]="(msg.timestamp.toDate() | date:'shortTime') || ''" [message]="msg.text"
-      [userMe]="msg.senderId !== currentUserId" [userId]="msg.senderId" (profileClick)="openProfileCard($event)" />
+    <!-- Default View -->
+    <div class="message-content">
+      <app-chat-box [src]="getAvatarPath(msg.senderId)" [userName]="getUserName(msg.senderId)"
+        [time]="(msg.timestamp.toDate() | date:'shortTime') || ''" [message]="msg.text"
+        [userMe]="msg.senderId !== currentUserId" [userId]="msg.senderId" (profileClick)="openProfileCard($event)"
+        [isParentHovered]="hoveredMessageId === msg.id" />
+    </div>
 
+    <!-- Reactions, replies, and last reply time -->
     <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
-        <div class="reply-info">
-          <a class="reply-count" (click)="openThread(msg.id!)">
-            {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
-          </a>
+      <div class="reply-info">
+        <a class="reply-count" (click)="openThread(msg.id!)">
+          {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+        </a>
 
-          @if (msg.reactions && objectKeys(msg.reactions).length > 0) {
-            @for (emoji of objectKeys(getReactionGroups(msg.reactions || {})); track emoji) {
-              <div class="reaction-group">
-                 <div class="reaction">
-                  {{ emoji }} {{ getReactionGroups(msg.reactions || {})[emoji].length }}
-                  <div class="tooltip">
-                    {{ getReactionTooltip(emoji, getReactionGroups(msg.reactions || {})[emoji]) }}
-                  </div>
-                </div>
-              </div>
-            }
-          }
-
-          @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
-            <span class="last-reply-time">
-              Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
-            </span>
-          }
+        @if (msg.reactions && objectKeys(msg.reactions).length > 0) {
+        @for (emoji of objectKeys(getReactionGroups(msg.reactions || {})); track emoji) {
+        <div class="reaction-group">
+          <div class="reaction">
+            {{ emoji }} {{ getReactionGroups(msg.reactions || {})[emoji].length }}
+            <div class="tooltip">
+              {{ getReactionTooltip(emoji, getReactionGroups(msg.reactions || {})[emoji]) }}
+            </div>
+          </div>
         </div>
+        }
+        }
+
+        @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
+        <span class="last-reply-time">
+          Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
+        </span>
+        }
       </div>
+    </div>
 
-
+    <!-- Hover toolbar -->
     @if (hoveredMessageId === msg.id) {
-    <div class="message-toolbar" 
-     [ngClass]="{'me': msg.senderId !== currentUserId, 'other': msg.senderId !== currentUserId}">
-
+    <div class="message-toolbar"
+      [ngClass]="{'me': msg.senderId !== currentUserId, 'other': msg.senderId !== currentUserId}">
       <button (click)="reactToChannelMessage(msg.id!, '✅')">✅</button>
       <button (click)="reactToChannelMessage(msg.id!, '👍')">👍</button>
       <button (click)="toggleEmojiPicker(msg.id!)">
@@ -73,11 +77,12 @@
         <img src="/assets/images/sidenav-img/comment.svg" alt="">
       </button>
       <button *ngIf="msg.senderId === currentUserId" (click)="startEditing(msg)">
-        <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachrich bearbeiten">
+        <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachricht bearbeiten">
       </button>
     </div>
     }
 
+    <!-- Emoji Picker -->
     @if (showEmojiPickerFor === msg.id) {
     <emoji-mart set="apple" (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">
     </emoji-mart>
@@ -87,6 +92,7 @@
   }
   }
 </div>
+
 <!-- </div> -->
 
 <!-- <div class="profile-card-overlay" *ngIf="showProfileCard" (click)="closeProfileCard()">
