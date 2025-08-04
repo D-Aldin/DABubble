@@ -52,6 +52,13 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      padding: 4px 10px 4px 6px;
+      border-radius: 30px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $secondary-color;
+      }
 
       .avatar-small {
         width: 32px;
@@ -107,6 +114,10 @@
 .user-name {
   font-weight: bold;
   margin: 0 10px 10px 0;
+
+  &:hover {
+    color: $input-field-focus-color;
+  }
 }
 
 .time {
@@ -230,6 +241,10 @@
 
       .reply-author {
         font-weight: bold;
+
+        &:hover {
+          color: $input-field-focus-color;
+        }
       }
 
       .reply-time {

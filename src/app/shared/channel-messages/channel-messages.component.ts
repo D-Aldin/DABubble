@@ -77,7 +77,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
   groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
-
   
   constructor(
     private channelService: ChannelService,
@@ -390,6 +389,4 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
-
 }

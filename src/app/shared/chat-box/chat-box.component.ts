@@ -24,6 +24,7 @@ export class ChatBoxComponent {
   @Input({ required: true }) message!: string;
   @Input({ required: true }) userMe: boolean = true;
   @Input({ required: true }) userId!: string;
+  @Input() isParentHovered: boolean = false;
   changedMessage: {
     text: string;
     tagChannel: boolean;

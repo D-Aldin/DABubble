@@ -14,6 +14,10 @@
     transition: all 0.5s ease-in-out;
 }
 
+.mobile-edit-btn {
+    display: none;
+}
+
 .resize-animate {
     transition: all 0.5s ease-in-out;
 }
@@ -203,10 +207,6 @@
                 font-weight: 500;
                 font-size: 0.9rem;
                 cursor: pointer;
-            }
-
-            .mobile-edit-btn {
-                display: none;
             }
         }
 
@@ -559,6 +559,10 @@ h3 {
 }
 
 @media (max-width: 580px) {
+    .mobile-edit-btn {
+        display: flex !important;
+    }
+
     .main-content-channel {
         height: calc(100vh - 80px);
         border-radius: 0px;
@@ -573,10 +577,6 @@ h3 {
         .popup-section-header {
             button {
                 display: none !important;
-            }
-
-            .mobile-edit-btn {
-                display: flex !important;
             }
         }
 

@@ -29,7 +29,8 @@
                (mouseenter)="hoveredMessageId = item.id ?? null"
                (mouseleave)="hoveredMessageId = null"
                [ngClass]="{ 'hovered': hoveredMessageId === item.id }"
-               [id]="'message-' + item.id">
+               [id]="'message-' + item.id"
+               [class.hovered]="hoveredMessageId === item.id">
 
             <div class="message-content">
                <ng-container *ngIf="editingMessageId === item.id; else normalMessage">
@@ -64,6 +65,7 @@
                   (profileClick)="openProfileCard(item.messageFrom)"
                   [userId]="item.messageFrom"
                   [id]="'message-' + item.id"
+                  [isParentHovered]="hoveredMessageId === item.id"
                   ></app-chat-box>
 
                   <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount" [ngClass]="{'me': item.messageFrom === currentUserId}">

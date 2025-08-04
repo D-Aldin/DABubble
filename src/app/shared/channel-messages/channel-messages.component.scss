@@ -13,14 +13,17 @@
   // transform-origin: left;
   // animation: curtainSlideIn 0.18s ease-out forwards;
 }
+
 .message-wrapper-full {
   transition: background-color 0.2s ease;
   padding: 6px 8px;
   position: relative;
+
   &.hovered {
     background-color: #eceefe;
   }
 }
+
 .message-wrapper {
   flex: 1;
   overflow-y: auto;
@@ -241,6 +244,7 @@ emoji-mart {
 }
 
 @media (max-width: 580px) {
+
   .message-reactions-container,
   .message-reactions-container.me {
     padding: 0 77px;
