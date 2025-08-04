@@ -22,6 +22,13 @@
   &.hovered {
     background-color: #eceefe;
   }
+
+}
+
+.message-wrapper-full:hover .message-options {
+  opacity: 1;
+  transform: scaleX(1) translateY(0);
+  pointer-events: auto;
 }
 
 .message-wrapper {
@@ -43,38 +50,91 @@
 }
 
 .message-toolbar {
-  position: absolute;
-  top: -1.2rem;
-  display: flex;
-  gap: 10px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 1.5rem;
-  padding: 4px 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  z-index: 10;
+  position: relative;
 
-  // Default position for other users
-  left: 1rem;
-
-  &.me {
-    left: auto;
+  &.me .message-options {
     right: 1rem;
+    left: auto;
+    transform: scaleX(-1) translateX(-10px);
   }
 
-  button {
-    background: transparent;
-    border: none;
+  &.me .emoji-button,
+  &.me img {
+    transform: scaleX(-1);
+  }
+}
+
+.message-toolbar.visible .message-options,
+.message-wrapper-full:hover .message-options {
+  opacity: 1;
+  transform: scaleX(1) translateY(0);
+  pointer-events: auto;
+}
+
+.message-options {
+  position: absolute;
+  top: -25px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: auto;
+  height: 46px;
+  border-radius: 25px 25px 25px 0;
+  border: 1px solid $input-border-color;
+  padding: 3px 15px 3px 20px;
+  gap: 5px;
+  z-index: 999;
+  animation: slideInFromLeft 0.2s ease-out forwards;
+
+  img {
+    width: 40px;
+    height: 40px;
     cursor: pointer;
-    padding: 4px;
+    transition: transform 0.15s ease;
+  }
+
+  img[src$="add_reaction.svg"]:hover {
+    content: url("../../../assets/icons/add_reaction_hover.svg");
+  }
+
+  img[src$="option.svg"]:hover {
+    content: url("../../../assets/icons/option-hover.svg");
+  }
+
+  img[src$="Answer.svg"]:hover {
+    content: url("../../../assets/icons/Answer_hover.svg");
+  }
+
+  .emoji-button {
     font-size: 18px;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
-    transition: transform 0.2s ease;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    user-select: none;
+    border-radius: 50%;
+    border-width: 1px;
+    padding: 12px;
+    transform: scaleX(-1);
 
     &:hover {
-      transform: scale(1.2);
-      cursor: pointer;
+      background-color: $secondary-color;
+      transform: scaleX(-1);
+    }
+  }
+
+  .emoji-button {
+    transform: scaleX(-1);
+    transition: transform 0.15s ease;
+
+    &:hover {
+      transform: scaleX(-1);
     }
   }
 }

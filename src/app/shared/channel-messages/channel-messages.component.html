@@ -28,6 +28,25 @@
       </div>
     </div>
     } @else {
+
+    <!-- Hover toolbar -->
+    @if (hoveredMessageId === msg.id) {
+    <div class="message-toolbar"
+      [ngClass]="{'me': msg.senderId !== currentUserId, 'other': msg.senderId !== currentUserId}">
+      <div class="message-options">
+        <span class="emoji-button" (click)="reactToChannelMessage(msg.id!, '✅')">✅</span>
+        <span class="emoji-button" (click)="reactToChannelMessage(msg.id!, '👍')">👍</span>
+
+        <img src="../../../assets/icons/add_reaction.svg" alt="Reaktion" (click)="toggleEmojiPicker(msg.id!)" />
+
+        <img src="../../../assets/icons/Answer.svg" alt="Thread öffnen" (click)="openThread(msg.id!)" />
+
+        <img *ngIf="msg.senderId === currentUserId" src="../../../assets/icons/option.svg" alt="Bearbeiten"
+          title="Nachricht bearbeiten" (click)="startEditing(msg)" />
+      </div>
+    </div>
+    }
+
     <!-- Default View -->
     <div class="message-content">
       <app-chat-box [src]="getAvatarPath(msg.senderId)" [userName]="getUserName(msg.senderId)"
@@ -63,25 +82,6 @@
         }
       </div>
     </div>
-
-    <!-- Hover toolbar -->
-    @if (hoveredMessageId === msg.id) {
-    <div class="message-toolbar"
-      [ngClass]="{'me': msg.senderId !== currentUserId, 'other': msg.senderId !== currentUserId}">
-      <button (click)="reactToChannelMessage(msg.id!, '✅')">✅</button>
-      <button (click)="reactToChannelMessage(msg.id!, '👍')">👍</button>
-      <button (click)="toggleEmojiPicker(msg.id!)">
-        <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
-      </button>
-      <button (click)="openThread(msg.id!)">
-        <img src="/assets/images/sidenav-img/comment.svg" alt="">
-      </button>
-      <button *ngIf="msg.senderId === currentUserId" (click)="startEditing(msg)">
-        <img src="/assets/images/sidenav-img/more_vert.svg" alt="" title="Nachricht bearbeiten">
-      </button>
-    </div>
-    }
-
     <!-- Emoji Picker -->
     @if (showEmojiPickerFor === msg.id) {
     <emoji-mart set="apple" (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">
