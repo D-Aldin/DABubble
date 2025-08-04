@@ -114,11 +114,13 @@
                       <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
                     </button>
                     @if (emojiPickerForMessageId === reply.id) {
+                       <div class="emoji-container">
                         <emoji-mart
                           set="apple"
                           title="Pick your emoji"
                           (emojiSelect)="addEmojiToMessage($event, reply.id!)"
                         ></emoji-mart>
+                      </div>
                     }
                     @if (reply.senderId === currentUserId) {
                       <button (click)="startEditingThread(reply)" title="Nachricht bearbeiten">

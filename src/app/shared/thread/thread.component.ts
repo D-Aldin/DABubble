@@ -161,7 +161,7 @@ export class ThreadComponent {
   }
 
   selectEmojiForMessage(messageId: string) {
-    this.emojiPickerForMessageId = messageId;
+     this.emojiPickerForMessageId = this.emojiPickerForMessageId === messageId ? null : messageId;
   }
 
   addEmojiToMessage(event: any, replyId: string) {
@@ -194,6 +194,7 @@ export class ThreadComponent {
       }
 
       updateDoc(messageRef, { reactions });
+      this.emojiPickerForMessageId = null;
     });
   }
 
