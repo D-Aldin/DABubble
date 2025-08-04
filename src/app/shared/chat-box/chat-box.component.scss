@@ -95,6 +95,7 @@
   font-weight: bold;
   margin: 0 10px 0px 0;
   width: max-content;
+  font-size: 18px;
 }
 
 .time {
@@ -271,5 +272,6 @@
 
   .thread-message {
     grid-template-columns: 60px min-content auto;
+    padding: 15px 13px 0px 13px;
   }
 }

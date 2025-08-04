@@ -300,6 +300,10 @@
   }
 }
 
+.mobile-edit-btn {
+  display: none;
+}
+
 @media (max-width: 580px) {
   .profile-card {
     max-width: 95vw !important;
@@ -307,7 +311,36 @@
     padding: 40px 20px;
     margin: 0;
 
-    .main-content,.profile-img{
+    .main-content,
+    .profile-img {
+      margin-top: 50px;
+    }
+  }
+
+  .email-link {
+    display: flex;
+    width: 90%;
+    overflow-x: auto;
+  }
+
+  .mobile-edit-btn {
+    display: flex;
+  }
+
+  .edit-button {
+    display: none;
+  }
+}
+
+@media (max-height: 900px) {
+  .profile-card {
+    max-width: 95vw !important;
+    height: auto;
+    padding: 40px 20px;
+    margin: 0;
+
+    .main-content,
+    .profile-img {
       margin-top: 50px;
     }
   }

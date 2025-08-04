@@ -11,6 +11,8 @@
          <div class="name-and-edit-button-container">
             <h2>{{name}}</h2>
             <button *ngIf="isInsertedInHeader" class="edit-button" (click)="startEdit()">Bearbeiten</button>
+            <img *ngIf="isInsertedInHeader" class="mobile-edit-btn" (click)="startEdit()"
+               src="/assets/icons/edit_icon.svg">
          </div>
          <div class="status">
             <div [ngClass]="this.active ? 'isActive' : 'inactive'"></div>

@@ -101,7 +101,7 @@ emoji-mart {
       cursor: pointer;
 
       @media (max-width: 579px) {
-        font-size: 14px;
+        font-size: 18px;
       }
     }
 
@@ -162,7 +162,7 @@ emoji-mart {
 
     .last-reply-time {
       color: #666;
-      font-size: 13px !important;
+      font-size: 14px !important;
     }
   }
 }
@@ -233,12 +233,9 @@ emoji-mart {
   height: 100%;
 }
 
-// .highlight {
-//   background-color: yellow;
-//   animation: flash 1s ease-in-out;
-// }
-
-// @keyframes flash {
-//   0%   { background-color: yellow; }
-//   100% { background-color: transparent; }
-// }
+@media (max-width: 580px) {
+  .message-reactions-container,
+  .message-reactions-container.me {
+    padding: 0 77px;
+  }
+}

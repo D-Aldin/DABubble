@@ -47,24 +47,25 @@
       line-height: 100%;
       letter-spacing: 0%;
     }
-        .thread-header {
-          display: flex;
-          align-items: center; 
-          gap: 8px; 
-    
-          .avatar-small {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-          }
-    
-          span {
-            font-size: 18px;
-            font-weight: 500;
-            color: $primary-color;
-          }
-        }
+
+    .thread-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      span {
+        font-size: 18px;
+        font-weight: 500;
+        color: $primary-color;
+      }
+    }
   }
 }
 
@@ -463,6 +464,13 @@ app-message-field {
         width: 50px;
         height: auto;
       }
+    }
+  }
+
+  .thread {
+    .headline {
+      padding: 10px 16px;
+      height: 80px;
     }
   }
 }

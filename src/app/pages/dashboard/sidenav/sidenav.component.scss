@@ -294,12 +294,12 @@ app-search-bar {
 @media (max-width: 979px) {
   app-search-bar {
     display: flex;
-    border: 1px solid black;
     border-radius: 36px;
   }
 
   .container {
     border-radius: 0px;
     min-height: calc(100vh - 80px);
+    padding: 20px;
   }
 }

@@ -25,3 +25,9 @@
   height: 0.2px;
   width: 100%;
 }
+
+@media (max-width: 580px) {
+  .section-wrapper {
+    margin: 12px 0px;
+  }
+}
