@@ -217,3 +217,9 @@
     transform: translateX(0);
   }
 }
+
+@mixin respond-between($min, $max) {
+  @media only screen and (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
