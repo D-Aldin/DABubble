@@ -1,4 +1,5 @@
 @use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as mix;
 
 .add-channel-dialog {
   background-color: white;
@@ -130,6 +131,41 @@
       }
     }
   }
+
+    @include mix.respond-between(768px, 1024px) {
+      width: 750px;
+      
+      h2 {
+        font-size: 20px;
+      }
+
+      .description {
+        font-size: 16px;
+      }
+      
+    }
+
+    @include mix.respond-between(320px, 980px) {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0px;
+    }
+
+      @include mix.respond-between(320px, 490px) {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0px;
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .description {
+        font-size: 14px;
+      }
+
+  
+    }
 }
 
 .close {}
