@@ -3,7 +3,7 @@
 
 .container {
   width: 400px;
-  min-height: calc(100vh - 140px);
+  max-height: calc(100vh - 140px);
   background-color: #fff;
   padding: 32px 30px;
   border-radius: 30px;
@@ -277,7 +277,7 @@
 }
 
 .scroll-container-dm {
-  max-height: 300px;
+  max-height: 29em;
   overflow-y: auto;
   padding-right: 6px;
   scrollbar-width: thin;
