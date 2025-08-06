@@ -68,6 +68,8 @@ export class ChannelComponent implements OnInit, AfterViewInit {
   channelId: string = '';
   showProfileCard$ = this.overlayService.isVisible$;
   selectedUser$ = this.overlayService.selectedUser$;
+  isGuestUser = false;
+  isMember = false;
 
   constructor(
     private channelService: ChannelService,
@@ -83,8 +85,10 @@ export class ChannelComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.isGuestUser = currentUser?.isAnonymous ?? false;
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id'); // NOT 'channelId'!
+      const id = params.get('id');
       if (id) {
         this.channelId = id;
         this.selectedChannelId = id;
@@ -95,16 +99,16 @@ export class ChannelComponent implements OnInit, AfterViewInit {
             this.isLoadingChannel = false;
             return;
           }
-          // console.log('Channel loaded:', channel);
           this.selectedChannel = channel;
           this.selectedChannel.members ||= [];
-
+          //Recalculate membership here
+          const currentUserId = currentUser?.uid ?? '';
+          this.isMember = this.selectedChannel.members.includes(currentUserId);
           // Load preview users (first 3)
           const previewIds = channel.members.slice(0, 3);
           this.userService.getUsersByIds(previewIds).subscribe(users => {
             this.selectedChannelPreviewUsers = users.filter(u => !!u);
           });
-
           // Load full member list with current user on top
           this.userService.getUsersByIds(channel.members).subscribe(users => {
             const currentUserId = this.authService.currentUserId;
@@ -115,25 +119,21 @@ export class ChannelComponent implements OnInit, AfterViewInit {
             });
             this.fullChannelMembers = users;
           });
-
           // Load creator info
           this.userService.getUserById(channel.creatorId).subscribe(user => {
             this.creatorName = user.name;
             this.creatorOnline = user.online;
           });
-
           this.isLoadingChannel = false;
         });
       }
     });
-
-    // Watch for global request to open "Add Channel" dialog
     this.channelService.openAddChannelDialog$.subscribe(() => {
       this.showAddChannelDialog = true;
     });
   }
 
-    ngAfterViewInit() {
+  ngAfterViewInit() {
     this.route.queryParams.subscribe(params => {
       const highlightId = params['highlight'];
       if (highlightId) {
@@ -145,7 +145,7 @@ export class ChannelComponent implements OnInit, AfterViewInit {
           }
         }, 300); // Delay to ensure messages are rendered
       }});
-    }
+  }
 
   leaveChannel() {
     const currentUserId = this.authService.currentUserId;
