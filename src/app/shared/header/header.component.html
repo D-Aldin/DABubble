@@ -1,10 +1,15 @@
 <header [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
     <div class="header-content">
         <div class="logo">
-            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" [src]="headerLogo"
-                alt="Logo" />
-            <!-- <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-name-img"
-                src="../../../assets/icons/Logo-name.svg" alt="LogoName" /> -->
+            <!-- ✅ Use this for intro routing via logo -->
+            <img *ngIf="!showBackToSidenav || currentView === 'sidenav'"
+                [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" [src]="headerLogo" alt="Logo" />
+            <div *ngIf="showBackToSidenav && currentView !== 'sidenav'" class="logo-and-heading"
+                (click)="onBackClick()">
+                <img src="../../../assets/icons/Arrow.svg" alt="">
+                <img src="../../../assets/images/sidenav-img/Workspace logo.svg" alt="">
+                <h1>Devspace</h1>
+            </div>
         </div>
 
         <app-search-bar *ngIf="showSearchBar"></app-search-bar>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnChanges, Output } from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
@@ -28,7 +28,7 @@ import { ProfileOverlayService } from '../../core/services/profile-overlay.servi
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnChanges {
   isMediumScreen: boolean = false;
   showSidenav = false;
   sidenavAnimationClass: string = '';
@@ -49,6 +49,7 @@ export class DashboardComponent {
   selectedMessageId: string = '';
   selectedChannelId: string = '';
   isIntroSectionVisible: boolean = true;
+  screenWidth: number = window.innerWidth;
   public showProfileCard$ = this.overlayService.isVisible$;
   public selectedUser$ = this.overlayService.selectedUser$;
   @Output() replyToThread = new EventEmitter<string>();
@@ -57,12 +58,16 @@ export class DashboardComponent {
   onResize() {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
+    this.screenWidth = width; // ✅ add this line
   }
+
+
 
   constructor(
     private router: Router,
     private threadService: ThreadMessagingService,
-    public overlayService: ProfileOverlayService
+    public overlayService: ProfileOverlayService,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   closeProfileCard(): void {
@@ -81,6 +86,7 @@ export class DashboardComponent {
         // Auto-switch view for mobile
         if (window.innerWidth <= 979) {
           this.currentView = 'thread';
+          this.cdRef.detectChanges(); // ✅ FIX: triggers safe change after view
         }
       } else {
         this.selectedMessageId = '';
@@ -90,6 +96,7 @@ export class DashboardComponent {
         // Auto-switch back to main if thread closes on mobile
         if (window.innerWidth <= 979) {
           this.currentView = 'main';
+          this.cdRef.detectChanges(); // ✅ FIX again
         }
       }
     });
@@ -102,17 +109,45 @@ export class DashboardComponent {
     let lastBase = '';
 
     this.router.events
-      .pipe(
-        filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)
-      )
+      .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
         this.currentUrl = event.urlAfterRedirects;
-        this.isIntroSectionVisible = this.currentUrl === '/dashboard';
+
         const baseRoute = this.currentUrl.split('/')[2] || '';
+        const isMobile = window.innerWidth <= 580;
+
+        if (this.currentUrl === '/dashboard') {
+          if (isMobile) {
+            // ✅ Mobile: show sidenav, hide intro
+            setTimeout(() => {
+              this.isIntroSectionVisible = false;
+              this.currentView = 'sidenav';
+              this.showSidenav = true;
+              this.cdRef.detectChanges();
+            }, 0);
+          } else {
+            // ✅ Desktop: show intro, hide sidenav
+            setTimeout(() => {
+              this.isIntroSectionVisible = true;
+              this.currentView = 'main';
+              this.showSidenav = false;
+              this.cdRef.detectChanges();
+            }, 0);
+          }
+        } else {
+          // ✅ Any DM or channel route: hide intro
+          this.isIntroSectionVisible = false;
+
+          // Only switch to main on mobile if currently on sidenav
+          if (isMobile && this.currentView === 'sidenav') {
+            this.currentView = 'main';
+          }
+        }
 
         if (baseRoute !== lastBase) {
           this.threadService.closeThread();
         }
+
         lastBase = baseRoute;
       });
   }
@@ -159,7 +194,7 @@ export class DashboardComponent {
         this.currentView = 'sidenav';
       }
 
-        this.sidenavAnimationClass = this.isMediumScreen ? 'slide-in-left' : 'slide-up';
+      this.sidenavAnimationClass = this.isMediumScreen ? 'slide-in-left' : 'slide-up';
     }
   }
 
@@ -210,8 +245,8 @@ export class DashboardComponent {
     if (this.isMediumScreen && this.showSidenav) {
       this.sidenavAnimationClass = 'slide-to-left';
 
-        this.showSidenav = false;
-        this.sidenavAnimationClass = '';
+      this.showSidenav = false;
+      this.sidenavAnimationClass = '';
     }
   }
 
@@ -227,4 +262,13 @@ export class DashboardComponent {
     this.currentView = 'thread';
   }
 
+  handleGoBack(): void {
+    if (window.innerWidth <= 580) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  ngOnChanges() {
+    console.log('Current view:', this.currentView);
+  }
 }

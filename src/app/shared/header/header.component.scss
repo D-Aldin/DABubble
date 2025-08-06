@@ -12,6 +12,18 @@ header {
     height: 100%;
   }
 
+  .logo-and-heading {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+
+    h1 {
+      margin-left: 8px;
+      font-size: 22px;
+    }
+  }
+
   width: 100%;
   min-height: 130px;
   background-color: $secondary-color;
