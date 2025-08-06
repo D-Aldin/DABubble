@@ -206,6 +206,11 @@ emoji-mart {
           font-weight: 500;
           z-index: 20;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          max-width: 180px;
+          overflow-y: auto;
+          white-space: pre-line;
+          flex-direction: column;
+          gap: 4px;
 
           // Optional: Tooltip arrow
           &::after {

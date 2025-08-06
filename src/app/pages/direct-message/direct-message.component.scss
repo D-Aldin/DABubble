@@ -317,6 +317,11 @@ emoji-mart {
           font-size: 13px;
           font-weight: 500;
           z-index: 20;
+          max-width: 180px;
+          overflow-y: auto;
+          white-space: pre-line;
+          flex-direction: column;
+          gap: 4px;
 
           &::after {
             content: '';
