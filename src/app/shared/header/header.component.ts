@@ -8,7 +8,7 @@ import { ProfileCardComponent } from '../profile-card/profile-card.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
-
+import { HostListener } from '@angular/core';
 
 
 @Component({
@@ -32,6 +32,8 @@ export class HeaderComponent {
   public userEmail: string = '';
   public onlineStatus: boolean | any;
   public isProfileAvatarLoading: boolean = true;
+  public headerLogo: string = "../../../assets/icons/daBubbleLogo.png"
+  public windowWidth!: number;
 
   DASHBOARD_PREFIX: string = '/dashboard';
   DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
@@ -40,11 +42,20 @@ export class HeaderComponent {
   public inputSearchBar: string = "";
 
   constructor(
+    
     public router: Router,
     private userAuthService: AuthService,
     private userService: UserService,
+
+    
   ) {
     this.handleHeaderAppearancesForRoutes();
+    this.onResize()
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(event?: any) {
+    this.windowWidth = window.innerWidth;
   }
 
   handleHeaderAppearancesForRoutes() {
@@ -115,6 +126,7 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.loadUserData();
+    this.changeLogo();
   }
 
   private async loadUserData(): Promise<void> {
@@ -180,4 +192,19 @@ export class HeaderComponent {
     }
     return currentURL;
   }
+
+changeLogo(): void {
+  this.router.events.pipe(
+    filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+  ).subscribe((event) => {
+    const url = event.urlAfterRedirects;
+
+    if (url.includes("direct-message") && this.windowWidth < 979 || url.includes("channel") && this.windowWidth < 979) {
+      this.headerLogo = "../../../assets/icons/devspace.png";
+    } else {
+      this.headerLogo = "../../../assets/icons/daBubbleLogo.png";
+    }
+  });
 }
+  }
+

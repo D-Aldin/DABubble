@@ -16,6 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { map } from 'rxjs/operators';
 import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
 
+
 @Component({
   selector: 'app-sidenav',
   standalone: true,
