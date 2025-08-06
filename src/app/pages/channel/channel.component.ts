@@ -68,6 +68,8 @@ export class ChannelComponent implements OnInit, AfterViewInit {
   channelId: string = '';
   showProfileCard$ = this.overlayService.isVisible$;
   selectedUser$ = this.overlayService.selectedUser$;
+  isGuestUser = false;
+  isMember = false;
 
   constructor(
     private channelService: ChannelService,
@@ -83,21 +85,29 @@ export class ChannelComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.isGuestUser = currentUser?.isAnonymous ?? false;
+
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id'); // NOT 'channelId'!
+      const id = params.get('id');
       if (id) {
         this.channelId = id;
         this.selectedChannelId = id;
         this.isLoadingChannel = true;
+
         this.channelService.getChannelById(id).subscribe(channel => {
           if (!channel) {
             console.warn('Channel not found in Firestore for ID:', id);
             this.isLoadingChannel = false;
             return;
           }
-          // console.log('Channel loaded:', channel);
+
           this.selectedChannel = channel;
           this.selectedChannel.members ||= [];
+
+          //Recalculate membership here
+          const currentUserId = currentUser?.uid ?? '';
+          this.isMember = this.selectedChannel.members.includes(currentUserId);
 
           // Load preview users (first 3)
           const previewIds = channel.members.slice(0, 3);
@@ -127,11 +137,11 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       }
     });
 
-    // Watch for global request to open "Add Channel" dialog
     this.channelService.openAddChannelDialog$.subscribe(() => {
       this.showAddChannelDialog = true;
     });
   }
+
 
     ngAfterViewInit() {
     this.route.queryParams.subscribe(params => {

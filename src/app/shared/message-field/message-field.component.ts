@@ -28,6 +28,11 @@ export class MessageFieldComponent implements AfterViewInit {
   isVisible: boolean = false;
   searchTerm: string = '';
   @Input() disabled: boolean = false;
+  @Input() channelId!: string;
+  @Input() isMember: boolean = true;
+  @Input() isGuestUser: boolean = false;
+  warningShown: boolean = false;
+
 
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
@@ -41,12 +46,31 @@ export class MessageFieldComponent implements AfterViewInit {
   channel$: Observable<Channel[]> = this.channelService.getChannels();
 
   captureMessage() {
+    if (!this.canSend()) {
+      this.warningShown = true;
+      return;
+    }
+
     if (this.message.trim()) {
       this.messageSend.emit(this.message);
       this.message = '';
-      console.log('message sent');
+      this.warningShown = false;
     }
   }
+
+  canSend(): boolean {
+    return this.isGuestUser || this.isMember;
+  }
+
+  handleTypingAttempt(event: Event) {
+  if (!this.isMember && !this.isGuestUser) {
+    event.preventDefault();
+    this.warningShown = true;
+    setTimeout(() => {
+      this.warningShown = false;
+    }, 3000);
+  }
+}
 
   toggleEmojiPicker() {
     this.emojiPicker = !this.emojiPicker;

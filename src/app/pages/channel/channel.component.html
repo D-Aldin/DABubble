@@ -172,7 +172,7 @@
     </div>
 
     <div class="message-field-wrapper">
-      <app-message-field (messageSend)="handleSendChannelMessage($event)"></app-message-field>
+      <app-message-field (messageSend)="handleSendChannelMessage($event)" [channelId]="selectedChannelId"  [isMember]="isMember"  [isGuestUser]="isGuestUser"></app-message-field>
     </div>
 
     <!-- Thread -->

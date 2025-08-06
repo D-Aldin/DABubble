@@ -20,7 +20,12 @@
       }
    </div>
    <div class="message-wrapper">
-      <textarea [disabled]="disabled" #inputRef name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" ></textarea>
+      <textarea [disabled]="disabled" #inputRef name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" (keydown)="handleTypingAttempt($event)" (focus)="handleTypingAttempt($event)"></textarea>
+
+       <div class="warning-message" *ngIf="warningShown">
+         ⚠️ Du bist kein Mitglied dieses Channels und kannst keine Nachricht senden.
+      </div>
+      
       <div class="button-bar">
          <div class="left-side">
             <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
