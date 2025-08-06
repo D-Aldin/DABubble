@@ -1,6 +1,5 @@
 <div class="content-wrapper">
-  <app-header [currentView]="currentView"
-    (goBackToSidenav)="handleGoBack()"></app-header>
+  <app-header [currentView]="currentView" (goBackToSidenav)="handleGoBack()"></app-header>
   <section>
     <div class="dashboard-wrapper">
       <!-- For overlay (absolute) -->
@@ -22,8 +21,8 @@
       <div class="main-container" [class.expanded]="!showSidenav" [ngClass]="{'active': currentView === 'main'}">
 
         <!-- Toggle Button  -->
-        <button *ngIf="screenWidth > 580" class="sidenav-toggle-btn" (click)="toggleSidenav()" (mouseenter)="hovered = true"
-          (mouseleave)="hovered = false">
+        <button *ngIf="screenWidth > 580" class="sidenav-toggle-btn" (click)="toggleSidenav()"
+          (mouseenter)="hovered = true" (mouseleave)="hovered = false">
           <div class="btn-content" [class.hover-blue]="hovered">
             @if (showSidenav) {
             <div class="icon-box">
@@ -72,6 +71,10 @@
   </app-profile-card>
 </div>
 
-<!-- <p style="position: fixed; bottom: 0; left: 0; background: yellow; z-index: 9999;">
-  View: {{ currentView }} | Sidenav: {{ showSidenav }} | Intro: {{ isIntroSectionVisible }}
-</p> -->
+<button [routerLink]="'/dashboard/new-message'" class="new-message-button" (click)="isHoveringNewMessageButton = false"
+  *ngIf="screenWidth <= 979 && currentView === 'sidenav'" (mouseenter)="isHoveringNewMessageButton = true"
+  (mouseleave)="isHoveringNewMessageButton = false" title="Write new message">
+  <img [src]="isHoveringNewMessageButton
+      ? './../../assets/icons/new-message-button-hover.svg'
+      : './../../assets/icons/new-message-button.svg'" alt="New Message" />
+</button>

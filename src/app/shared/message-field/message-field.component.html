@@ -23,7 +23,7 @@
       <textarea [disabled]="disabled" #inputRef name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" (keydown)="handleTypingAttempt($event)" (focus)="handleTypingAttempt($event)"></textarea>
 
        <div class="warning-message" *ngIf="warningShown">
-         ⚠️ Du bist kein Mitglied dieses Channels und kannst keine Nachricht senden.
+         ⚠️ Du musst Channel-Mitglied sein um eine Nachricht in diesem Channel schreiben zu können.
       </div>
       
       <div class="button-bar">

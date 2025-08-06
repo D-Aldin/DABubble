@@ -273,3 +273,15 @@
         }
     }
 }
+
+@media (max-width: 660px) {
+    .main-content {
+        height: calc(100vh - 80px);
+        border-radius: 0px;
+
+        header {
+            padding-right: 25px;
+            padding-left: 25px;
+        }
+    }
+}

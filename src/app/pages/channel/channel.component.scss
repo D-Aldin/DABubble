@@ -558,6 +558,20 @@ h3 {
     margin: 0 auto 25px auto;
 }
 
+@media (max-width: 979px) {
+    .main-content-channel {
+        border-radius: 0px;
+        height: calc(100vh - 130px);
+    }
+}
+
+@media (max-width:660px) {
+    .main-content-channel {
+        border-radius: 0px;
+        height: calc(100vh - 80px);
+    }
+}
+
 @media (max-width: 580px) {
     .mobile-edit-btn {
         display: flex !important;

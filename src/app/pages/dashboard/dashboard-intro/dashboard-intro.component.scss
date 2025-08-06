@@ -146,12 +146,19 @@
 @media (max-width: 979px) {
     .main-content {
         border-radius: 0px;
-        height: calc(100vh - 80px);
+        height: calc(100vh - 130px);
 
         .intro-wrapper {
             border-radius: 0;
             height: 100%;
         }
+    }
+}
+
+@media (max-width: 580px) {
+    .main-content {
+        border-radius: 0px;
+        height: calc(100vh - 80px);
     }
 }
 

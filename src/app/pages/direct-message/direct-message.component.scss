@@ -503,6 +503,12 @@ emoji-mart {
   }
 }
 
+@media (max-width:660px) {
+  section {
+    height: calc(100vh - 80px);
+  }
+}
+
 @media (max-width: 580px) {
   .headline {
     height: 80px;

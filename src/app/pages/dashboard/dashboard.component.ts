@@ -52,6 +52,7 @@ export class DashboardComponent implements OnChanges {
   screenWidth: number = window.innerWidth;
   public showProfileCard$ = this.overlayService.isVisible$;
   public selectedUser$ = this.overlayService.selectedUser$;
+  isHoveringNewMessageButton: boolean = false;
   @Output() replyToThread = new EventEmitter<string>();
 
   @HostListener('window:resize')

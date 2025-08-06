@@ -221,7 +221,9 @@ export class HeaderComponent implements OnChanges {
     ).subscribe((event) => {
       const url = event.urlAfterRedirects;
 
-      if (url.includes("direct-message") && this.windowWidth < 979 || url.includes("channel") && this.windowWidth < 979) {
+      if (url.includes("direct-message") && this.windowWidth < 580 ||
+        url.includes("channel") && this.windowWidth < 580 ||
+        url.includes("new-message") && this.windowWidth < 580) {
         this.headerLogo = "../../../assets/icons/devspace.png";
       } else {
         this.headerLogo = "../../../assets/icons/daBubbleLogo.png";
