@@ -1,10 +1,10 @@
 <header [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
     <div class="header-content">
         <div class="logo">
-            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" src="../../../assets/icons/logo.png"
+            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" [src]="headerLogo"
                 alt="Logo" />
-            <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-name-img"
-                src="../../../assets/icons/Logo-name.svg" alt="LogoName" />
+            <!-- <img [routerLink]="dashboardIntroRouting(currentURL)" class="logo-name-img"
+                src="../../../assets/icons/Logo-name.svg" alt="LogoName" /> -->
         </div>
 
         <app-search-bar *ngIf="showSearchBar"></app-search-bar>
