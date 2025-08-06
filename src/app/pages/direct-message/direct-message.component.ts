@@ -75,6 +75,7 @@ export class DirectMessageComponent
   lastReplyTimestamp: Timestamp | Date | null = null;
   usersMap: { [userId: string]: ChatUser } = {};
   directMessages: Message[] = [];
+  private previousSelectedUid: string | null = null;
 
   constructor(
     private sharedService: SharedService,
@@ -95,47 +96,43 @@ export class DirectMessageComponent
   ) { }
 
   ngOnInit() {
-  this.loadCurrentUserId();
+    this.loadCurrentUserId();
 
-  this.route.paramMap.subscribe(async (params) => {
-    const selectedUid = params.get('uid');
+    this.route.paramMap.subscribe(async (params) => {
+      const selectedUid = params.get('uid');
 
-    if (this.currentUser?.userId && selectedUid) {
-      this.areMessagesLoaded = false;
-
-      const userDoc = await this.userService.getUserDocument(selectedUid);
-      if (userDoc) {
-        this.selectedUser = {
-          uid: selectedUid,
-          ...userDoc,
-        };
-
-        await this.createConversation(this.currentUser.userId, selectedUid);
-
-        this.messagingService.getMessages(this.conversation)
-        .subscribe((messages: Message[]) => {
-          this.directMessages = messages;
-
-          const userIds = new Set<string>();
-          this.directMessages.forEach((m: Message) => {
-            if (m.reactions) {
-              Object.keys(m.reactions).forEach(uid => userIds.add(uid));
-            }
-          });
-
-          if (userIds.size > 0) {
-            this.loadUserProfiles(Array.from(userIds));
-          }
-
-          this.areMessagesLoaded = true;
-          this.cdr.detectChanges();
-        });
+      if (this.previousSelectedUid !== selectedUid) {
+        this.threadService.closeThread(); //Close threads on DM user switch
+        this.previousSelectedUid = selectedUid;
       }
-    }
-  });
-}
+      if (this.currentUser?.userId && selectedUid) {// Now continue with message loading, etc.
+        this.areMessagesLoaded = false;
 
-
+        const userDoc = await this.userService.getUserDocument(selectedUid);
+        if (userDoc) {
+          this.selectedUser = {
+            uid: selectedUid,
+            ...userDoc,
+          };
+          await this.createConversation(this.currentUser.userId, selectedUid);
+          this.messagingService.getMessages(this.conversation).subscribe((messages: Message[]) => {
+            this.directMessages = messages;
+            const userIds = new Set<string>();
+            this.directMessages.forEach((m: Message) => {
+              if (m.reactions) {
+                Object.keys(m.reactions).forEach(uid => userIds.add(uid));
+              }
+            });
+            if (userIds.size > 0) {
+              this.loadUserProfiles(Array.from(userIds));
+            }
+            this.areMessagesLoaded = true;
+            this.cdr.detectChanges();
+          });
+        }
+      }
+    });
+  }
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
     if (!timestamp) return '';
