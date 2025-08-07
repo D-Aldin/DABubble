@@ -296,10 +296,48 @@ app-search-bar {
     display: flex;
     border-radius: 36px;
   }
+  .scroll-container-dm {
+      max-height: 48em;
+  }
 
   .container {
     border-radius: 0px;
     min-height: calc(100vh - 80px);
     padding: 20px;
+  }
+}
+@media (max-width: 769px) {
+  .scroll-container-dm {
+    max-height: 27em;
+  }
+}
+@media (max-width: 541px) {
+  .scroll-container-dm {
+    max-height: 14em;
+  }
+}
+@media (max-width: 476px) {
+  .scroll-container-dm {
+    max-height: 24em;
+  }
+}
+@media (max-width: 391px) {
+  .scroll-container-dm {
+    max-height: 22em;
+  }
+}
+@media (max-width: 376px) {
+  .scroll-container-dm{
+    max-height: 11em;
+  }
+}
+@media (max-width: 361px) {
+  .scroll-container-dm {
+    max-height: 14em;
+  }
+}
+@media (max-width: 345px) {
+  .scroll-container-dm {
+    max-height: 22em;
   }
 }
