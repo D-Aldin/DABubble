@@ -67,6 +67,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+
+    .edit-button,
+    .mobile-edit-btn {
+      cursor: pointer;
+    }
+
+    .mobile-warning {
+      color: white;
+      font-size: 12px;
+      margin-top: 4px;
+      // max-width: 180px;
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      animation: fadeInSlideUp 0.2s ease-out;
+      background-color: $error-msg-color;
+    }
 
     button {
       background: none;
@@ -90,6 +113,10 @@
 
       &:focus {
         outline: none;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
       }
     }
   }

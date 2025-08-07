@@ -40,19 +40,24 @@ export class LoginComponent {
     this.authService.signInAsGuest().subscribe({
       next: async user => {
         console.log('Signed in as guest:', user.displayName, user.uid);
+
         await this.userService.setOnlineStatus(user.uid, true);
-        if (user.photoURL && user.displayName && user.email) {
-          await this.userService.createUserDocument(user.uid, user.photoURL, user.displayName, user.email);
-        }
+
+        // Always create the user document
+        await this.userService.createUserDocument(
+          user.uid,
+          user.photoURL ?? '',
+          user.displayName ?? '',
+          user.email ?? ''
+        );
+
         this.proceedToDashboard(0);
       },
       error: err => {
         console.error('Guest login failed:', err);
-        // Optional: Show toast/snackbar feedback to user
       }
     });
   }
-
 
   async onGoogleLogin(): Promise<void> {
     const result = await this.authService.loginWithGoogle();

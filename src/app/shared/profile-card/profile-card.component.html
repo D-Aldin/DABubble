@@ -9,11 +9,23 @@
    <div class="main-content">
       <div *ngIf="!isEditing; else editMode">
          <div class="name-and-edit-button-container">
-            <h2>{{name}}</h2>
-            <button *ngIf="isInsertedInHeader" class="edit-button" (click)="startEdit()">Bearbeiten</button>
-            <img *ngIf="isInsertedInHeader" class="mobile-edit-btn" (click)="startEdit()"
-               src="/assets/icons/edit_icon.svg">
+            <h2>{{ name }}</h2>
+
+            <button *ngIf="isInsertedInHeader" class="edit-button" (click)="startEdit()"
+               [disabled]="!isCurrentUserAllowedToEditName" (mouseenter)="handleHover(true)" (mouseleave)="handleHover(false)"
+               (touchstart)="handleGuestEditAttempt()">
+               Bearbeiten
+            </button>
+
+            <img *ngIf="isInsertedInHeader" class="mobile-edit-btn" src="/assets/icons/edit_icon.svg"
+               (click)="startEdit()" (mouseenter)="handleHover(true)" (mouseleave)="handleHover(false)"
+               (touchstart)="handleGuestEditAttempt()" />
+
+            <div class="mobile-warning" *ngIf="showGuestEditWarning">
+               Gastnutzer können keine Namensänderungen durchführen.
+            </div>
          </div>
+
          <div class="status">
             <div [ngClass]="this.active ? 'isActive' : 'inactive'"></div>
             @if(active) {

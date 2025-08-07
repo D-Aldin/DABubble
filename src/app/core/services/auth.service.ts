@@ -69,7 +69,7 @@ export class AuthService {
             return user;
           } catch (error) {
             console.error('Failed to update guest profile:', error);
-            return user; // Return the user even if updateProfile fails
+            return user;
           }
         })
     );
