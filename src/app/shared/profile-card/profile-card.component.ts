@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,7 +12,7 @@ import { UserService } from '../../core/services/user.service';
   templateUrl: './profile-card.component.html',
   styleUrl: './profile-card.component.scss',
 })
-export class ProfileCardComponent {
+export class ProfileCardComponent implements OnInit {
   isEditing = false;
   nameInput = '';
   isCurrentUserAllowedToEditName: boolean = false;
@@ -30,6 +30,10 @@ export class ProfileCardComponent {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<string>();
   @Output() closeCard = new EventEmitter<void>();
+
+  ngOnInit(): void {
+    this.checkIfLoggedInUserIsGuest()
+  }
 
   onClose() { //closes the player-card on close button click
     this.closeCard.emit();
@@ -52,9 +56,17 @@ export class ProfileCardComponent {
     this.save.emit(this.nameInput);
   }
 
-  checkIfLoggedInUserIsGuest() {
-    const currentUserId = this.authService.getCurrentUser();
-
+  checkIfLoggedInUserIsGuest(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser?.uid) {
+      this.userService.getUserById(currentUser.uid).subscribe(userDoc => {
+        if (userDoc?.name?.includes('Guest')) {
+          this.isCurrentUserAllowedToEditName = false;
+        } else {
+          this.isCurrentUserAllowedToEditName = true;
+        }
+      });
+    }
   }
 
   handleGuestEditAttempt(): void {

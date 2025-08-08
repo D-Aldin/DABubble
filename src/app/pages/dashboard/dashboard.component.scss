@@ -56,6 +56,20 @@ section {
   overflow: hidden;
 }
 
+.toggle-btn-wrapper {
+  position: fixed;
+  bottom: 5rem;
+  left: 0;
+  z-index: 97;
+
+  @media (min-width: 1920px) {
+    left: 50%;
+    transform: translateX(-960px); // (1920px / 2)
+  }
+}
+
+
+
 .sidenav-toggle-btn {
   position: fixed;
   bottom: 5rem;
@@ -70,7 +84,7 @@ section {
   height: 400px;
   width: 56px;
   transition: transform 0.3s ease-in-out;
-  animation: slideUpFromBottom 0.5s ease-out;
+  animation: slideUpFromBottom 0.5s ease-out !important;
 
   &:hover {
     transform: scaleX(1.1);
