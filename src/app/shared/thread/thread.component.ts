@@ -13,7 +13,6 @@ import { DirectMessagingService } from '../../core/services/direct-messaging.ser
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { ParseTagsPipe } from '../../core/pipes/tag-parser.pipe';
-import { Router } from '@angular/router';
 import { User } from '../../core/interfaces/user';
 import { Channel } from '../../core/interfaces/channel';
 import { MentioningService } from '../../core/services/mentioning.service';
@@ -30,9 +29,6 @@ export class ThreadComponent {
   isClose: boolean = false;
   message: string = '';
   emojiPicker: boolean = false;
-  @Input() messageId!: string;
-  @Input() channelId!: string;
-  @Output() closeThread = new EventEmitter<void>();
   replies: any[] = [];
   messageText: string = '';
   userMap: { [userId: string]: { name: string, avatarPath: string } } = {};
@@ -48,6 +44,9 @@ export class ThreadComponent {
   users: User[] = [];
   channels: Channel[] = [];
 
+  @Input() messageId!: string;
+  @Input() channelId!: string;
+  @Output() closeThread = new EventEmitter<void>();
 
   constructor(
     private firestore: Firestore,
@@ -58,46 +57,48 @@ export class ThreadComponent {
     private channelService: ChannelService,
     private directMessagingService: DirectMessagingService,
     private overlayService: ProfileOverlayService,
-    private router: Router,
     private mentioningService: MentioningService
-    // private userService: UserService,
-  ) { 
-
-     this.userService.getAllUsers().subscribe((user: User[]) => {
+  ) {
+    this.userService.getAllUsers().subscribe((user: User[]) => {
       this.users = user;
-      // this.changedMessage = this.changedMessageWithLinks(this.message);
     });
 
     this.channelService.getChannels().subscribe((channels: Channel[]) => {
       this.channels = channels;
-      // this.changedMessage = this.changedMessageWithLinks(this.message);
     });
   }
 
   ngOnInit(): void {
     this.threadService.threadState$.subscribe((thread: ThreadState | null) => {
-      if (thread?.channelId && thread?.messageId) {
-        this.channelId = thread.channelId;
-        this.messageId = thread.messageId;
-        this.threadType = thread.threadType; // make sure this is saved!
-        this.currentUserId = this.authService.currentUserId;
-
-        this.loadThreadMessages(this.channelId, this.messageId, this.threadType); //always load thread
-
-        if (this.threadType === 'channel') {
-          this.loadChannelUsers(this.channelId);
-          this.loadChannelName(this.channelId);
-          this.loadParentMessage(this.channelId, this.messageId);
-        } else {
-          this.loadDirectParentMessage(this.channelId, this.messageId);
-        }
+      if (!this.isValidThread(thread)) return;
+      this.setupThreadContext(thread);
+      this.loadThreadMessages(thread.channelId, thread.messageId, thread.threadType);
+      if (thread.threadType === 'channel') {
+        this.loadChannelContext(thread.channelId, thread.messageId);
+      } else {
+        this.loadDirectParentMessage(thread.channelId, thread.messageId);
       }
     });
-
   }
 
-   ngAfterViewInit() {
- 
+  private isValidThread(thread: ThreadState | null): thread is ThreadState {
+    return !!thread?.channelId && !!thread?.messageId;
+  }
+
+  private setupThreadContext(thread: ThreadState): void {
+    this.channelId = thread.channelId;
+    this.messageId = thread.messageId;
+    this.threadType = thread.threadType;
+    this.currentUserId = this.authService.currentUserId;
+  }
+
+  private loadChannelContext(channelId: string, messageId: string): void {
+    this.loadChannelUsers(channelId);
+    this.loadChannelName(channelId);
+    this.loadParentMessage(channelId, messageId);
+  }
+
+  ngAfterViewInit() {
     this.initializeMentioningHandlers();
   }
 
@@ -346,7 +347,6 @@ export class ThreadComponent {
   }
 
   loadUserProfiles(userIds: string[]) {
-    // console.log('Loading user IDs for thread:', userIds);
     this.userService.getUsersByIds(userIds).subscribe(users => {
       users.forEach(user => {
         this.userMap[user.uid] = {
@@ -354,7 +354,7 @@ export class ThreadComponent {
           avatarPath: user.avatarPath || 'assets/images/default-avatar.png'
         };
       });
-      this.cdr.detectChanges(); //to force Angular to re-render after users are loaded.
+      this.cdr.detectChanges();
     });
   }
 
@@ -395,7 +395,6 @@ export class ThreadComponent {
     }
   }
 
-
   getCurrentThread(): ThreadState | null {
     return this.threadService.getCurrentThread();
   }
@@ -420,21 +419,16 @@ export class ThreadComponent {
   }
 
   openProfileCard(userId: string): void {
-    
     const initialProfile: ProfileCard = {
       name: '...',
-      email: '', 
+      email: '',
       avatarPath: '',
       online: false,
       direktMessageLink: `/dashboard/direct-message/${userId}`
     };
-
     this.overlayService.open(initialProfile);
-
-    // Load actual user and update profile once available
     this.userService.getUserById(userId).subscribe(userDoc => {
       if (!userDoc) return;
-
       this.overlayService.updatePartial({
         name: userDoc.name,
         email: userDoc.email,

@@ -42,25 +42,33 @@ export class SearchBarComponent {
     this.currentUserId = await this.authService.currentUserId
   }
 
-  onSearch() {
+  onSearch(): void {
     const term = this.searchTerm.trim().toLowerCase();
-    if (!term || !this.currentUserId) return;
+    if (!this.shouldPerformSearch(term)) return;
+    this.searchUsers(term);
+    this.searchChannelMessages(term);
+    this.searchDirectMessages(term);
+  }
 
+  private shouldPerformSearch(term: string): boolean {
+    return !!term && !!this.currentUserId;
+  }
+
+  private searchUsers(term: string): void {
     this.searchService.searchUsers(term).subscribe(results => {
       this.users = results;
-
     });
+  }
 
-
+  private searchChannelMessages(term: string): void {
     this.searchService.searchChannelMessages(term).subscribe(results => {
       this.channelMessages = results;
-
     });
+  }
 
-
-    this.searchService.searchMyDirectMessages(term, this.currentUserId).subscribe(results => {
+  private searchDirectMessages(term: string): void {
+    this.searchService.searchMyDirectMessages(term, this.currentUserId!).subscribe(results => {
       this.directMessages = results;
-
     });
   }
 
@@ -68,7 +76,6 @@ export class SearchBarComponent {
     this.router.navigate(['/dashboard/direct-message', userId]);
     this.closeResultWindow()
   }
-
 
   openChannelMessage(channelId?: string, messageId?: string) {
     this.router.navigate(['/dashboard/channel', channelId], {
@@ -95,10 +102,4 @@ export class SearchBarComponent {
       this.directMessages = [];
     }
   }
-
-  // findUserById(id: string) {
-  //   this.userService.getUserById(id).subscribe(user => {
-  //     return user.name
-  //   })
-  // }
 }

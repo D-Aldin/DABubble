@@ -52,7 +52,6 @@ export class ResetPasswordComponent implements OnInit {
       this.oobCodeError = 'Reset code not found.';
       return;
     }
-
     const auth = getAuth();
     confirmPasswordReset(auth, this.oobCode, newPassword)
       .then(() => {
@@ -68,12 +67,10 @@ export class ResetPasswordComponent implements OnInit {
 
   passwordValidation(): string {
     const control = this.form.get('password');
-
     if (control?.touched && control?.errors) {
       if (control.errors['minlength']) {
         return 'Mindestens 8 Zeichen eingeben';
       }
-
       if (control.errors['required']) {
         return 'Bitte geben Sie ein Passwort ein.';
       }
@@ -97,11 +94,7 @@ export class ResetPasswordComponent implements OnInit {
 
   changePassword(): void {
     if (this.confirmPasswordValidation() == '') {
-      console.log('changed');
       this.resetPassword(this.form.value.password)
-      console.log(this.form.value.password);
-    } else {
-      return
-    }
+    } else { return }
   }
 }

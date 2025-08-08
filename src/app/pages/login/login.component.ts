@@ -32,7 +32,6 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      //Handle login logic
     }
   }
 

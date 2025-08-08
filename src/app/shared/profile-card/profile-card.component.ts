@@ -13,29 +13,28 @@ import { UserService } from '../../core/services/user.service';
   styleUrl: './profile-card.component.scss',
 })
 export class ProfileCardComponent implements OnInit {
-  isEditing = false;
-  nameInput = '';
+  isEditing: boolean = false;
+  nameInput: string = '';
   isCurrentUserAllowedToEditName: boolean = false;
   showGuestEditWarning: boolean = false;
-
-
-  constructor(private authService: AuthService, private userService: UserService) { }
 
   @Input({ required: true }) src!: string;
   @Input({ required: true }) name!: string;
   @Input({ required: true }) active: boolean = false;
   @Input({ required: true }) email!: string;
-  @Input() isInsertedInHeader: boolean = false; // dont set this to true when using profile-card not in header. Its already default false
+  @Input() isInsertedInHeader: boolean = false;
 
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<string>();
   @Output() closeCard = new EventEmitter<void>();
 
+  constructor(private authService: AuthService, private userService: UserService) { }
+
   ngOnInit(): void {
     this.checkIfLoggedInUserIsGuest()
   }
 
-  onClose() { //closes the player-card on close button click
+  onClose() {
     this.closeCard.emit();
   }
 

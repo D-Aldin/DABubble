@@ -23,19 +23,19 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'direct-message/:uid', // DM route with user ID
+        path: 'direct-message/:uid',
         component: DirectMessageComponent,
       },
       {
-        path: 'channel/:id', //  Channel route with channel ID
+        path: 'channel/:id',
         component: ChannelComponent
       },
       {
-        path: 'thread/:messageId', // Thread route with thread ID for channel or direct message ID
+        path: 'thread/:messageId',
         component: ThreadComponent,
       },
       {
-        path: 'new-message', //route for new-message component
+        path: 'new-message',
         component: NewMessageComponent,
       }
     ],

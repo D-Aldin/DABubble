@@ -27,12 +27,12 @@ export class MessageFieldComponent implements AfterViewInit {
   channelArr: Channel[] = [];
   isVisible: boolean = false;
   searchTerm: string = '';
+  warningShown: boolean = false;
+
   @Input() disabled: boolean = false;
   @Input() channelId!: string;
   @Input() isMember: boolean = true;
   @Input() isGuestUser: boolean = false;
-  warningShown: boolean = false;
-
 
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
@@ -50,7 +50,6 @@ export class MessageFieldComponent implements AfterViewInit {
       this.warningShown = true;
       return;
     }
-
     if (this.message.trim()) {
       this.messageSend.emit(this.message);
       this.message = '';
@@ -63,14 +62,14 @@ export class MessageFieldComponent implements AfterViewInit {
   }
 
   handleTypingAttempt(event: Event) {
-  if (!this.isMember && !this.isGuestUser) {
-    event.preventDefault();
-    this.warningShown = true;
-    setTimeout(() => {
-      this.warningShown = false;
-    }, 3000);
+    if (!this.isMember && !this.isGuestUser) {
+      event.preventDefault();
+      this.warningShown = true;
+      setTimeout(() => {
+        this.warningShown = false;
+      }, 3000);
+    }
   }
-}
 
   toggleEmojiPicker() {
     this.emojiPicker = !this.emojiPicker;
@@ -83,7 +82,6 @@ export class MessageFieldComponent implements AfterViewInit {
 
   toggleAddUser() {
     this.isUserMentionActive = !this.isUserMentionActive;
-
     if (this.isUserMentionActive == true) {
       this.message += '@';
       this.getTheUser();

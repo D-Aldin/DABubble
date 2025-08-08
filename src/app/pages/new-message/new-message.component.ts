@@ -78,7 +78,6 @@ export class NewMessageComponent implements OnInit {
   onInputChange(): void {
     this.hasTyped = true;
     const value = this.getNormalizedInput();
-
     if (value.startsWith('#')) {
       this.filteredList = this.filterChannels(value.slice(1));
     } else if (value.startsWith('@')) {
@@ -86,7 +85,6 @@ export class NewMessageComponent implements OnInit {
     } else {
       this.filteredList = this.filterUsersByEmailOrName(value);
     }
-
     this.getSelectedRecipient();
   }
 
@@ -110,10 +108,8 @@ export class NewMessageComponent implements OnInit {
     return this.userDocData.filter((user) => {
       const isGuest = user?.name?.toLowerCase().includes('guest');
       if (isGuest || !user?.email) return false;
-
       const emailMatch = user.email?.toLowerCase().includes(value);
       const nameMatch = user.name?.toLowerCase().includes(value);
-
       return emailMatch || nameMatch;
     });
   }
@@ -175,7 +171,6 @@ export class NewMessageComponent implements OnInit {
   private isRecipientDuplicate(value: string): boolean {
     const recipientData = this.getSelectedRecipientData(value);
     if (!recipientData) return false;
-
     return this.selectedRecipients.some(r => {
       if ('avatarPath' in r && 'avatarPath' in recipientData) {
         return r.id === recipientData.id;
@@ -207,14 +202,12 @@ export class NewMessageComponent implements OnInit {
       this.selectedRecipient = '';
       return;
     }
-
     this.selectedRecipient = this.inputValue.trim();
     const recipientData = this.getSelectedRecipientData(this.selectedRecipient);
   }
 
   getSelectedRecipientData(recipient: string): UserDropDown | Channel | null {
     const type = this.getInputType(recipient);
-
     switch (type) {
       case 'channel':
         return this.channelDocData.find(c => `#${c.title}` === recipient) || null;
@@ -256,7 +249,7 @@ export class NewMessageComponent implements OnInit {
   }
 
   async directMessaging(recipientData: UserDropDown): Promise<void> {
-    const currentUserId = this.getCurrentUserId(); // Get current user ID
+    const currentUserId = this.getCurrentUserId();
     const selectedUserId = recipientData?.id;
     if (!currentUserId || !selectedUserId) return;
     const conversationId = this.directMessageService.generateConversationId(currentUserId, selectedUserId);
@@ -311,7 +304,6 @@ export class NewMessageComponent implements OnInit {
   addRecipientToList(): void {
     const recipientData = this.getSelectedRecipientData(this.inputValue.trim());
     if (!recipientData) return;
-
     if (!this.isRecipientAlreadyAdded(recipientData)) {
       this.selectedRecipients.push(recipientData);
       this.sortRecipientsList();
@@ -325,10 +317,8 @@ export class NewMessageComponent implements OnInit {
     this.selectedRecipients.sort((a, b) => {
       const isAUser = 'avatarPath' in a;
       const isBUser = 'avatarPath' in b;
-
-      if (!isAUser && isBUser) return -1; // channel before user
-      if (isAUser && !isBUser) return 1;  // user after channel
-
+      if (!isAUser && isBUser) return -1;
+      if (isAUser && !isBUser) return 1;
       const aName = isAUser ? a.name.toLowerCase() : a.title.toLowerCase();
       const bName = isBUser ? b.name.toLowerCase() : b.title.toLowerCase();
       return aName.localeCompare(bName);

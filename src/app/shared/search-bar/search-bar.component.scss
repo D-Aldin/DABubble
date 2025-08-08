@@ -1,6 +1,9 @@
 @use "../../../styles/variables" as *;
 @use "../../../styles/mixins";
 
+.search-wrapper {
+	width: 100%;
+}
 
 .search-bar {
 	position: relative;

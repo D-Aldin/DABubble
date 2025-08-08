@@ -50,7 +50,6 @@ export class HeaderComponent implements OnChanges {
     public router: Router,
     private userAuthService: AuthService,
     private userService: UserService,
-    private cdRef: ChangeDetectorRef
   ) {
     this.handleHeaderAppearancesForRoutes();
     this.onResize()
@@ -58,7 +57,6 @@ export class HeaderComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentView']) {
-      // Only show back button if route is valid AND we're NOT already in sidenav view
       this.showBackToSidenav = this.shouldShowBackButtonByRoute && this.currentView !== 'sidenav';
     }
   }
@@ -83,11 +81,7 @@ export class HeaderComponent implements OnChanges {
 
   handleShowBackToSidenavButtonAppearance(url: string) {
     const isMobile = this.windowWidth <= 580;
-
-    const isInDetailView =
-      url.startsWith(this.DIRECT_MESSAGE_PREFIX) ||
-      url.startsWith(this.CHANNEL_PREFIX);
-
+    const isInDetailView = url.startsWith(this.DIRECT_MESSAGE_PREFIX) || url.startsWith(this.CHANNEL_PREFIX);
     this.shouldShowBackButtonByRoute = isMobile && isInDetailView;
   }
 
@@ -111,7 +105,6 @@ export class HeaderComponent implements OnChanges {
     } else {
       this.showProfileMenu = !this.showProfileMenu;
     }
-    // this.closeProfileMenu();
   }
 
   closeProfileMenu(): void {
@@ -124,18 +117,11 @@ export class HeaderComponent implements OnChanges {
     this.showProfileCard = !this.showProfileCard;
   }
 
-  // closeProfileMenu() {
-  //   if (this.showProfileCard == true) {
-  //     this.showProfileMenu = false;
-  //   }
-  // }
-
   logout(): void {
     const user = this.userAuthService.getCurrentUser();
     if (user?.isAnonymous) {
-      console.log('Guest user – not logging out');
       this.setUserOnlineStatus(user.uid, false);
-      this.router.navigate(['/login']); // Or wherever you want to redirect
+      this.router.navigate(['/login']);
       return;
     }
     this.userAuthService.logout().then(() => {
@@ -220,7 +206,6 @@ export class HeaderComponent implements OnChanges {
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
       const url = event.urlAfterRedirects;
-
       if (url.includes("direct-message") && this.windowWidth < 580 ||
         url.includes("channel") && this.windowWidth < 580 ||
         url.includes("new-message") && this.windowWidth < 580) {
