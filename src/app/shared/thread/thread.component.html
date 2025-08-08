@@ -69,7 +69,18 @@
         </div>
 
         <div class="answer-content">
-          @for (reply of replies; track reply.id) {
+  @for (reply of replies; track reply.id) {
+ 
+   
+    
+
+
+      <div class="emoji-wrapper">
+   <emoji-mart title="Pick your emoji…" emoji="point_up" set="apple" (emojiClick)="addEmoji($event)"
+   [hidden]="!emojiPicker"></emoji-mart>
+</div> 
+
+
           @if (userMap[reply.senderId]) {
           <div class="thread-reply" [ngClass]="{ 'me': reply.senderId === currentUserId }"
             (mouseenter)="hoveredMessageId = reply.id" (mouseleave)="hoveredMessageId = null">
@@ -92,9 +103,7 @@
                 </div>
               </div>
               } @else {
-              <div class="reply-text message">
-                {{ reply.text }}
-              </div>
+             <div class="reply-text message" [innerHTML]="reply.text | parseTags"></div>
               }
               <div class="reactions">
                 @for (reaction of getReactionArray(reply.reactions); track reaction.emoji) {
@@ -128,9 +137,10 @@
           }
           }
         </div>
+      
+        </div>
       </div>
     </div>
 
     <app-message-field (messageSend)="sendThreadMessage($event)"></app-message-field>
   </div>
-</div>

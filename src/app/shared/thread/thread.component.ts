@@ -12,11 +12,17 @@ import { ThreadState } from '../../core/interfaces/thread-state';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { ParseTagsPipe } from '../../core/pipes/tag-parser.pipe';
+import { Router } from '@angular/router';
+import { User } from '../../core/interfaces/user';
+import { Channel } from '../../core/interfaces/channel';
+import { MentioningService } from '../../core/services/mentioning.service';
+
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [CommonModule, FormsModule, PickerModule, MessageFieldComponent],
+  imports: [CommonModule, FormsModule, PickerModule, MessageFieldComponent, ParseTagsPipe],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
 })
@@ -39,6 +45,9 @@ export class ThreadComponent {
   editedMessageText: string = '';
   emojiPickerForMessageId: string | null = null;
   threadType: 'channel' | 'direct' = 'channel';
+  users: User[] = [];
+  channels: Channel[] = [];
+
 
   constructor(
     private firestore: Firestore,
@@ -48,8 +57,22 @@ export class ThreadComponent {
     private cdr: ChangeDetectorRef,
     private channelService: ChannelService,
     private directMessagingService: DirectMessagingService,
-    private overlayService: ProfileOverlayService
-  ) { }
+    private overlayService: ProfileOverlayService,
+    private router: Router,
+    private mentioningService: MentioningService
+    // private userService: UserService,
+  ) { 
+
+     this.userService.getAllUsers().subscribe((user: User[]) => {
+      this.users = user;
+      // this.changedMessage = this.changedMessageWithLinks(this.message);
+    });
+
+    this.channelService.getChannels().subscribe((channels: Channel[]) => {
+      this.channels = channels;
+      // this.changedMessage = this.changedMessageWithLinks(this.message);
+    });
+  }
 
   ngOnInit(): void {
     this.threadService.threadState$.subscribe((thread: ThreadState | null) => {
@@ -70,6 +93,12 @@ export class ThreadComponent {
         }
       }
     });
+
+  }
+
+   ngAfterViewInit() {
+ 
+    this.initializeMentioningHandlers();
   }
 
   loadDirectThreadMessages(conversationId: string, messageId: string) {
@@ -391,10 +420,10 @@ export class ThreadComponent {
   }
 
   openProfileCard(userId: string): void {
-    // Open immediately with minimal info
+    
     const initialProfile: ProfileCard = {
       name: '...',
-      email: '', // empty for now
+      email: '', 
       avatarPath: '',
       online: false,
       direktMessageLink: `/dashboard/direct-message/${userId}`
@@ -416,4 +445,10 @@ export class ThreadComponent {
     });
   }
 
+  private initializeMentioningHandlers(): void {
+    this.mentioningService.handleTagClicks({
+      onUserClick: (userId: string) => this.openProfileCard(userId)
+    });
+  }
 }
+

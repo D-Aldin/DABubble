@@ -5,9 +5,6 @@ import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
 import { User } from '../../core/interfaces/user';
 import { UserService } from '../../core/services/user.service';
-import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
-import { ProfileCard } from '../../core/interfaces/profile-card';
-import { DirectMessageComponent } from '../../pages/direct-message/direct-message.component';
 import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 
 @Component({
