@@ -116,6 +116,7 @@ export class SidenavComponent implements OnInit {
 
   emitOpenDialog() {
     this.channelService.triggerAddChannelDialog();
+    
   }
 
   handleRouteSelectionOnPageReload(): void {

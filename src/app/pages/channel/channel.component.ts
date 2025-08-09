@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
 import { ChannelMessagesComponent } from '../../shared/channel-messages/channel-messages.component';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
-import { ProfileCard } from '../../core/interfaces/profile-card';
 import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 import { AfterViewInit } from '@angular/core';
 
@@ -81,53 +80,72 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     private threadService: ThreadMessagingService,
     public overlayService: ProfileOverlayService,
     private openCardService: OpenProfileCardService,
-    
   ) { }
 
   ngOnInit(): void {
+    this.checkIfGuestUser();
+    this.handleRouteParamChanges();
+    this.listenToAddChannelDialogTrigger();
+  }
+
+  private checkIfGuestUser(): void {
     const currentUser = this.authService.getCurrentUser();
     this.isGuestUser = currentUser?.isAnonymous ?? false;
+  }
+
+  private handleRouteParamChanges(): void {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.channelId = id;
-        this.selectedChannelId = id;
-        this.isLoadingChannel = true;
-        this.channelService.getChannelById(id).subscribe(channel => {
-          if (!channel) {
-            console.warn('Channel not found in Firestore for ID:', id);
-            this.isLoadingChannel = false;
-            return;
-          }
-          this.selectedChannel = channel;
-          this.selectedChannel.members ||= [];
-          //Recalculate membership here
-          const currentUserId = currentUser?.uid ?? '';
-          this.isMember = this.selectedChannel.members.includes(currentUserId);
-          // Load preview users (first 3)
-          const previewIds = channel.members.slice(0, 3);
-          this.userService.getUsersByIds(previewIds).subscribe(users => {
-            this.selectedChannelPreviewUsers = users.filter(u => !!u);
-          });
-          // Load full member list with current user on top
-          this.userService.getUsersByIds(channel.members).subscribe(users => {
-            const currentUserId = this.authService.currentUserId;
-            users.sort((a, b) => {
-              if (a.id === currentUserId) return -1;
-              if (b.id === currentUserId) return 1;
-              return 0;
-            });
-            this.fullChannelMembers = users;
-          });
-          // Load creator info
-          this.userService.getUserById(channel.creatorId).subscribe(user => {
-            this.creatorName = user.name;
-            this.creatorOnline = user.online;
-          });
-          this.isLoadingChannel = false;
-        });
+        this.loadChannelData(id);
       }
     });
+  }
+
+  private loadChannelData(channelId: string): void {
+    this.channelId = channelId;
+    this.selectedChannelId = channelId;
+    this.isLoadingChannel = true;
+    this.channelService.getChannelById(channelId).subscribe(channel => {
+      if (!channel) {
+        this.isLoadingChannel = false;
+        return;
+      }
+      this.selectedChannel = channel;
+      this.selectedChannel.members ||= [];
+      this.setMembershipStatus(channel);
+      this.loadChannelUsers(channel);
+      this.loadChannelCreator(channel.creatorId);
+      this.isLoadingChannel = false;
+    });
+  }
+
+  private setMembershipStatus(channel: Channel): void {
+    const currentUserId = this.authService.getCurrentUser()?.uid ?? '';
+    this.isMember = channel.members.includes(currentUserId);
+  }
+
+  private loadChannelUsers(channel: Channel): void {
+    const previewIds = channel.members.slice(0, 3);
+    this.userService.getUsersByIds(previewIds).subscribe(users => {
+      this.selectedChannelPreviewUsers = users.filter(u => !!u);
+    });
+
+    this.userService.getUsersByIds(channel.members).subscribe(users => {
+      const currentUserId = this.authService.currentUserId;
+      users.sort((a, b) => (a.id === currentUserId ? -1 : b.id === currentUserId ? 1 : 0));
+      this.fullChannelMembers = users;
+    });
+  }
+
+  private loadChannelCreator(creatorId: string): void {
+    this.userService.getUserById(creatorId).subscribe(user => {
+      this.creatorName = user.name;
+      this.creatorOnline = user.online;
+    });
+  }
+
+  private listenToAddChannelDialogTrigger(): void {
     this.channelService.openAddChannelDialog$.subscribe(() => {
       this.showAddChannelDialog = true;
     });
@@ -143,29 +161,45 @@ export class ChannelComponent implements OnInit, AfterViewInit {
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             el.classList.add('highlight');
           }
-        }, 300); // Delay to ensure messages are rendered
-      }});
+        }, 300);
+      }
+    });
   }
 
-  leaveChannel() {
-    const currentUserId = this.authService.currentUserId;
-
-    if (!this.selectedChannel || !currentUserId) return;
-    if (!this.selectedChannel.members.includes(currentUserId)) { // Check if user is in the channel
-      console.warn('User is not a member of this channel.');
-      return;
-    }
-    // Remove user from members
-    const updatedMembers = this.selectedChannel.members.filter(id => id !== currentUserId);
-
-    this.channelService.updateChannel(this.selectedChannel.id, {
+  leaveChannel(): void {
+    if (!this.canLeaveChannel()) return;
+    const updatedMembers = this.getUpdatedMemberList();
+    this.channelService.updateChannel(this.selectedChannel!.id, {
       members: updatedMembers
     }).then(() => {
-      // Optionally reset state or show toast here
-      this.router.navigate(['/dashboard']); // or redirect elsewhere
-    }).catch(err => {
-      console.error('Failed to leave channel:', err);
-    });
+      this.redirectAfterLeaving();
+    }).catch(this.handleLeaveChannelError);
+  }
+
+  private canLeaveChannel(): boolean {
+    const currentUserId = this.authService.currentUserId;
+
+    if (!this.selectedChannel || !currentUserId) return false;
+
+    const isMember = this.selectedChannel.members.includes(currentUserId);
+    if (!isMember) {
+      console.warn('User is not a member of this channel.');
+    }
+
+    return isMember;
+  }
+
+  private getUpdatedMemberList(): string[] {
+    const currentUserId = this.authService.currentUserId;
+    return this.selectedChannel!.members.filter(id => id !== currentUserId);
+  }
+
+  private redirectAfterLeaving(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  private handleLeaveChannelError = (err: any): void => {
+    console.error('Failed to leave channel:', err);
   }
 
   handleOpenAddUserFromPopup() {
@@ -182,9 +216,7 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       console.warn('Missing channelId in channel component');
       return;
     }
-
     this.threadService.openThread(this.channelId, messageId, 'channel');
-
     this.router.navigate([], {
       queryParams: { thread: messageId },
       queryParamsHandling: 'merge'
@@ -227,25 +259,19 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     this.editedDescription = this.selectedChannel?.description || '';
   }
 
-
   selectChannel(channel: Channel): void {
     this.selectedChannel = channel;
-    // Load preview users
     const previewIds = channel.members.slice(0, 3);
     this.userService.getUsersByIds(previewIds).subscribe(users => {
       this.selectedChannelPreviewUsers = users;
     });
-    // ✅ Navigate away from /dashboard/direct-messages
-    // this.router.navigate(['/dashboard']);
   }
 
   toggleChannelOptionsPopup() {
     this.showChannelOptionsPopup = !this.showChannelOptionsPopup;
-
     if (this.showChannelOptionsPopup && this.selectedChannel) {
       this.editedChannelName = this.selectedChannel.title;
       this.editedDescription = this.selectedChannel.description;
-
       this.userService.getUserById(this.selectedChannel.creatorId).subscribe(user => {
         this.creatorName = user.name;
         this.creatorOnline = user.online;
@@ -253,44 +279,46 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     }
   }
 
-  editChannelName() {
-    // You can show a dialog or input to change the name
-    console.log('Edit channel name');
-  }
-
-  editChannelDescription() {
-    // You can show a dialog or input to change the description
-    console.log('Edit channel description');
-  }
-
   get selectedChannelPreviewMembers(): string[] {
     return this.selectedChannel?.members?.slice(0, 3) || [];
   }
 
-  openAddUserToChannelPopup() {//to add new user to current-channel
+  openAddUserToChannelPopup() {
     this.showPeopleDialog = true;
     this.showAddUserToChannelPopup = true;
     this.addUserMode = 'add-to-channel';
     this.selectedChannelIdForUserAdd = this.selectedChannel?.id!;
     this.selectedChannelTitleForUserAdd = this.selectedChannel?.title!;
-    console.log('Popup opens');
   }
 
-  handleUserAddConfirm(userIds: string[]) {
-    this.channelService.addUsersToChannel(this.selectedChannelIdForUserAdd, userIds).then(() => {
-      // Merge new user IDs into selectedChannel
-      if (this.selectedChannel) {
-        this.selectedChannel.members.push(...userIds.filter(id => !this.selectedChannel!.members.includes(id)));
-      }
-      // Close dialog
-      this.showAddUserToChannelPopup = false;
-      this.showPeopleDialog = false;
-      this.showPeopleDialogOnChannelCreation = false;
-      // Refresh user preview avatars
-      const previewIds = this.selectedChannel!.members.slice(0, 3);
-      this.userService.getUsersByIds(previewIds).subscribe(users => {
-        this.selectedChannelPreviewUsers = users;
-      });
+  handleUserAddConfirm(userIds: string[]): void {
+    this.channelService
+      .addUsersToChannel(this.selectedChannelIdForUserAdd, userIds)
+      .then(() => this.finalizeUserAdd(userIds));
+  }
+
+  private finalizeUserAdd(userIds: string[]): void {
+    this.mergeNewMembers(userIds);
+    this.closeUserAddDialogs();
+    this.refreshChannelPreviewAvatars();
+  }
+
+  private mergeNewMembers(userIds: string[]): void {
+    if (!this.selectedChannel) return;
+    const newIds = userIds.filter(id => !this.selectedChannel!.members.includes(id));
+    this.selectedChannel.members.push(...newIds);
+  }
+
+  private closeUserAddDialogs(): void {
+    this.showAddUserToChannelPopup = false;
+    this.showPeopleDialog = false;
+    this.showPeopleDialogOnChannelCreation = false;
+  }
+
+  private refreshChannelPreviewAvatars(): void {
+    const previewIds = this.selectedChannel!.members.slice(0, 3);
+    this.userService.getUsersByIds(previewIds).subscribe(users => {
+      this.selectedChannelPreviewUsers = users;
     });
   }
 
@@ -324,7 +352,7 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       this.channelDescription = data.description;
       this.createdChannelName = data.name;
     }
-    this.addUserMode = 'create-channel'; //Needed for correct dialog mode
+    this.addUserMode = 'create-channel';
     this.showAddChannelDialog = false;
     this.showPeopleDialog = true;
   }
@@ -335,32 +363,36 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       this.channelDescription = data.description;
       this.createdChannelName = data.name;
     }
-    this.addUserMode = 'create-channel'; //Needed for correct dialog mode
+    this.addUserMode = 'create-channel';
     this.showAddChannelDialog = false;
     this.showPeopleDialogOnChannelCreation = true;
     this.showPeopleDialog = false;
   }
 
-  async handlePeopleConfirmed(selectedUsers: string[]) {
-    let finalMembers: string[] = [];
+  async handlePeopleConfirmed(selectedUsers: string[]): Promise<void> {
+    const members = await this.resolveFinalMembers(selectedUsers);
+    const channel = this.buildNewChannel(members);
 
-    if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
-      const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
-      finalMembers = usersSnapshot.docs.map((doc) => doc.id);
-    } else {
-      finalMembers = selectedUsers;
-    }
-
-    const finalChannel = {
-      ...this.channelDataBuffer,
-      members: finalMembers,
-      creatorId: this.authService.currentUserId,
-    } as Channel;
-
-
-    this.channelService.createChannel(finalChannel).then(() => {
+    this.channelService.createChannel(channel).then(() => {
       this.closePeopleDialog();
     });
+  }
+
+  private async resolveFinalMembers(selectedUsers: string[]): Promise<string[]> {
+    if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
+      const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+      return usersSnapshot.docs.map(doc => doc.id);
+    }
+
+    return selectedUsers;
+  }
+
+  private buildNewChannel(members: string[]): Channel {
+    return {
+      ...this.channelDataBuffer,
+      members,
+      creatorId: this.authService.currentUserId,
+    } as Channel;
   }
 
   @HostListener('document:click')
@@ -395,9 +427,7 @@ export class ChannelComponent implements OnInit, AfterViewInit {
 
   handleProceedToPeopleOnChannelCreation(data: { name: string; description: string }) {
     this.channelDataBuffer = {
-      title: data.name,
-      description: data.description,
-      createdAt: new Date(),
+      title: data.name, description: data.description, createdAt: new Date(),
     };
     this.createdChannelName = data.name;
     this.closeAddChannelDialog();
@@ -405,7 +435,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       name: data.name,
       description: data.description,
     });
-
   }
 
   handleSendChannelMessage(messageText: string) {

@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  inject,
   Input,
   NgZone,
   OnInit,
@@ -12,8 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../core/services/channel.service';
 import { ChannelMessage } from '../../core/interfaces/channel-message';
-import { AsyncPipe } from '@angular/common';
-import { Observable, Subscription, take, tap } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import { Output, EventEmitter } from '@angular/core';
 import { ChatBoxComponent } from '../chat-box/chat-box.component';
 import { UserService } from '../../core/services/user.service';
@@ -22,14 +20,13 @@ import { ChatUser } from '../../core/interfaces/chat-user';
 import { map, switchMap } from 'rxjs';
 import { ChannelMessagingService } from '../../core/services/channel-messaging.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
-import { forkJoin, from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TimestampLineComponent } from '../timestamp-line/timestamp-line.component';
 import { ProfileCard } from '../../core/interfaces/profile-card';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../spinner/spinner.component';
-import { ProfileOverlayService } from '../../core/services/profile-overlay.service';    
+import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { Timestamp } from 'firebase/firestore';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { ReactionService } from '../../core/services/reaction.service';
@@ -77,9 +74,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
   groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
-  
+
   constructor(
-    private channelService: ChannelService,
     private userService: UserService,
     private authService: AuthService,
     private messagingService: ChannelMessagingService,
@@ -93,9 +89,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private reactionService: ReactionService,
     private el: ElementRef,
     private searchService: SearchService
-
   ) { }
-    
+
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
     this.isLoading = true;
@@ -158,8 +153,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     return `${emoji} ${names.join(', ')} hat reagiert`;
   }
 
-
-
   getLastReplyTime(messages: ChannelMessage[]): Date | null {
     const timestamps = messages
       .map(m => {
@@ -170,9 +163,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
         return ts as Date;
       })
       .filter(Boolean);
-
     if (timestamps.length === 0) return null;
-
     return timestamps.sort((a, b) => b.getTime() - a.getTime())[0];
   }
 
@@ -190,21 +181,36 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     dateString: string;
     messages: ChannelMessage[];
   }[] {
-    const grouped: { [key: string]: ChannelMessage[] } = {};
+    const grouped = this.groupMessagesByKey(messages);
 
-    messages.forEach((msg) => {
-      if (!msg.timestamp || typeof msg.timestamp.toDate !== 'function') {
-        // console.warn('Skipping message with invalid timestamp:', msg);
-        return;
-      }
+    return this.mapGroupedEntriesToDateObjects(grouped);
+  }
 
-      const date = msg.timestamp.toDate();
-      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  private groupMessagesByKey(messages: ChannelMessage[]): Record<string, ChannelMessage[]> {
+    const grouped: Record<string, ChannelMessage[]> = {};
 
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(msg);
-    });
+    for (const msg of messages) {
+      const key = this.getDateKeyFromTimestamp(msg.timestamp);
+      if (!key) continue;
 
+      (grouped[key] ||= []).push(msg);
+    }
+
+    return grouped;
+  }
+
+  private getDateKeyFromTimestamp(timestamp: any): string | null {
+    if (!timestamp || typeof timestamp.toDate !== 'function') return null;
+
+    const date = timestamp.toDate();
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  private mapGroupedEntriesToDateObjects(grouped: Record<string, ChannelMessage[]>): {
+    date: Date;
+    dateString: string;
+    messages: ChannelMessage[];
+  }[] {
     return Object.entries(grouped).map(([key, messages]) => {
       const [year, month, day] = key.split('-').map(Number);
       return {
@@ -217,20 +223,14 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   formatDate(date: Date): string {
     const today = new Date();
-
-    const msgDate =
-      date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
-    const todayDate =
-      today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
-
+    const msgDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    const todayDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
     if (msgDate === todayDate) return 'today';
-
-    return date.toLocaleDateString('de-DE'); // or your preferred format
+    return date.toLocaleDateString('de-DE');
   }
 
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
-
     await this.messagingService.toggleReaction(
       this.channelId,
       messageId,
@@ -247,7 +247,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       day: 'numeric'
     }).format(date);
   }
-  
+
   groupReactions(reactions: { [userId: string]: string }): {
     [emoji: string]: number;
   } {
@@ -284,13 +284,12 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     this.threadService.openThread(this.channelId, messageId, 'channel');
   }
 
-
   objectKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];
   }
 
   startEditing(msg: ChannelMessage) {
-    if (msg.senderId !== this.currentUserId) return; //only logged-in user can edit his message
+    if (msg.senderId !== this.currentUserId) return;
     this.editingMessageId = msg.id!;
     this.editedMessageText = msg.text;
     this.showEmojiPickerFor = null;
@@ -325,16 +324,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // openProfileCard(uid: string): void {
-  //   const user = this.userDataForProfileCard.find((u) =>
-  //     u.direktMessageLink.endsWith(uid)
-  //   );
-  //   if (user) {
-  //     this.selectedUserForProfileCard = user;
-  //     this.showProfileCard = true;
-  //   }
-  // }
-
   closeProfileCard(): void {
     this.showProfileCard = false;
     this.selectedUserForProfileCard = null;
@@ -351,10 +340,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       this.scrollToBottom();
-
     });
-      this.searchService.handleHighlightScroll(".message-wrapper", this.el, this.route)
-    
+    this.searchService.handleHighlightScroll(".message-wrapper", this.el, this.route)
   }
 
   ngAfterViewChecked(): void {
@@ -365,21 +352,16 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   openProfileCard(userId: string): void {
-    // Open immediately with minimal info
     const initialProfile: ProfileCard = {
       name: '...',
-      email: '', // empty for now
+      email: '',
       avatarPath: '',
       online: false,
       direktMessageLink: `/dashboard/direct-message/${userId}`
     };
-
     this.overlayService.open(initialProfile);
-
-    // Load actual user and update profile once available
     this.userService.getUserById(userId).subscribe(userDoc => {
       if (!userDoc) return;
-
       this.overlayService.updatePartial({
         name: userDoc.name,
         email: userDoc.email,

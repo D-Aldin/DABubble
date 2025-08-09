@@ -39,7 +39,6 @@ export class RegisterComponent {
 
   passwordValidation(): string {
     const control = this.form.get('password');
-
     if (control?.touched && control?.errors) {
       if (control.errors['minlength']) {
         return 'Mindestens 8 Zeichen eingeben';
@@ -54,31 +53,27 @@ export class RegisterComponent {
 
   nameValidation(): string {
     const control = this.form.get('name');
-
     if (control?.touched && control?.errors) {
-      if (control.errors['required']) {
-        return 'Bitte geben Sie ihren Namen ein';
-      }
-
-      if (control.errors['maxlength']) {
-        return 'Name darf maximal 20 Satzzeichen lang sein';
-      }
-
-      if (control.errors['pattern']) {
-        return 'Vor- und Nachnamen eingeben, ohne Sonderzeichen und Zahlen';
+      const errorKey = Object.keys(control.errors)[0];
+      switch (errorKey) {
+        case 'required':
+          return 'Bitte geben Sie ihren Namen ein';
+        case 'maxlength':
+          return 'Name darf maximal 20 Satzzeichen lang sein';
+        case 'pattern':
+          return 'Vor- und Nachnamen eingeben, ohne Sonderzeichen und Zahlen';
+        default:
+          return '';
       }
     }
-
     return '';
   }
 
   emailValidation(): string {
     const control = this.form.get('email');
-
     if (control?.touched && control?.errors) {
       return '*Diese E-Mail-Adresse ist leider ungültig.'
     }
-
     return '';
   }
 

@@ -48,27 +48,28 @@
       letter-spacing: 0%;
     }
   }
-    .warning-message {
-      color: #b00020;
-      font-size: 13px;
-      margin-top: 4px;
-      padding-left: 8px;
-      animation: fadeOut 4s ease-out forwards;
+
+  .warning-message {
+    color: #b00020;
+    font-size: 13px;
+    margin-top: 4px;
+    padding-left: 8px;
+    animation: fadeOut 4s ease-out forwards;
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
     }
-  
-    @keyframes fadeOut {
-      0% {
-        opacity: 1;
-      }
-  
-      80% {
-        opacity: 1;
-      }
-  
-      100% {
-        opacity: 0;
-      }
+
+    80% {
+      opacity: 1;
     }
+
+    100% {
+      opacity: 0;
+    }
+  }
 
   .button-bar {
     display: flex;
@@ -144,6 +145,7 @@
   bottom: 149px;
   padding: 15px;
   overflow: scroll;
+  z-index: 9;
 
   &::--webkit-scrollbar {
     display: none;

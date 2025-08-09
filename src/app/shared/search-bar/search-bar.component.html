@@ -1,49 +1,47 @@
-<div class="search-bar">
-   <input
-   type="text"
-   [(ngModel)]="searchTerm"
-   (input)="onSearch()"
-   placeholder="Search users, channels or messages..."
-   />
+<div class="search-wrapper" #searchWrapper>
+   <div class="search-bar">
+      <input type="text" [(ngModel)]="searchTerm" (focus)="isActive = true" (input)="onSearch()"
+         placeholder="Search users, channels or messages..." />
 
-   <div class="search-icon"></div>
+      <div class="search-icon"></div>
 
-   @if (searchTerm.length > 0 && isActive == false) {
-      
-   <div class="results">
-   
-      @if (users.length > 0 ) {
+      @if (searchTerm.length > 0 && isActive) {
+
+      <div class="results">
+
+         @if (users.length > 0 ) {
          <h3>👤 Users</h3>
          <div class="link-list">
             @for (user of users; track user) {
-               <a (click)="openDirectChat(user.id || '')">{{user.name}}</a>
+            <a (click)="openDirectChat(user.id || '')">{{user.name}}</a>
             }
          </div>
-      }
+         }
 
-      @if (channelMessages.length > 0) {
-         <h3>💬 Channel Messages</h3>
+         @if (channelMessages.length > 0) {
+         <h3><b>#</b> Channel Messages</h3>
          <div class="link-list">
             @for (msg of channelMessages; track msg) {
-               <a (click)="openChannelMessage(msg.channelId, msg.id)" >{{msg.text}}</a>
-               
+            <a (click)="openChannelMessage(msg.channelId, msg.id)">{{msg.text}}</a>
+
             }
          </div>
-      }
+         }
 
-      @if (directMessages.length > 0) {
+         @if (directMessages.length > 0) {
          <h3>🔒 Your Direct Messages</h3>
          <div class="link-list">
             @for (msg of directMessages; track msg) {
-               <a (click)="openDirectMessage(msg.messageTo, msg.id)">{{msg.message}}</a>
-              <!-- <span>{{findUserById(msg.messageFrom)}} / {{findUserById(msg.messageTo)}}</span> -->
+            <a (click)="openDirectMessage(msg.messageTo, msg.id)">{{msg.message}}</a>
+            <!-- <span>{{findUserById(msg.messageFrom)}} / {{findUserById(msg.messageTo)}}</span> -->
             }
          </div>
-      }
+         }
 
-      @if (users.length + channelMessages.length + directMessages.length === 0) {
+         @if (users.length + channelMessages.length + directMessages.length === 0) {
          <p>No results found.</p>
-      }
+         }
 
+      </div>
+      }
    </div>
-}

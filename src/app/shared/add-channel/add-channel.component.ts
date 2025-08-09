@@ -15,27 +15,27 @@ import { Firestore } from '@angular/fire/firestore';
   styleUrl: './add-channel.component.scss'
 })
 export class AddChannelComponent {
-  @Input() channelName: string = ''; // This is required to receive the input from parent
+  @Input() channelName: string = '';
   @Output() close = new EventEmitter<void>();
   @Output() complete = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
   @Output() openAddPeopleDialog = new EventEmitter<void>();
   @Output() proceedToPeople = new EventEmitter<{ name: string; description: string }>();
   @Output() confirm = new EventEmitter<{ title: string; description: string }>();
+
   channelDescription = '';
   showPeopleStep = false;
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private firestore: Firestore) {
     this.form = this.fb.group({
-  channelname: ['', {
-    validators: [Validators.required, Validators.minLength(4)],
-    asyncValidators: [this.channelNameTakenValidator.bind(this)],
-    updateOn: 'blur' // validation runs when user finishes typing or leaves input
-  }],
-  channeldescription: [''],
-});
-
+      channelname: ['', {
+        validators: [Validators.required, Validators.minLength(4)],
+        asyncValidators: [this.channelNameTakenValidator.bind(this)],
+        updateOn: 'blur'
+      }],
+      channeldescription: [''],
+    });
   }
 
   proceedToAddPeople() {
@@ -43,7 +43,6 @@ export class AddChannelComponent {
       this.form.markAllAsTouched();
       return;
     }
-
     this.proceedToPeople.emit({
       name: this.form.value.channelname,
       description: this.form.value.channeldescription
@@ -51,8 +50,7 @@ export class AddChannelComponent {
   }
 
   handlePeopleAdded(event: any) {
-    console.log('Users added:', event);
-    this.close.emit(); // Close the whole dialog after final step
+    this.close.emit();
   }
 
   cancelAddPeople() {
@@ -66,14 +64,16 @@ export class AddChannelComponent {
   channelNameValidation(): string {
     const control = this.form.get('channelname');
     if (control?.touched && control?.errors) {
-      if (control.errors['minlength']) {
-        return 'Der Name muss mindestens 4 Zeichen beinhalten';
-      }
-      if (control.errors['required']) {
-        return 'Bitte geben Sie einen Namen ein.';
-      }
-      if (control.errors['duplicate']) {
-        return 'Ein Channel mit diesem Namen existiert bereits. Bitte wählen Sie einen anderen.';
+      const errorKey = Object.keys(control.errors)[0];
+      switch (errorKey) {
+        case 'minlength':
+          return 'Der Name muss mindestens 4 Zeichen beinhalten';
+        case 'required':
+          return 'Bitte geben Sie einen Namen ein.';
+        case 'duplicate':
+          return 'Ein Channel mit diesem Namen existiert bereits. Bitte wählen Sie einen anderen.';
+        default:
+          return '';
       }
     }
     return '';
@@ -82,12 +82,9 @@ export class AddChannelComponent {
   async channelNameTakenValidator(control: FormControl) {
     const name = control.value.trim();
     if (!name) return Promise.resolve(null);
-
     const q = query(collection(this.firestore, 'channels'), where('title', '==', name));
-
     return getDocs(q).then(snapshot => {
       return snapshot.empty ? null : { duplicate: true };
     });
   }
-
 }

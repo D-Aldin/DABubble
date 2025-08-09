@@ -34,21 +34,34 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subscribeToUserAuth();
+    this.setToast(false, '');
+  }
+
+  private subscribeToUserAuth(): void {
     this.userAuthService.user$.subscribe((user) => {
-      if (
-        !user &&
-        this.router.url !== '/login' &&
-        this.router.url !== '/reset-request' &&
-        this.router.url !== '/reset-password' &&
-        this.router.url !== '/privacy-policy'
-      ) {
-        if (!this.userAuthService.loggedOutManually) {
-          this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
-        }
-        this.userAuthService.loggedOutManually = false;
+      if (this.shouldRedirectToLogin(user)) {
+        this.handleUnauthorizedAccess();
       }
     });
-    this.setToast(false, '');
+  }
+  
+  private shouldRedirectToLogin(user: any): boolean {
+    const url = this.router.url;
+    const allowedPaths = [
+      '/login',
+      '/reset-request',
+      '/reset-password',
+      '/privacy-policy',
+    ];
+    return !user && !allowedPaths.includes(url);
+  }
+
+  private handleUnauthorizedAccess(): void {
+    if (!this.userAuthService.loggedOutManually) {
+      this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
+    }
+    this.userAuthService.loggedOutManually = false;
   }
 
   setToast(show: boolean, message: string): void {

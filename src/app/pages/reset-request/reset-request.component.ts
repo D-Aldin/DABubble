@@ -8,7 +8,7 @@ import { UserService } from '../../core/services/user.service';
 import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
 import { CommonModule } from '@angular/common';
 import { FirebaseError } from 'firebase/app';
-import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { ActionCodeSettings, getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 @Component({
   selector: 'app-reset-request',
@@ -32,31 +32,38 @@ export class ResetRequestComponent {
 
   emailValidation(): string {
     const control = this.form.get('email');
-
     if (control?.touched && control?.errors) {
       return '*Diese E-Mail-Adresse ist leider ungültig.'
     }
-
     return '';
   }
 
   sendResetEmail(email: string): void {
     const auth = getAuth();
-    const actionCodeSettings = {
+    const settings = this.getResetEmailSettings();
+
+    sendPasswordResetEmail(auth, email, settings)
+      .then(() => this.handleResetSuccess())
+      .catch((error) => this.handleResetError(error));
+  }
+
+  private getResetEmailSettings(): ActionCodeSettings {
+    return {
       url: 'http://localhost:4200/reset-password',
       handleCodeInApp: true,
       dynamicLinkDomain: 'dabubble-64746.firebaseapp.com'
     };
-    sendPasswordResetEmail(auth, email, actionCodeSettings)
-      .then(() => {
-        this.showSuccessToast = true; // optional feedback
-        this.showErrorToast = false;
-      })
-      .catch((error) => {
-        console.error('Error sending reset email:', error.message);
-        this.showSuccessToast = false;
-        this.showErrorToast = true;
-      });
+  }
+
+  private handleResetSuccess(): void {
+    this.showSuccessToast = true;
+    this.showErrorToast = false;
+  }
+
+  private handleResetError(error: any): void {
+    console.error('Error sending reset email:', error.message);
+    this.showSuccessToast = false;
+    this.showErrorToast = true;
   }
 
   ifFormValid(): boolean {

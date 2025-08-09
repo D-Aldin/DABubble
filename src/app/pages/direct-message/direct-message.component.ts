@@ -1,6 +1,6 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild,
+import {
+  AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild,
 } from '@angular/core';
-import { SharedService } from '../../core/services/shared.service';
 import { CommonModule } from '@angular/common';
 import { Subscription, take } from 'rxjs';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
@@ -23,8 +23,6 @@ import { Observable } from 'rxjs';
 import { ReactionService } from '../../core/services/reaction.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { SearchService } from '../../core/services/search.service';
-
-
 
 interface CurrentUserId {
   userId: string;
@@ -60,16 +58,10 @@ export class DirectMessageComponent
   showProfileCard: boolean = false;
   selectedUserId: string = '';
   areMessagesRendered: boolean = false;
-
-  @ViewChild('scrollContainer')
-  private scrollContainer?: ElementRef<HTMLElement>;
-  @ViewChild('messageInput') messageFieldComponent!: MessageFieldComponent;
-
   hoveredMessageId: string | null = null;
   showEmojiPickerFor: string | null = null;
   editingMessageId: string | null = null;
   editedMessageText: string = '';
-  @Output() replyToMessage = new EventEmitter<string>();
   currentUserId: string = '';
   replyCount: number = 0;
   lastReplyTimestamp: Timestamp | Date | null = null;
@@ -77,8 +69,12 @@ export class DirectMessageComponent
   directMessages: Message[] = [];
   private previousSelectedUid: string | null = null;
 
+  @Output() replyToMessage = new EventEmitter<string>();
+  @ViewChild('scrollContainer')
+  private scrollContainer?: ElementRef<HTMLElement>;
+  @ViewChild('messageInput') messageFieldComponent!: MessageFieldComponent;
+
   constructor(
-    private sharedService: SharedService,
     public authService: AuthService,
     private messagingService: DirectMessagingService,
     private userService: UserService,
@@ -95,43 +91,55 @@ export class DirectMessageComponent
     private el: ElementRef<HTMLElement>
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadCurrentUserId();
-
     this.route.paramMap.subscribe(async (params) => {
       const selectedUid = params.get('uid');
-
+      if (!selectedUid) return;
       if (this.previousSelectedUid !== selectedUid) {
-        this.threadService.closeThread(); //Close threads on DM user switch
+        this.threadService.closeThread();
         this.previousSelectedUid = selectedUid;
       }
-      if (this.currentUser?.userId && selectedUid) {// Now continue with message loading, etc.
-        this.areMessagesLoaded = false;
+      if (!this.currentUser?.userId) return;
+      await this.handleDirectMessageLoad(selectedUid);
+    });
+  }
 
-        const userDoc = await this.userService.getUserDocument(selectedUid);
-        if (userDoc) {
-          this.selectedUser = {
-            uid: selectedUid,
-            ...userDoc,
-          };
-          await this.createConversation(this.currentUser.userId, selectedUid);
-          this.messagingService.getMessages(this.conversation).subscribe((messages: Message[]) => {
-            this.directMessages = messages;
-            const userIds = new Set<string>();
-            this.directMessages.forEach((m: Message) => {
-              if (m.reactions) {
-                Object.keys(m.reactions).forEach(uid => userIds.add(uid));
-              }
-            });
-            if (userIds.size > 0) {
-              this.loadUserProfiles(Array.from(userIds));
-            }
-            this.areMessagesLoaded = true;
-            this.cdr.detectChanges();
-          });
-        }
+  private async handleDirectMessageLoad(selectedUid: string): Promise<void> {
+    this.areMessagesLoaded = false;
+    const userDoc = await this.userService.getUserDocument(selectedUid);
+    if (!userDoc) return;
+    this.setSelectedUser(selectedUid, userDoc);
+    await this.createConversation(this.currentUser!.userId, selectedUid);
+    this.subscribeToDirectMessages();
+  }
+
+  private setSelectedUser(uid: string, userDoc: any): void {
+    this.selectedUser = {
+      uid,
+      ...userDoc,
+    };
+  }
+
+  private subscribeToDirectMessages(): void {
+    this.messagingService.getMessages(this.conversation).subscribe((messages: Message[]) => {
+      this.directMessages = messages;
+      this.loadReactorProfiles(messages);
+      this.areMessagesLoaded = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  private loadReactorProfiles(messages: Message[]): void {
+    const userIds = new Set<string>();
+    messages.forEach((m) => {
+      if (m.reactions) {
+        Object.keys(m.reactions).forEach(uid => userIds.add(uid));
       }
     });
+    if (userIds.size > 0) {
+      this.loadUserProfiles(Array.from(userIds));
+    }
   }
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
@@ -142,7 +150,6 @@ export class DirectMessageComponent
       minute: '2-digit'
     }).format(date);
   }
-
 
   objectKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];
@@ -158,23 +165,21 @@ export class DirectMessageComponent
     return collectionData(sortByTime, { idField: 'id' }) as Observable<Message[]>;
   }
 
+  openThread(messageId: string) {
+    if (!messageId) return;
 
-openThread(messageId: string) {
-  if (!messageId) return;
+    this.replyToMessage.emit(messageId);
+    this.threadService.openThread(this.conversation, messageId, 'direct');
 
-  this.replyToMessage.emit(messageId);
-  this.threadService.openThread(this.conversation, messageId, 'direct');
-
-  this.router.navigate([], {
-    queryParams: { thread: messageId, threadType: 'direct' },
-    queryParamsHandling: 'merge',
-  });
-}
-
+    this.router.navigate([], {
+      queryParams: { thread: messageId, threadType: 'direct' },
+      queryParamsHandling: 'merge',
+    });
+  }
 
   toggleEmojiPicker(messageId: string) {
-  this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
-}
+    this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
+  }
 
   startEditing(msg: Message) {
     if (msg.messageFrom !== this.currentUserId) return;//only logged-in user can edit his message
@@ -184,31 +189,29 @@ openThread(messageId: string) {
     this.hoveredMessageId = null;
   }
 
-cancelEditing() {
-  this.editingMessageId = null;
-  this.editedMessageText = '';
-}
-
-appendEmojiToEdit(emoji: string) {
-  this.editedMessageText += emoji;
-}
-
-async saveEditedMessage(msgId: string) {
-  if (!msgId || !this.editedMessageText.trim()) return;
-  await this.messagingService.updateDirectMessage(this.conversation, msgId, this.editedMessageText.trim());
-  this.cancelEditing();
+  cancelEditing() {
+    this.editingMessageId = null;
+    this.editedMessageText = '';
   }
-  
+
+  appendEmojiToEdit(emoji: string) {
+    this.editedMessageText += emoji;
+  }
+
+  async saveEditedMessage(msgId: string) {
+    if (!msgId || !this.editedMessageText.trim()) return;
+    await this.messagingService.updateDirectMessage(this.conversation, msgId, this.editedMessageText.trim());
+    this.cancelEditing();
+  }
+
   reactToDirectMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.conversation) return;
     if (!this.currentUser?.userId) return;
     this.reactionService.toggleReaction('dm', this.conversation, messageId, emoji, this.currentUser?.userId);
   }
 
-
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUser?.userId || !this.conversation) return;
-
     await this.messagingService.toggleReaction(
       this.conversation,
       messageId,
@@ -244,15 +247,12 @@ async saveEditedMessage(msgId: string) {
     });
   }
 
-
-
-  /** called once view is created; useful for initial deep‑link load */
   ngAfterViewInit(): void {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
       this.scrollToBottom();
     });
     this.searchService.handleHighlightScroll(".message", this.el, this.route)
-    
+
   }
 
   ngOnDestroy() {
@@ -267,10 +267,9 @@ async saveEditedMessage(msgId: string) {
       this.currentUser = {
         userId: userFromAuthService.uid,
       };
-      this.currentUserId = userFromAuthService.uid; 
+      this.currentUserId = userFromAuthService.uid;
     }
   }
-
 
   async createConversation(currentUserId: string, selectedUserId: string): Promise<void> {
     const conversationId = this.messagingService.generateConversationId(currentUserId, selectedUserId);
@@ -284,55 +283,61 @@ async saveEditedMessage(msgId: string) {
     await this.loadMessages(conversationId); // fully awaited now
   }
 
-
   onMessageSend(msg: string) {
     const from = this.currentUser?.userId;
     const to = this.selectedUser?.uid;
-
     if (from && to) {
       this.messagingService.sendDirectMsg(this.conversation, from, to, msg);
     } else {
       console.error('User IDs are missing. Cannot send message.');
     }
-
     this.loadMessages(this.conversation);
   }
 
   async loadMessages(id: string): Promise<void> {
-    this.subscription?.unsubscribe();
-
-    // 🧹 Clear old messages immediately before rendering anything
-    this.messages = [];
-    this.areMessagesRendered = false;
-    this.cdr.detectChanges();
+    this.prepareForNewMessages();
 
     this.subscription = this.messagingService.getMessages(id).subscribe(async (msg) => {
-      const senderIds = [...new Set(msg.map((m) => m.messageFrom))];
-
-      for (const uid of senderIds) {
-        if (!this.userNamesMap[uid]) {
-          this.userNamesMap[uid] = await this.getCurrentUserName(uid);
-        }
-        if (!this.userAvatarsMap[uid]) {
-          this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
-        }
-      }
-
-      this.messages = msg;
-      this.checkArray(this.messages);
-
-      // Mark messages fully rendered after change detection
-      this.cdr.detectChanges();
-      setTimeout(() => {
-        this.areMessagesRendered = true;
-        this.zone.onStable.pipe(take(1)).subscribe(() => {
-          this.scrollToBottom();
-        });
-        this.cdr.detectChanges();
-      });
+      await this.enrichMessagesWithUserData(msg);
+      this.updateMessageState(msg);
+      this.renderMessages();
     });
   }
 
+  private prepareForNewMessages(): void {
+    this.subscription?.unsubscribe();
+    this.messages = [];
+    this.areMessagesRendered = false;
+    this.cdr.detectChanges();
+  }
+
+  private async enrichMessagesWithUserData(messages: Message[]): Promise<void> {
+    const senderIds = [...new Set(messages.map((m) => m.messageFrom))];
+    for (const uid of senderIds) {
+      if (!this.userNamesMap[uid]) {
+        this.userNamesMap[uid] = await this.getCurrentUserName(uid);
+      }
+      if (!this.userAvatarsMap[uid]) {
+        this.userAvatarsMap[uid] = await this.getCurrentUserAvatar(uid);
+      }
+    }
+  }
+
+  private updateMessageState(messages: Message[]): void {
+    this.messages = messages;
+    this.checkArray(this.messages);
+    this.cdr.detectChanges();
+  }
+
+  private renderMessages(): void {
+    setTimeout(() => {
+      this.areMessagesRendered = true;
+      this.zone.onStable.pipe(take(1)).subscribe(() => {
+        this.scrollToBottom();
+      });
+      this.cdr.detectChanges();
+    });
+  }
 
   checkIfMessageIsFromLoggedInUser(index: number): boolean {
     const userFromAuthService = this.authService.getCurrentUser();
@@ -366,7 +371,6 @@ async saveEditedMessage(msgId: string) {
 
   scrollToBottom(): void {
     if (!this.scrollContainer) {
-      // element not in DOM yet – nothing to do
       return;
     }
     const el = this.scrollContainer.nativeElement;
@@ -398,7 +402,6 @@ async saveEditedMessage(msgId: string) {
 
   toggleProfileCardOnClick(userId: string): void {
     this.showProfileCard = !this.showProfileCard;
-    // this.selectedUserId = this.userNamesMap[userId]
   }
 
   closeProfileCard(): void {

@@ -16,24 +16,52 @@ body {
   flex-direction: column;
   position: relative;
 
-  .signup-link {
-    position: absolute;
-    top: -7rem;
-    right: 2rem;
+  .signup-link-box {
+    margin-top: 12px;
+    display: none;
+    position: relative;
+    text-align: center;
+    padding: 1rem;
     font-size: 0.9rem;
-    color: black;
-    display: flex;
-    gap: 0.3rem;
-    align-items: center;
-    flex-direction: column;
+    color: #333;
 
-    a {
-      color: #6c63ff;
-      font-weight: 500;
+
+    .signup-text {
+      margin: 0 0 0.5rem 0;
+      font-weight: 400;
+      font-style: Regular;
+      font-size: 18px;
+      line-height: 100%;
+      letter-spacing: 0%;
+      text-align: right;
+    }
+
+    .link-container {
+      color: $primary-color;
       text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s;
+      padding-top: 10px;
+      padding-right: 15px;
+      padding-bottom: 10px;
+      padding-left: 15px;
+      border-radius: 25px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: 125ms ease-in-out;
+      border: 1px solid $primary-color;
+      color: $button;
 
-      &:hover {
-        text-decoration: underline;
+
+      .signup-link {
+        color: $button;
+        text-decoration: none;
+        font-weight: 700;
+        transition: color 0.125s;
+        font-style: Regular;
+        font-size: 18px;
+        line-height: 120%;
+        letter-spacing: 0%;
       }
     }
   }
@@ -369,5 +397,11 @@ body {
 @media (max-width: 590px) {
   .login-card {
     padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 660px) {
+  .signup-link-box {
+    display: block !important;
   }
 }
