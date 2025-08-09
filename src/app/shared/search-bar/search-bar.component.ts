@@ -8,7 +8,6 @@ import { DirectMessage } from '../../core/interfaces/direct-message';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
-import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-search-bar',

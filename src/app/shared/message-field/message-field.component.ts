@@ -28,12 +28,10 @@ export class MessageFieldComponent implements AfterViewInit {
   isVisible: boolean = false;
   searchTerm: string = '';
   warningShown: boolean = false;
-
   @Input() disabled: boolean = false;
   @Input() channelId!: string;
   @Input() isMember: boolean = true;
   @Input() isGuestUser: boolean = false;
-
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
   constructor(

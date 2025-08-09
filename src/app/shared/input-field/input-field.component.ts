@@ -31,10 +31,8 @@ export class InputFieldComponent {
   @Output() focus = new EventEmitter<FocusEvent>();
   @Output() blur = new EventEmitter<FocusEvent>();
   @Output() ngModelChange = new EventEmitter<string>();
-
   value: string = '';
   isDisabled: boolean = false;
-
   onChange = (_: any) => { };
   onTouched = () => { };
 

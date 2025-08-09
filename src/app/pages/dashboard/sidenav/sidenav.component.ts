@@ -5,12 +5,9 @@ import { DirectMessagingService } from '../../../core/services/direct-messaging.
 import { filter, Observable, take } from 'rxjs';
 import { ChatUser } from '../../../core/interfaces/chat-user';
 import { Channel } from '../../../core/interfaces/channel';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 import { SharedService } from '../../../core/services/shared.service';
-import { User } from 'firebase/auth';
-import { user } from '@angular/fire/auth';
-import { ProfileCardComponent } from "../../../shared/profile-card/profile-card.component";
 import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { map } from 'rxjs/operators';
@@ -30,7 +27,7 @@ export class SidenavComponent implements OnInit {
   usersArray: ChatUser[] = [];
   currentURL: string = '';
   isURLChannel: boolean | null = null;
-  bounceMap: { [uid: string]: boolean } = {}; //For bounce animation when selecting user
+  bounceMap: { [uid: string]: boolean } = {}; 
 
   constructor(
     private sharedService: SharedService,
@@ -95,7 +92,7 @@ export class SidenavComponent implements OnInit {
   selectUser(userName: string): void {
     const selectedUser = this.usersArray.find((user) => user.name === userName);
     if (selectedUser) {
-      this.selectedUserId = selectedUser.uid; // ✅ used for styling
+      this.selectedUserId = selectedUser.uid; 
       this.sharedService.setData(selectedUser);
       this.router.navigate(['/dashboard/direct-message', this.selectedUserId]);
     }

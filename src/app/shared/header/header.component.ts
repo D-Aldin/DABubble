@@ -37,10 +37,8 @@ export class HeaderComponent implements OnChanges {
   public showBackToSidenav: boolean = false;
   public shouldShowBackButtonByRoute: boolean = false;
   public inputSearchBar: string = "";
-
   @Output() goBackToSidenav = new EventEmitter<void>();
   @Input() currentView: 'sidenav' | 'main' | 'thread' = 'main';
-
   DASHBOARD_PREFIX: string = '/dashboard';
   DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
   CHANNEL_PREFIX: string = '/dashboard/channel';
@@ -140,7 +138,7 @@ export class HeaderComponent implements OnChanges {
   private async loadUserData(): Promise<void> {
     const currentUser = this.getCurrentUser();
     if (!currentUser) return;
-    await this.fetchAndSetUserDocument(currentUser.uid); // 👈 await
+    await this.fetchAndSetUserDocument(currentUser.uid); 
     this.setUserEmail();
     this.setUserOnlineStatus(currentUser.uid, true);
   }

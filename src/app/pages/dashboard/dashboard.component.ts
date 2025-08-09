@@ -59,7 +59,7 @@ export class DashboardComponent {
   onResize() {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
-    this.screenWidth = width; // ✅ add this line
+    this.screenWidth = width; 
   }
 
   constructor(
@@ -81,7 +81,7 @@ export class DashboardComponent {
   }
 
   private initializeResponsiveBehavior(): void {
-    this.onResize(); // Sets screen width on load
+    this.onResize(); 
   }
 
   private listenToThreadState(): void {

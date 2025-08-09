@@ -24,8 +24,7 @@ export class AddPeopleComponent {
   searchResults: typeof this.users = [];
   selectedUserObjects: typeof this.users = [];
   @Input() mode: 'create-channel' | 'add-to-channel' = 'create-channel';
-  @Input() channelId?: string; // used only for 'add-to-channel'
-
+  @Input() channelId?: string; 
 
   constructor(private userService: UserService) { }
 
@@ -43,9 +42,8 @@ export class AddPeopleComponent {
         user.name?.toLowerCase().includes(term) && 
         !this.selectedUserObjects.some(u => u.id === user.id)
       )
-      .slice(0, 4); // limit result length
+      .slice(0, 4); 
   }
-
 
   selectUser(user: { id: string; name: string; avatarPath: string }) {
     this.selectedUserObjects.push(user);
@@ -64,8 +62,6 @@ export class AddPeopleComponent {
       this.confirm.emit(this.selectedUsers);
       return;
     }
-
-    // default: create-channel
     if (this.addAllMembers) {
       this.confirm.emit(['ALL']);
     } else {
@@ -75,6 +71,5 @@ export class AddPeopleComponent {
 
   cancelDialog() {
     this.cancel.emit();
-    console.log('dialog closed');
   }
 }

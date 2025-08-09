@@ -22,7 +22,6 @@ export class AddChannelComponent {
   @Output() openAddPeopleDialog = new EventEmitter<void>();
   @Output() proceedToPeople = new EventEmitter<{ name: string; description: string }>();
   @Output() confirm = new EventEmitter<{ title: string; description: string }>();
-
   channelDescription = '';
   showPeopleStep = false;
   form: FormGroup;

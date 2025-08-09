@@ -43,7 +43,6 @@ export class ThreadComponent {
   threadType: 'channel' | 'direct' = 'channel';
   users: User[] = [];
   channels: Channel[] = [];
-
   @Input() messageId!: string;
   @Input() channelId!: string;
   @Output() closeThread = new EventEmitter<void>();
@@ -62,7 +61,6 @@ export class ThreadComponent {
     this.userService.getAllUsers().subscribe((user: User[]) => {
       this.users = user;
     });
-
     this.channelService.getChannels().subscribe((channels: Channel[]) => {
       this.channels = channels;
     });
@@ -107,9 +105,7 @@ export class ThreadComponent {
       this.firestore,
       `directMessages/${conversationId}/messages/${messageId}/threads`
     );
-
     const q = query(threadCollection, orderBy('timestamp', 'asc'));
-
     onSnapshot(q, snapshot => {
       this.replies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
@@ -124,7 +120,6 @@ export class ThreadComponent {
       this.firestore,
       `directMessages/${conversationId}/messages/${messageId}`
     );
-
     getDoc(parentRef).then(snap => {
       if (snap.exists()) {
         const data = snap.data();
@@ -134,7 +129,7 @@ export class ThreadComponent {
           senderId: data['senderId'] || data['messageFrom'],
           text: data['text'] || data['message'] || ''
         };
-        this.loadUserProfilesForThread(); // Always call, even if no replies yet
+        this.loadUserProfilesForThread(); 
       }
     });
   }
@@ -160,7 +155,6 @@ export class ThreadComponent {
         senderId: currentUser.uid,
         timestamp: new Date()
       });
-      // Update parent message with replyCount and lastReplyTimestamp
       const parentDocRef = doc(
         this.firestore,
         `directMessages/${this.channelId}/messages/${this.messageId}`
@@ -172,7 +166,6 @@ export class ThreadComponent {
         replyCount,
         lastReplyTimestamp: new Date()
       });
-      console.log('Direct thread reply saved:', text);
     } catch (error) {
       console.error('❌ Error saving direct thread reply:', error);
     }
@@ -189,7 +182,6 @@ export class ThreadComponent {
     for (const emoji of Object.values(reactions || {})) {
       countMap.set(emoji, (countMap.get(emoji) || 0) + 1);
     }
-
     return Array.from(countMap.entries()).map(([emoji, count]) => ({ emoji, count }));
   }
 
@@ -210,7 +202,6 @@ export class ThreadComponent {
       ? `channels/${channelId}/messages/${messageId}/threads/${replyId}`
       : `directMessages/${channelId}/messages/${messageId}/threads/${replyId}`;
     const messageRef = doc(this.firestore, refPath);
-
     getDoc(messageRef).then(docSnap => {
       if (!docSnap.exists()) {
         console.warn('❌ Document not found:', refPath);
@@ -219,13 +210,11 @@ export class ThreadComponent {
       const data = docSnap.data();
       const reactions = data['reactions'] || {};
       const userId = this.authService.currentUserId;
-
       if (reactions[userId] === emoji) {
         delete reactions[userId];
       } else {
         reactions[userId] = emoji;
       }
-
       updateDoc(messageRef, { reactions });
       this.emojiPickerForMessageId = null;
     });
@@ -293,14 +282,10 @@ export class ThreadComponent {
     const basePath = threadType === 'direct'
       ? `directMessages/${channelId}/messages/${messageId}/threads`
       : `channels/${channelId}/messages/${messageId}/threads`;
-
     const threadCollection = collection(this.firestore, basePath);
     const q = query(threadCollection, orderBy('timestamp', 'asc'));
-
     onSnapshot(q, snapshot => {
       this.replies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      // Wait until parent message is also loaded
       if (this.replies.length && this.parentMessage?.senderId) {
         this.loadUserProfilesForThread();
       }
@@ -365,7 +350,6 @@ export class ThreadComponent {
       console.error('User not authenticated');
       return;
     }
-
     const thread = this.threadService.getCurrentThread(); // uses threadStateSubject
     if (!thread?.channelId || !thread?.messageId || !thread.threadType) {
       console.warn('Missing thread context');
@@ -383,13 +367,11 @@ export class ThreadComponent {
         senderId: currentUser.uid,
         timestamp: new Date(),
       });
-
       if (threadType === 'channel') {
         await this.channelService.updateParentMessageThreadInfo(channelId, messageId);
       } else {
         await this.directMessagingService.updateParentMessageThreadInfo(channelId, messageId);
       }
-      console.log('Thread reply saved:', text);
     } catch (error) {
       console.error('❌ Error saving thread reply:', error);
     }
@@ -445,4 +427,3 @@ export class ThreadComponent {
     });
   }
 }
-
