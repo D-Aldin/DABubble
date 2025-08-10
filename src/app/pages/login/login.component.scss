@@ -227,9 +227,9 @@ body {
     }
   }
 
-  @include mixins.respond-between(320px, 996px) {
+  @include mixins.respond-between(320px, 590px) {
     padding: 1rem 2rem;
-    width: 305px !important;
+    // width: 305px !important;
   }
 }
 
