@@ -39,6 +39,8 @@ export class SidenavComponent implements OnInit {
   @Output() openAddChannelDialog = new EventEmitter<void>();
   @Output() channelSelected = new EventEmitter<string>();
   @Output() userSelected = new EventEmitter<string>();
+  @Output() onAddChannelSelected = new EventEmitter<string>();
+
   showChannels = true;
   showDMs = true;
 

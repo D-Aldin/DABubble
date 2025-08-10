@@ -267,11 +267,17 @@ export class DashboardComponent {
   }
 
   closeAddChannelDialog() {
+    if (window.innerWidth <= 979) {
+      this.setViewToSidenavIfMobile()
+    }
     this.createdChannelName = '';
     this.showAddChannelDialog = false;
   }
 
   openAddPeopleDialog(data?: { name: string; description: string }) {
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
     if (data) {
       this.channelName = data.name;
       this.channelDescription = data.description;
@@ -302,6 +308,13 @@ export class DashboardComponent {
       this.currentView = 'main';
     }
 
+    this.closeSidenavWithAnimation();
+  }
+
+  onAddChannelSelected(userId: string): void {
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
     this.closeSidenavWithAnimation();
   }
 
@@ -343,14 +356,23 @@ export class DashboardComponent {
   }
 
   onOpenAddChannelDialog(): void {
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
     this.showAddChannelDialog = true;
   }
 
   onCloseAddChannelDialog(): void {
+    if (window.innerWidth <= 979) {
+      this.setViewToSidenavIfMobile()
+    }
     this.showAddChannelDialog = false;
   }
 
   openAddPeopleDialogOnChannelCreation(data?: { name: string; description: string }) {
+    if (window.innerWidth <= 979) {
+      this.currentView = 'main';
+    }
     if (data) {
       this.channelName = data.name;
       this.channelDescription = data.description;

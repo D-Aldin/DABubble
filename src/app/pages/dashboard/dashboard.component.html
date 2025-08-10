@@ -14,7 +14,7 @@
       @if (!isMediumScreen && showSidenav) {
       <app-sidenav class="sidenav" (channelSelected)="onChannelSelected($event)" (userSelected)="onUserSelected($event)"
         [ngClass]="{'active': currentView === 'sidenav', sidenavAnimationClass}"
-        (openAddChannelDialog)="onOpenAddChannelDialog()">
+        (openAddChannelDialog)="onOpenAddChannelDialog()" (onAddChannelSelected)="onAddChannelSelected($event)">
       </app-sidenav>
       }
 
@@ -48,6 +48,7 @@
             </div>
           </button>
         </div>
+
         <router-outlet></router-outlet>
 
         <div *ngIf="showAddChannelDialog" class="overlayAddChannelDialog" (click)="closeAddChannelDialog()">
