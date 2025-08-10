@@ -160,7 +160,6 @@ header {
       }
     }
 
-
     .profile-container {
       display: flex;
       align-items: center;
@@ -256,7 +255,6 @@ header {
           background-color: $secondary-color; // light blue hover background
           color: $button; // blue text
         }
-
       }
 
       .drag-indicator {
@@ -323,7 +321,7 @@ app-search-bar {
     padding: 0 1rem;
 
     .header-content {
-      justify-content: space-between;
+      justify-content: center;
 
       .logo {
         padding-left: 0px;
