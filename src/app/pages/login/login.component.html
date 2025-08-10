@@ -1,73 +1,74 @@
-<div class="section-wrapper">
-  <div class="intro-animation">
-    <div class="wrapper-animation">
-      <div class="logo-container">
-        <img class="logo" src="./../../assets/icons/logo.png" alt="logo">
-      </div>
-      <div class="dabubble-text">
-        <h1>DABubble</h1>
-      </div>
-    </div>
-  </div>
-  <app-header></app-header>
-  <div class="login-container">
-    <!-- <div class="signup-link">
-      <span>Neu bei DABubble?</span>
-      <a [routerLink]="['/register']">Konto erstellen</a>
-    </div> -->
+<div class="login-section">
 
-    <div class="login-card-wrapper">
-      <div class="login-card">
-        <h1 class="title">Anmeldung</h1>
-        <p class="subtitle">Wir empfehlen dir, die E-mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
-        <form [formGroup]="loginForm">
-
-          <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
-            [errorMsg]="emailValidation()">
-          </app-input-field>
-
-          <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
-            [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
-          </app-input-field>
-
-          <a class="forgot-password" [routerLink]="['/reset-request']">Passwort vergessen?</a>
-
-          <div class="divider">
-            <hr /><span>ODER</span>
-            <hr />
-          </div>
-
-          <button type="button" class="google-button" (click)="onGoogleLogin()">
-            <img src="assets/images/login-img/Google.png" alt="Google" />
-            Anmelden mit Google
-          </button>
-
-          <div class="button-group">
-            <button type="submit" class="primary-btn button-style" [disabled]="loginForm.invalid"
-              (click)="onLogin()">Anmelden</button>
-            <button type="button" class="secondary-btn" (click)="onGuestLogin()">Gäste-Login</button>
-          </div>
-
-        </form>
-      </div>
-
-      <div class="signup-link-box">
-        <p class="signup-text">Neu bei DABubble?</p>
-        <div class="link-container" [routerLink]="['/register']">
-          <a class="signup-link">Konto erstellen</a>
+  <div class="intro-wrapper">
+  <div class="backgorund-animation"></div>
+    <div class="intro-overlay">
+      <div class="intro-animation">
+          <div class="wrapper-animation">
+             <div class="logo-container">
+            <img class="logo" src="./../../assets/icons/logo.png" alt="logo">
+             </div>
+             <div class="dabubble-text">
+                <h1>DABubble</h1>
+             </div>
         </div>
-      </div>
-
-      <div class="privacy-policy-legal-notice-container">
-        <span [routerLink]="['/legal-notice']">Impressum</span>
-        <span [routerLink]="['/privacy-policy']">Datenschutz</span>
-      </div>
-    </div>
+       </div>
   </div>
 </div>
 
+<div class="section-wrapper">
+   <app-header></app-header>
+   <div class="login-container">
+      <!-- <div class="signup-link">
+         <span>Neu bei DABubble?</span>
+         <a [routerLink]="['/register']">Konto erstellen</a>
+         </div> -->
+      <div class="login-card-wrapper">
+         <div class="login-card">
+            <h1 class="title">Anmeldung</h1>
+            <p class="subtitle">Wir empfehlen dir, die E-mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
+            <form [formGroup]="loginForm">
+               <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
+               [errorMsg]="emailValidation()">
+               </app-input-field>
+               <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
+               [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
+               </app-input-field>
+               <a class="forgot-password" [routerLink]="['/reset-request']">Passwort vergessen?</a>
+               <div class="divider">
+                  <hr />
+                  <span>ODER</span>
+                  <hr />
+               </div>
+               <button type="button" class="google-button" (click)="onGoogleLogin()">
+               <img src="assets/images/login-img/Google.png" alt="Google" />
+               Anmelden mit Google
+               </button>
+               <div class="button-group">
+                  <button type="submit" class="primary-btn button-style" [disabled]="loginForm.invalid"
+                  (click)="onLogin()">Anmelden</button>
+                  <button type="button" class="secondary-btn" (click)="onGuestLogin()">Gäste-Login</button>
+               </div>
+            </form>
+         </div>
+         <div class="signup-link-box">
+            <p class="signup-text">Neu bei DABubble?</p>
+            <div class="link-container" [routerLink]="['/register']">
+               <a class="signup-link">Konto erstellen</a>
+            </div>
+         </div>
+         <div class="privacy-policy-legal-notice-container">
+            <span [routerLink]="['/legal-notice']">Impressum</span>
+            <span [routerLink]="['/privacy-policy']">Datenschutz</span>
+         </div>
+      </div>
+   </div>
+</div>
 <app-success-toast message="Login erfolgreich!" [hasIcon]="false" *ngIf="showSuccessToast"
-  [success]="true"></app-success-toast>
-
+[success]="true"></app-success-toast>
 <app-success-toast message="Login fehlgeschlagen!" [hasIcon]="false" *ngIf="showErrorToast"
-  [success]="false"></app-success-toast>
+[success]="false"></app-success-toast>
+
+</div>
+
+

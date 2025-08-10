@@ -25,7 +25,6 @@ body {
     font-size: 0.9rem;
     color: #333;
 
-
     .signup-text {
       margin: 0 0 0.5rem 0;
       font-weight: 400;
@@ -51,7 +50,6 @@ body {
       transition: 125ms ease-in-out;
       border: 1px solid $primary-color;
       color: $button;
-
 
       .signup-link {
         color: $button;
@@ -242,27 +240,62 @@ body {
   position: relative;
   overflow: hidden;
   max-width: 100vw;
-  // max-height: 100vh;
+  min-height: 100vh;
   overflow: auto;
+}
+
+.intro-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+.login-section {
+  position: relative;
+}
+
+.backgorund-animation {
+  width: 100vw;
+  height: 100vw;
+  background-image: linear-gradient(
+    to bottom,
+    #797ef3,
+    #6d72f3,
+    #6066f3,
+    #535af3,
+    #444df2
+  );
+  animation: fadeOut 1.1s linear forwards 1.8s;
 }
 
 .intro-animation {
   @include mixins.flex-setup();
-  position: absolute;
+  top: 0;
+  left: 0;
+  position: fixed;
   z-index: 1;
   width: 100vw;
   height: 100vh;
-  background-image: linear-gradient(to bottom,
-      #797ef3,
-      #6d72f3,
-      #6066f3,
-      #535af3,
-      #444df2);
   animation: fadeOut 1s ease-in-out forwards;
   animation-delay: 2s;
   position: absolute;
-  height: 100%;
-  overflow: hidden !important;
+}
+
+.intro-overlay {
+  width: calc(100vw - 100px);
+  height: calc(100vh - 100px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  overflow: hidden;
+  animation: fadeOut 1s linear forwards 1.8s;
 }
 
 .wrapper-animation {
@@ -347,8 +380,8 @@ body {
     transform: translate(-50%, -50%) scale(0.4);
     opacity: 0.2;
     position: absolute;
-    top: 100px;
-    left: calc(50% - 800px);
+    top: 50px;
+    left: 120px;
   }
 }
 
@@ -363,8 +396,11 @@ body {
 
   to {
     display: none;
-    opacity: 0;
+    opacity: 0.2;
   }
+}
+
+@keyframes backgorund-fadeOut {
 }
 
 @media (max-width: 590px) {
