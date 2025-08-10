@@ -11,6 +11,13 @@ import { DashboardIntroComponent } from './dashboard-intro/dashboard-intro.compo
 import { filter } from 'rxjs';
 import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
+import { AddChannelComponent } from "../../shared/add-channel/add-channel.component";
+import { AddPeopleComponent } from "../../shared/add-channel/add-people/add-people.component";
+import { ChannelService } from '../../core/services/channel.service';
+import { UserService } from '../../core/services/user.service';
+import { ChatUser } from '../../core/interfaces/chat-user';
+import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +30,9 @@ import { ProfileOverlayService } from '../../core/services/profile-overlay.servi
     RouterOutlet,
     ThreadComponent,
     DashboardIntroComponent,
-    ProfileCardComponent
+    ProfileCardComponent,
+    AddChannelComponent,
+    AddPeopleComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -42,13 +51,16 @@ export class DashboardComponent {
   currentUrl: string = '';
   showAddUserToChannelPopup = false;
   addUserMode: 'create-channel' | 'add-to-channel' = 'add-to-channel';
-  currentView: 'sidenav' | 'main' | 'thread' = 'main'; // default to main view
+  currentView: 'sidenav' | 'main' | 'thread' = 'main';
   selectedChannelIdForUserAdd: string = '';
   selectedChannelTitleForUserAdd: string = '';
   showThread = false;
   selectedMessageId: string = '';
   selectedChannelId: string = '';
+  selectedChannel: undefined | Channel = undefined;
+  selectedChannelPreviewUsers: ChatUser[] = [];
   isIntroSectionVisible: boolean = true;
+  showPeopleDialogOnChannelCreation: boolean = false
   screenWidth: number = window.innerWidth;
   public showProfileCard$ = this.overlayService.isVisible$;
   public selectedUser$ = this.overlayService.selectedUser$;
@@ -59,14 +71,18 @@ export class DashboardComponent {
   onResize() {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
-    this.screenWidth = width; 
+    this.screenWidth = width;
   }
 
   constructor(
     private router: Router,
     private threadService: ThreadMessagingService,
     public overlayService: ProfileOverlayService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private channelService: ChannelService,
+    private userService: UserService,
+    private firestore: Firestore,
+    public authService: AuthService,
   ) { }
 
   closeProfileCard(): void {
@@ -81,7 +97,7 @@ export class DashboardComponent {
   }
 
   private initializeResponsiveBehavior(): void {
-    this.onResize(); 
+    this.onResize();
   }
 
   private listenToThreadState(): void {
@@ -314,5 +330,113 @@ export class DashboardComponent {
     if (window.innerWidth <= 580) {
       this.router.navigate(['/dashboard']);
     }
+  }
+
+  handleChannelCreation(channelData: Channel) {
+    this.channelName = channelData.title;
+    this.channelDescription = channelData.description;
+    this.createdChannelName = channelData.title;
+    this.openAddPeopleDialog({
+      name: channelData.title,
+      description: channelData.description,
+    });
+  }
+
+  onOpenAddChannelDialog(): void {
+    this.showAddChannelDialog = true;
+  }
+
+  onCloseAddChannelDialog(): void {
+    this.showAddChannelDialog = false;
+  }
+
+  openAddPeopleDialogOnChannelCreation(data?: { name: string; description: string }) {
+    if (data) {
+      this.channelName = data.name;
+      this.channelDescription = data.description;
+      this.createdChannelName = data.name;
+    }
+    this.addUserMode = 'create-channel';
+    this.showAddChannelDialog = false;
+    this.showPeopleDialogOnChannelCreation = true;
+    this.showPeopleDialog = false;
+  }
+
+  handleProceedToPeopleOnChannelCreation(data: { name: string; description: string }) {
+    this.channelDataBuffer = {
+      title: data.name, description: data.description, createdAt: new Date(),
+    };
+    this.createdChannelName = data.name;
+    this.closeAddChannelDialog();
+    this.openAddPeopleDialogOnChannelCreation({
+      name: data.name,
+      description: data.description,
+    });
+  }
+
+  closePeopleDialogOnChannelCreation() {
+    this.showPeopleDialogOnChannelCreation = false
+  }
+
+  handleUserAddCancel() {
+    this.showPeopleDialog = false;
+    this.showAddUserToChannelPopup = false;
+  }
+
+  handleUserAddConfirm(userIds: string[]): void {
+    this.channelService
+      .addUsersToChannel(this.selectedChannelIdForUserAdd, userIds)
+      .then(() => this.finalizeUserAdd(userIds));
+  }
+
+  private finalizeUserAdd(userIds: string[]): void {
+    this.mergeNewMembers(userIds);
+    this.closeUserAddDialogs();
+    this.refreshChannelPreviewAvatars();
+  }
+
+  private mergeNewMembers(userIds: string[]): void {
+    if (!this.selectedChannel) return;
+    const newIds = userIds.filter(id => !this.selectedChannel!.members.includes(id));
+    this.selectedChannel.members.push(...newIds);
+  }
+
+  private closeUserAddDialogs(): void {
+    this.showAddUserToChannelPopup = false;
+    this.showPeopleDialog = false;
+    this.showPeopleDialogOnChannelCreation = false;
+  }
+
+  private refreshChannelPreviewAvatars(): void {
+    const previewIds = this.selectedChannel!.members.slice(0, 3);
+    this.userService.getUsersByIds(previewIds).subscribe(users => {
+      this.selectedChannelPreviewUsers = users;
+    });
+  }
+
+  async handlePeopleConfirmed(selectedUsers: string[]): Promise<void> {
+    const members = await this.resolveFinalMembers(selectedUsers);
+    const channel = this.buildNewChannel(members);
+
+    this.channelService.createChannel(channel).then(() => {
+      this.closePeopleDialog();
+    });
+  }
+
+  private async resolveFinalMembers(selectedUsers: string[]): Promise<string[]> {
+    if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
+      const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+      return usersSnapshot.docs.map(doc => doc.id);
+    }
+
+    return selectedUsers;
+  }
+
+  private buildNewChannel(members: string[]): Channel {
+    return {
+      ...this.channelDataBuffer,
+      members,
+      creatorId: this.authService.currentUserId,
+    } as Channel;
   }
 }

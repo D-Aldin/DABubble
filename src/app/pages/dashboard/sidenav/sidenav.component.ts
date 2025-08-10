@@ -27,7 +27,7 @@ export class SidenavComponent implements OnInit {
   usersArray: ChatUser[] = [];
   currentURL: string = '';
   isURLChannel: boolean | null = null;
-  bounceMap: { [uid: string]: boolean } = {}; 
+  bounceMap: { [uid: string]: boolean } = {};
 
   constructor(
     private sharedService: SharedService,
@@ -92,7 +92,7 @@ export class SidenavComponent implements OnInit {
   selectUser(userName: string): void {
     const selectedUser = this.usersArray.find((user) => user.name === userName);
     if (selectedUser) {
-      this.selectedUserId = selectedUser.uid; 
+      this.selectedUserId = selectedUser.uid;
       this.sharedService.setData(selectedUser);
       this.router.navigate(['/dashboard/direct-message', this.selectedUserId]);
     }
@@ -111,9 +111,12 @@ export class SidenavComponent implements OnInit {
     this.showDMs = !this.showDMs;
   }
 
+  // emitOpenDialog() {
+  //   this.channelService.triggerAddChannelDialog();
+  // }
+
   emitOpenDialog() {
-    this.channelService.triggerAddChannelDialog();
-    
+    this.openAddChannelDialog.emit();
   }
 
   handleRouteSelectionOnPageReload(): void {

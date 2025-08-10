@@ -357,18 +357,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     this.showPeopleDialog = true;
   }
 
-  openAddPeopleDialogOnChannelCreation(data?: { name: string; description: string }) {
-    if (data) {
-      this.channelName = data.name;
-      this.channelDescription = data.description;
-      this.createdChannelName = data.name;
-    }
-    this.addUserMode = 'create-channel';
-    this.showAddChannelDialog = false;
-    this.showPeopleDialogOnChannelCreation = true;
-    this.showPeopleDialog = false;
-  }
-
   async handlePeopleConfirmed(selectedUsers: string[]): Promise<void> {
     const members = await this.resolveFinalMembers(selectedUsers);
     const channel = this.buildNewChannel(members);
@@ -400,16 +388,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     this.showChannelOptionsPopup = false;
   }
 
-  handleChannelCreation(channelData: Channel) {
-    this.channelName = channelData.title;
-    this.channelDescription = channelData.description;
-    this.createdChannelName = channelData.title;
-    this.openAddPeopleDialog({
-      name: channelData.title,
-      description: channelData.description,
-    });
-  }
-
   handleProceedToPeople(data: { name: string; description: string }) {
     this.channelDataBuffer = {
       title: data.name,
@@ -423,18 +401,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       description: data.description,
     });
 
-  }
-
-  handleProceedToPeopleOnChannelCreation(data: { name: string; description: string }) {
-    this.channelDataBuffer = {
-      title: data.name, description: data.description, createdAt: new Date(),
-    };
-    this.createdChannelName = data.name;
-    this.closeAddChannelDialog();
-    this.openAddPeopleDialogOnChannelCreation({
-      name: data.name,
-      description: data.description,
-    });
   }
 
   handleSendChannelMessage(messageText: string) {

@@ -6,14 +6,15 @@
       <div class="sidenav-overlay" *ngIf="showSidenav && isMediumScreen" (click)="toggleSidenav()">
         <app-sidenav class="sidenav sidenav-absolute" [ngClass]="sidenavAnimationClass"
           (click)="$event.stopPropagation()" (channelSelected)="onChannelSelected($event)"
-          (userSelected)="onUserSelected($event)">
+          (userSelected)="onUserSelected($event)" (openAddChannelDialog)="onOpenAddChannelDialog()">
         </app-sidenav>
       </div>
 
       <!-- For large screens -->
       @if (!isMediumScreen && showSidenav) {
       <app-sidenav class="sidenav" (channelSelected)="onChannelSelected($event)" (userSelected)="onUserSelected($event)"
-        [ngClass]="{'active': currentView === 'sidenav', sidenavAnimationClass}">
+        [ngClass]="{'active': currentView === 'sidenav', sidenavAnimationClass}"
+        (openAddChannelDialog)="onOpenAddChannelDialog()">
       </app-sidenav>
       }
 
@@ -47,8 +48,27 @@
             </div>
           </button>
         </div>
-
         <router-outlet></router-outlet>
+
+        <div *ngIf="showAddChannelDialog" class="overlayAddChannelDialog" (click)="closeAddChannelDialog()">
+          <div class="dialog-container" (click)="$event.stopPropagation()">
+            <app-add-channel (close)="closeAddChannelDialog()"
+              (openAddPeopleDialog)="openAddPeopleDialogOnChannelCreation()" (complete)="handleChannelCreation($event)"
+              (proceedToPeople)="handleProceedToPeopleOnChannelCreation($event)">
+            </app-add-channel>
+          </div>
+        </div>
+
+        <div *ngIf="showPeopleDialogOnChannelCreation" class="overlay" (click)="closePeopleDialogOnChannelCreation()">
+          <div class="dialog-container-fullscreen" (click)="$event.stopPropagation()">
+            <app-add-people [channelId]="selectedChannelIdForUserAdd"
+              [channelName]="createdChannelName || selectedChannelTitleForUserAdd" [mode]="addUserMode"
+              (cancel)="addUserMode === 'add-to-channel' ? handleUserAddCancel() : closePeopleDialog()"
+              (confirm)="addUserMode === 'add-to-channel' ? handleUserAddConfirm($event) : handlePeopleConfirmed($event)">
+            </app-add-people>
+          </div>
+        </div>
+
         <app-dashboard-intro *ngIf="isIntroSectionVisible"></app-dashboard-intro>
       </div>
       @if (showThread) {

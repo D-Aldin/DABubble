@@ -430,7 +430,8 @@ h3 {
     display: flex;
     flex-direction: column;
     width: 415px;
-    height: 411px;
+    height: auto;
+    max-height: 411px;
     padding: 40px;
     gap: 20px;
     border-top-left-radius: 30px;
