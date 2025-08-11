@@ -37,11 +37,11 @@
         <span class="emoji-button" (click)="reactToChannelMessage(msg.id!, '✅')">✅</span>
         <span class="emoji-button" (click)="reactToChannelMessage(msg.id!, '👍')">👍</span>
 
-        <img src="../../../assets/icons/add_reaction.svg" alt="Reaktion" (click)="toggleEmojiPicker(msg.id!)" />
+        <img src="assets/icons/add_reaction.svg" alt="Reaktion" (click)="toggleEmojiPicker(msg.id!)" />
 
-        <img src="../../../assets/icons/Answer.svg" alt="Thread öffnen" (click)="openThread(msg.id!)" />
+        <img src="assets/icons/Answer.svg" alt="Thread öffnen" (click)="openThread(msg.id!)" />
 
-        <img *ngIf="msg.senderId === currentUserId" src="../../../assets/icons/option.svg" alt="Bearbeiten"
+        <img *ngIf="msg.senderId === currentUserId" src="assets/icons/option.svg" alt="Bearbeiten"
           title="Nachricht bearbeiten" (click)="startEditing(msg)" />
       </div>
     </div>

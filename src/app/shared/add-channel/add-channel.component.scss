@@ -1,5 +1,5 @@
-@use '../../../styles/variables' as *;
-@use '../../../styles/mixins' as mix;
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as mix;
 
 .add-channel-dialog {
   background-color: white;
@@ -28,13 +28,13 @@
       width: 35px;
       height: 35px;
       border: none;
-      background-image: url("../../../assets/icons/close.png");
+      background-image: url("assets/icons/close.png");
       background-repeat: no-repeat;
       background-size: cover;
       cursor: pointer;
 
       &:hover {
-        background-image: url("../../../assets/icons/close-hover.png");
+        background-image: url("assets/icons/close-hover.png");
       }
     }
   }
@@ -124,7 +124,6 @@
         padding-bottom: 12px;
         padding-left: 25px;
 
-
         &:hover {
           background-color: #3a52d1;
         }
@@ -132,43 +131,41 @@
     }
   }
 
-    @include mix.respond-between(768px, 1024px) {
-      width: 750px;
-      
-      h2 {
-        font-size: 20px;
-      }
+  @include mix.respond-between(768px, 1024px) {
+    width: 750px;
 
-      .description {
-        font-size: 16px;
-      }
-      
+    h2 {
+      font-size: 20px;
     }
 
-    @include mix.respond-between(320px, 980px) {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0px;
+    .description {
+      font-size: 16px;
+    }
+  }
+
+  @include mix.respond-between(320px, 980px) {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+  }
+
+  @include mix.respond-between(320px, 490px) {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0px;
+
+    h2 {
+      font-size: 18px;
     }
 
-      @include mix.respond-between(320px, 490px) {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0px;
-
-      h2 {
-        font-size: 18px;
-      }
-
-      .description {
-        font-size: 14px;
-      }
-
-  
+    .description {
+      font-size: 14px;
     }
+  }
 }
 
-.close {}
+.close {
+}
 
 app-input-field {
   ::ng-deep .input-wrapper {

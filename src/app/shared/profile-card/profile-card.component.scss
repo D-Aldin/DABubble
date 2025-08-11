@@ -29,13 +29,13 @@
   width: 35px;
   height: 35px;
   border: none;
-  background-image: url("../../../assets/icons/close.png");
+  background-image: url("assets/icons/close.png");
   background-repeat: no-repeat;
   background-size: cover;
   cursor: pointer;
 
   &:hover {
-    background-image: url("../../../assets/icons/close-hover.png");
+    background-image: url("assets/icons/close-hover.png");
   }
 }
 
@@ -103,7 +103,6 @@
       font-size: 18px;
       line-height: 100%;
       letter-spacing: 0%;
-
 
       &:hover {
         color: $primary-color;
@@ -237,7 +236,6 @@
   line-height: 120%;
   letter-spacing: 0%;
 
-
   &:focus {
     border-color: #3c3cf0;
   }
@@ -277,7 +275,6 @@
   line-height: 100%;
   letter-spacing: 0%;
   text-align: center;
-
 
   &:hover {
     background-color: $button;
