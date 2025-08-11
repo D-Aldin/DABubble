@@ -266,14 +266,12 @@ body {
 .backgorund-animation {
   width: 100vw;
   height: 100vw;
-  background-image: linear-gradient(
-    to bottom,
-    #797ef3,
-    #6d72f3,
-    #6066f3,
-    #535af3,
-    #444df2
-  );
+  background-image: linear-gradient(to bottom,
+      #797ef3,
+      #6d72f3,
+      #6066f3,
+      #535af3,
+      #444df2);
   animation: fadeOut 1.1s linear forwards 1.8s;
 
   @include mixins.respond-between(320px, 892px) {
@@ -493,8 +491,7 @@ body {
     }
   }
 
-  @keyframes backgorund-fadeOut {
-  }
+  @keyframes backgorund-fadeOut {}
 
   @media (max-width: 590px) {
     .section-wrapper {
@@ -528,10 +525,10 @@ body {
       padding: 1.5rem 1rem;
     }
   }
+}
 
-  @media (max-width: 660px) {
-    .signup-link-box {
-      display: block !important;
-    }
+@media (max-width: 660px) {
+  .login-container .login-card-wrapper .signup-link-box {
+    display: block !important;
   }
 }
