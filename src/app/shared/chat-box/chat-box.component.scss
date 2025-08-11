@@ -227,11 +227,11 @@
   }
 
   img[src$="add_reaction.svg"]:hover {
-    content: url("assets/icons/add_reaction_hover.svg");
+    content: url("/assets/icons/add_reaction_hover.svg");
   }
 
   img[src$="Answer.svg"]:hover {
-    content: url("assets/icons/Answer_hover.svg");
+    content: url("/assets/icons/Answer_hover.svg");
   }
 
   .emoji-button {
