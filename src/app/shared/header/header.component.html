@@ -1,5 +1,5 @@
 <header [ngStyle]="{ 'min-height': showSearchBar ? '130px' : '200px' }">
-    <div class="header-content">
+    <div class="header-content" [ngClass]="{ 'center-align': isLoginPage && windowWidth < 440}" >
         <div class="logo">
             <!-- ✅ Use this for intro routing via logo -->
             <img *ngIf="!showBackToSidenav || currentView === 'sidenav'"

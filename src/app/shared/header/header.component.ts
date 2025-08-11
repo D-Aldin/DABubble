@@ -1,5 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
@@ -10,11 +21,17 @@ import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { HostListener } from '@angular/core';
 
-
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProfileCardComponent, SpinnerComponent, FormsModule, SearchBarComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ProfileCardComponent,
+    SpinnerComponent,
+    FormsModule,
+    SearchBarComponent,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -32,30 +49,33 @@ export class HeaderComponent implements OnChanges {
   public userEmail: string = '';
   public onlineStatus: boolean | any;
   public isProfileAvatarLoading: boolean = true;
-  public headerLogo: string = "assets/icons/daBubbleLogo.png"
+  public headerLogo: string = 'assets/icons/daBubbleLogo.png';
   public windowWidth!: number;
   public showBackToSidenav: boolean = false;
   public shouldShowBackButtonByRoute: boolean = false;
-  public inputSearchBar: string = "";
+  public inputSearchBar: string = '';
   @Output() goBackToSidenav = new EventEmitter<void>();
   @Input() currentView: 'sidenav' | 'main' | 'thread' = 'main';
   DASHBOARD_PREFIX: string = '/dashboard';
   DIRECT_MESSAGE_PREFIX: string = '/dashboard/direct-message';
   CHANNEL_PREFIX: string = '/dashboard/channel';
   currentURL: string = '';
+  isLoginPage = false;
 
   constructor(
     public router: Router,
     private userAuthService: AuthService,
-    private userService: UserService,
+    private userService: UserService
   ) {
     this.handleHeaderAppearancesForRoutes();
-    this.onResize()
+    this.onResize();
+    this.centerLogo();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentView']) {
-      this.showBackToSidenav = this.shouldShowBackButtonByRoute && this.currentView !== 'sidenav';
+      this.showBackToSidenav =
+        this.shouldShowBackButtonByRoute && this.currentView !== 'sidenav';
     }
   }
 
@@ -63,6 +83,13 @@ export class HeaderComponent implements OnChanges {
   onResize(event?: any) {
     this.windowWidth = window.innerWidth;
     this.handleShowBackToSidenavButtonAppearance(this.router.url);
+  }
+
+  centerLogo() {
+    this.router.events.subscribe(() => {
+      const url = this.router.url;
+      this.isLoginPage = url.includes('/login');
+    });
   }
 
   handleHeaderAppearancesForRoutes() {
@@ -79,7 +106,9 @@ export class HeaderComponent implements OnChanges {
 
   handleShowBackToSidenavButtonAppearance(url: string) {
     const isMobile = this.windowWidth <= 580;
-    const isInDetailView = url.startsWith(this.DIRECT_MESSAGE_PREFIX) || url.startsWith(this.CHANNEL_PREFIX);
+    const isInDetailView =
+      url.startsWith(this.DIRECT_MESSAGE_PREFIX) ||
+      url.startsWith(this.CHANNEL_PREFIX);
     this.shouldShowBackButtonByRoute = isMobile && isInDetailView;
   }
 
@@ -109,7 +138,6 @@ export class HeaderComponent implements OnChanges {
     this.showProfileMenu = !this.showProfileMenu;
   }
 
-
   showProfileCardContainer() {
     this.showProfileMenu = !this.showProfileMenu;
     this.showProfileCard = !this.showProfileCard;
@@ -138,7 +166,7 @@ export class HeaderComponent implements OnChanges {
   private async loadUserData(): Promise<void> {
     const currentUser = this.getCurrentUser();
     if (!currentUser) return;
-    await this.fetchAndSetUserDocument(currentUser.uid); 
+    await this.fetchAndSetUserDocument(currentUser.uid);
     this.setUserEmail();
     this.setUserOnlineStatus(currentUser.uid, true);
   }
@@ -194,28 +222,33 @@ export class HeaderComponent implements OnChanges {
 
   dashboardIntroRouting(currentURL: string): string {
     if (currentURL.includes('/dashboard')) {
-      return '/dashboard'
+      return '/dashboard';
     }
     return currentURL;
   }
 
   changeLogo(): void {
-    this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
-    ).subscribe((event) => {
-      const url = event.urlAfterRedirects;
-      if (url.includes("direct-message") && this.windowWidth < 580 ||
-        url.includes("channel") && this.windowWidth < 580 ||
-        url.includes("new-message") && this.windowWidth < 580) {
-        this.headerLogo = "assets/icons/devspace.png";
-      } else {
-        this.headerLogo = "assets/icons/daBubbleLogo.png";
-      }
-    });
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        )
+      )
+      .subscribe((event) => {
+        const url = event.urlAfterRedirects;
+        if (
+          (url.includes('direct-message') && this.windowWidth < 580) ||
+          (url.includes('channel') && this.windowWidth < 580) ||
+          (url.includes('new-message') && this.windowWidth < 580)
+        ) {
+          this.headerLogo = 'assets/icons/devspace.png';
+        } else {
+          this.headerLogo = 'assets/icons/daBubbleLogo.png';
+        }
+      });
   }
 
   onBackClick(): void {
     this.goBackToSidenav.emit();
   }
 }
-
