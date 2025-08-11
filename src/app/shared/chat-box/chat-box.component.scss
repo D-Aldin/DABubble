@@ -156,7 +156,7 @@
     background-color: white;
     width: 40px;
     height: 40px;
-    background-image: url("assets/icons/add-reaction.png");
+    background-image: url("/assets/icons/add-reaction.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -165,7 +165,7 @@
     margin-left: 10px;
 
     &:hover {
-      background-image: url("assets/icons/add-reaction-hover.png");
+      background-image: url("/assets/icons/add-reaction-hover.png");
     }
   }
 }

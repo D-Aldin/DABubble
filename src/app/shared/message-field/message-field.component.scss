@@ -114,18 +114,18 @@
 }
 
 .emoji-button {
-  background-image: url("/assets/icons/emoji.png");
+  background-image: url("../../../assets/icons/emoji.png");
 
   &:hover {
-    background-image: url("/assets/icons/sentiment_satisfied.svg");
+    background-image: url("../../../assets/icons/sentiment_satisfied.svg");
   }
 }
 
 .tag-button {
-  background-image: url("/assets/icons/tag.png");
+  background-image: url("../../../assets/icons/tag.png");
 
   &:hover {
-    background-image: url("/assets/icons/alternate_email.svg");
+    background-image: url("../../../assets/icons/alternate_email.svg");
   }
 }
 

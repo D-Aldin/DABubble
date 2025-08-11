@@ -262,14 +262,14 @@
         width: 35px;
         height: 35px;
         border: none;
-        background-image: url("/assets/icons/close.png");
+        background-image: url("../../../assets/icons/close.png");
         background-repeat: no-repeat;
         background-size: cover;
         cursor: pointer;
         border-radius: 50%;
 
         &:hover {
-            background-image: url("/assets/icons/close-hover.png");
+            background-image: url("../../../assets/icons/close-hover.png");
         }
     }
 }

@@ -32,7 +32,7 @@ export class HeaderComponent implements OnChanges {
   public userEmail: string = '';
   public onlineStatus: boolean | any;
   public isProfileAvatarLoading: boolean = true;
-  public headerLogo: string = "../../../assets/icons/daBubbleLogo.png"
+  public headerLogo: string = "assets/icons/daBubbleLogo.png"
   public windowWidth!: number;
   public showBackToSidenav: boolean = false;
   public shouldShowBackButtonByRoute: boolean = false;
@@ -207,9 +207,9 @@ export class HeaderComponent implements OnChanges {
       if (url.includes("direct-message") && this.windowWidth < 580 ||
         url.includes("channel") && this.windowWidth < 580 ||
         url.includes("new-message") && this.windowWidth < 580) {
-        this.headerLogo = "../../../assets/icons/devspace.png";
+        this.headerLogo = "assets/icons/devspace.png";
       } else {
-        this.headerLogo = "../../../assets/icons/daBubbleLogo.png";
+        this.headerLogo = "assets/icons/daBubbleLogo.png";
       }
     });
   }
