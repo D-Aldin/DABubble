@@ -301,13 +301,13 @@
         width: 35px;
         height: 35px;
         border: none;
-        background-image: url("assets/icons/close.png");
+        background-image: url("/assets/icons/close.png");
         background-repeat: no-repeat;
         background-size: cover;
         cursor: pointer;
 
         &:hover {
-            background-image: url("assets/icons/close-hover.png");
+            background-image: url("/assets/icons/close-hover.png");
         }
     }
 }
@@ -456,13 +456,13 @@ h3 {
             width: 35px;
             height: 35px;
             border: none;
-            background-image: url("assets/icons/close.png");
+            background-image: url("/assets/icons/close.png");
             background-repeat: no-repeat;
             background-size: cover;
             cursor: pointer;
 
             &:hover {
-                background-image: url("assets/icons/close-hover.png");
+                background-image: url("/assets/icons/close-hover.png");
             }
         }
     }
