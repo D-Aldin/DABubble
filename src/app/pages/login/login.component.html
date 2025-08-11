@@ -19,19 +19,15 @@
 <div class="section-wrapper">
    <app-header></app-header>
    <div class="login-container">
-      <!-- <div class="signup-link">
-         <span>Neu bei DABubble?</span>
-         <a [routerLink]="['/register']">Konto erstellen</a>
-         </div> -->
       <div class="login-card-wrapper">
          <div class="login-card">
             <h1 class="title">Anmeldung</h1>
             <p class="subtitle">Wir empfehlen dir, die E-mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
             <form [formGroup]="loginForm">
-               <app-input-field formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
+               <app-input-field class="input-field-comp" formControlName="email" [placeholder]="'E-Mail'" [src]="'assets/icons/mail.svg'"
                [errorMsg]="emailValidation()">
                </app-input-field>
-               <app-input-field formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
+               <app-input-field class="input-field-comp" formControlName="password" [type]="'password'" [placeholder]="'Passwort'"
                [src]="'assets/icons/lock.svg'" [errorMsg]="passwordValidation()" [minlength]="8">
                </app-input-field>
                <a class="forgot-password" [routerLink]="['/reset-request']">Passwort vergessen?</a>
