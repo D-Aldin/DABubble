@@ -45,13 +45,13 @@
         .back-button-img {
           width: 40px;
           height: 40px;
-          background-image: url('/assets/icons/arrow_back.svg');
+          background-image: url('assets/icons/arrow_back.svg');
           background-size: contain;
           background-repeat: no-repeat;
           transition: background-image 0.125s ease;
       
           &:hover {
-            background-image: url('/assets/icons/arrow-back-hover.svg');
+            background-image: url('assets/icons/arrow-back-hover.svg');
           }
         }
       }

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="heading">
         <div class="logo-and-heading">
-          <img src="/assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
+          <img src="assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
           <h1>Devspace</h1>
         </div>
         <button (click)="onChannelClick('');" [routerLink]="'/dashboard/new-message'" class="edit-btn">
@@ -17,9 +17,9 @@
       <div class="section">
         <div class="section-header" (click)="toggleChannels()">
           <div class="section-left">
-            <img [class.rotate-img]="!showChannels" src="/assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
+            <img [class.rotate-img]="!showChannels" src="assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
             <div class="channel-heading">
-              <img src="/assets/images/sidenav-img/workspaces.svg" alt="Channels" />
+              <img src="assets/images/sidenav-img/workspaces.svg" alt="Channels" />
               <span>Channels</span>
             </div>
           </div>
@@ -46,7 +46,7 @@
             </ng-template>
           </div>
           <div class="add-channel" (click)="emitOpenDialog()">
-            <img src="/assets/images/sidenav-img/add_circle.svg" alt="add-channel">
+            <img src="assets/images/sidenav-img/add_circle.svg" alt="add-channel">
             Channel hinzufügen
           </div>
         </div>
@@ -57,9 +57,9 @@
       <div class="section">
         <div class="section-header" (click)="toggleDMs()">
           <div class="section-left">
-            <img src="/assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="!showDMs" alt="">
+            <img src="assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="!showDMs" alt="">
             <div class="direct-message">
-              <img src="/assets/images/sidenav-img/account_circle.svg" alt="DMs" />
+              <img src="assets/images/sidenav-img/account_circle.svg" alt="DMs" />
               <span>Direktnachrichten</span>
             </div>
           </div>

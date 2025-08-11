@@ -463,25 +463,15 @@ app-thread {
   .sidenav.active,
   .main-container.active,
   .thread-container.active {
-    display: flex !important; // or block, depending on your layout
+    display: flex !important;
     flex-direction: column;
     position: relative;
     z-index: 2;
     height: calc(100vh - 130px);
   }
 
-  // Optional: hide dashboard-intro on small screens if needed
-  // app-dashboard-intro {
-  //   display: none;
-  // }
-
-  // Hide the sidenav-toggle button unless in 'main' view
-  // .sidenav-toggle-btn {
-  //   display: none;
-  // }
-
   .main-container.active .sidenav-toggle-btn {
-    display: flex; // or inline-flex depending on your style
+    display: flex;
   }
 }
 
@@ -490,7 +480,7 @@ app-thread {
   .sidenav.active,
   .main-container.active,
   .thread-container.active {
-    display: flex !important; // or block, depending on your layout
+    display: flex !important;
     flex-direction: column;
     position: relative;
     z-index: 2;

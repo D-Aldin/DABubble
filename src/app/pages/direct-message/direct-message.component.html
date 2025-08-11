@@ -36,7 +36,7 @@
 
                         <div class="edit-message-toolbar">
                            <button class="emoji-btn" (click)="toggleEmojiPicker(item.id)">
-                              <img src="/assets/images/sidenav-img/add_reaction.svg" alt="">
+                              <img src="assets/images/sidenav-img/add_reaction.svg" alt="">
                            </button>
                         </div>
 
@@ -59,13 +59,13 @@
                            <span class="emoji-button" (click)="reactToDirectMessage(item.id, '👍')">✅</span>
                            <span class="emoji-button" (click)="reactToDirectMessage(item.id, '✅')">👍</span>
 
-                           <img src="../../../assets/icons/add_reaction.svg" alt="Reaktion"
+                           <img src="assets/icons/add_reaction.svg" alt="Reaktion"
                               (click)="toggleEmojiPicker(item.id!)" />
 
-                           <img src="../../../assets/icons/Answer.svg" alt="Thread öffnen"
+                           <img src="assets/icons/Answer.svg" alt="Thread öffnen"
                               (click)="openThread(item.id!)" />
 
-                           <img *ngIf="item.messageFrom == currentUser?.userId" src="../../../assets/icons/option.svg"
+                           <img *ngIf="item.messageFrom == currentUser?.userId" src="assets/icons/option.svg"
                               alt="Bearbeiten" title="Nachricht bearbeiten" (click)="startEditing(item)" />
                         </div>
                      </div>

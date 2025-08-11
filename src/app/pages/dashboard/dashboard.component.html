@@ -87,7 +87,7 @@
     (closeCard)="closeProfileCard()">
     <div class="button-container">
       <button [routerLink]="user.direktMessageLink" (click)="closeProfileCard()" class="goToDm-button">
-        <img src="./../../assets/icons/mode_comment.svg" alt="">
+        <img src="assets/icons/mode_comment.svg" alt="">
         Nachricht
       </button>
     </div>
@@ -98,6 +98,6 @@
   *ngIf="screenWidth <= 979 && currentView === 'sidenav'" (mouseenter)="isHoveringNewMessageButton = true"
   (mouseleave)="isHoveringNewMessageButton = false" title="Write new message">
   <img [src]="isHoveringNewMessageButton
-      ? './../../assets/icons/new-message-button-hover.svg'
-      : './../../assets/icons/new-message-button.svg'" alt="New Message" />
+      ? 'assets/icons/new-message-button-hover.svg'
+      : 'assets/icons/new-message-button.svg'" alt="New Message" />
 </button>
