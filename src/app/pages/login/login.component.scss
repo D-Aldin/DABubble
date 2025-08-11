@@ -353,11 +353,11 @@ body {
   }
 
   @include mixins.respond-between(320px, 440px) {
-    left: 101%;
+    left: 94%;
 
     img {
-      width: 30px;
-      height: 30px;
+      width: 60px;
+      height: 60px;
     }
   }
 }
@@ -400,7 +400,7 @@ body {
     align-items: center;
 
     h1 {
-      font-size: 25px;
+      font-size: 36px;
     }
   }
 
@@ -454,27 +454,23 @@ body {
 
   @keyframes moveShrinkFadeMobile {
     0% {
-      transform: translate(-3%, -3%) scale(1);
+      transform: translate(-0%, -0%) scale(1);
       opacity: 1;
       position: absolute;
       top: 40%;
-      // left: 50%;
     }
 
     10% {
-      transform: translate(-10%, -10%) scale(1);
+      transform: translate(-0%, -0%) scale(1);
       opacity: 1;
       position: absolute;
       top: 40%;
-      // left: 50%;
     }
 
     100% {
-      transform: translate(-50%, -50%) scale(0.4);
       opacity: 0.2;
       position: absolute;
-      top: 30px;
-      left: 50%;
+      top: 1%;
     }
   }
 
