@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { InputFieldComponent } from '../../shared/input-field/input-field.component';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from "../../shared/header/header.component";
-import { SuccessToastComponent } from "../../shared/success-toast/success-toast.component";
+import { HeaderComponent } from '../../shared/header/header.component';
+import { SuccessToastComponent } from '../../shared/success-toast/success-toast.component';
 import { Router, RouterModule } from '@angular/router';
 import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,12 +17,22 @@ import { UserService } from '../../core/services/user.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [InputFieldComponent, ReactiveFormsModule, CommonModule, HeaderComponent, SuccessToastComponent, RouterModule],
+  imports: [
+    InputFieldComponent,
+    ReactiveFormsModule,
+    CommonModule,
+    HeaderComponent,
+    SuccessToastComponent,
+    RouterModule,
+  ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-  form: any = new FormControl('', [Validators.required, Validators.minLength(2)]);
+  form: any = new FormControl('', [
+    Validators.required,
+    Validators.minLength(2),
+  ]);
   emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   namePattern = /^[A-Za-zÄÖÜäöüß.,'\-]+(?:\s+[A-Za-zÄÖÜäöüß.,'\-]+)+$/;
   avatarImgPaths = avatarImgPaths;
@@ -28,12 +43,24 @@ export class RegisterComponent {
   showSuccessToast: boolean = false;
   nameInput: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(this.namePattern), Validators.maxLength(20)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(this.namePattern),
+          Validators.maxLength(20),
+        ],
+      ],
       email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
       password: ['', Validators.required],
-      privacy: [false, Validators.requiredTrue]
+      privacy: [false, Validators.requiredTrue],
     });
   }
 
@@ -72,7 +99,7 @@ export class RegisterComponent {
   emailValidation(): string {
     const control = this.form.get('email');
     if (control?.touched && control?.errors) {
-      return '*Diese E-Mail-Adresse ist leider ungültig.'
+      return '*Diese E-Mail-Adresse ist leider ungültig.';
     }
     return '';
   }
@@ -92,16 +119,22 @@ export class RegisterComponent {
 
   onRegister(): void {
     if (this.form.valid) {
-      this.authService.register(this.form.value.email, this.form.value.password)
-        .then(async userCredential => {
+      this.authService
+        .register(this.form.value.email, this.form.value.password)
+        .then(async (userCredential) => {
           const user = userCredential.user;
           if (user.email)
-            await this.userService.createUserDocument(user.uid, this.selectedAvatar, this.nameInput, user.email);
-          this.showSuccessFeedback()
-          this.proceedToLogin()
+            await this.userService.createUserDocument(
+              user.uid,
+              this.selectedAvatar,
+              this.nameInput,
+              user.email
+            );
+          this.showSuccessFeedback();
+          this.proceedToLogin();
         })
-        .catch(error => {
-          this.showErrorFeedback()
+        .catch((error) => {
+          this.showErrorFeedback();
         });
     }
     this.form.reset();
@@ -115,12 +148,12 @@ export class RegisterComponent {
   showErrorFeedback(): void {
     this.showSuccessToast = false;
     this.showErrorToast = true;
-    this.toggleAvatarChoosing()
+    this.toggleAvatarChoosing();
   }
 
   proceedToLogin(): void {
     setTimeout(() => {
-      this.router.navigateByUrl('/login')
+      this.router.navigateByUrl('/login');
     }, 2000);
   }
 

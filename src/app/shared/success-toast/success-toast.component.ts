@@ -6,7 +6,7 @@ import { Component, HostBinding, Input } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './success-toast.component.html',
-  styleUrl: './success-toast.component.scss'
+  styleUrl: './success-toast.component.scss',
 })
 export class SuccessToastComponent {
   @Input() message: string = 'Aktion erfolgreich';
