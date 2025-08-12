@@ -88,7 +88,7 @@ export class HeaderComponent implements OnChanges {
   centerLogo() {
     this.router.events.subscribe(() => {
       const url = this.router.url;
-      this.isLoginPage = url.includes('/login');
+      this.isLoginPage = url.includes('/login') || url.includes('/register');
     });
   }
 
