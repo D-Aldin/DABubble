@@ -57,7 +57,8 @@
 
     <!-- Reactions, replies, and last reply time -->
     <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
-      <div class="reply-info">
+      @if(msg.replyCount! > 0) {
+             <div class="reply-info">
         <a class="reply-count" (click)="openThread(msg.id!)">
           {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
         </a>
@@ -81,6 +82,9 @@
         </span>
         }
       </div>
+        
+      }
+ 
     </div>
     <!-- Emoji Picker -->
     @if (showEmojiPickerFor === msg.id) {
