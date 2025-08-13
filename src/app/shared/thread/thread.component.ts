@@ -107,8 +107,9 @@ export class ThreadComponent {
   }
 
   getReactionTooltip(emoji: string, userIds: string[]): string {
-    const names = userIds.map(id => this.userMap[id]?.name || 'Unbekannt');
-    return `${emoji} ${names.join(', ')}`;
+    const names = userIds.map(id => this.getUserName(id)).filter(Boolean);
+    const verb = names.length > 1 ? 'haben reagiert' : 'hat reagiert';
+    return `${emoji} ${names.join(', ')} ${verb}`;
   }
 
   private normalizeToNew(raw?: any): Record<string, string[]> {

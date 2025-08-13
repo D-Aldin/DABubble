@@ -185,8 +185,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   getReactionTooltip(emoji: string, userIds: string[]): string {
     const names = userIds.map(id => this.usersMap[id]?.name || 'Unbekannt');
-    return `${emoji} ${names.join(', ')} hat reagiert`;
+    const verb = names.length > 1 ? 'haben reagiert' : 'hat reagiert';
+    return `${emoji} ${names.join(', ')} ${verb}`;
   }
+
 
   getLastReplyTime(messages: ChannelMessage[]): Date | null {
     const timestamps = messages

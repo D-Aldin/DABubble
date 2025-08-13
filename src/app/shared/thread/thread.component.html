@@ -92,59 +92,62 @@
                <div class="reply-text message" [innerHTML]="reply.text | parseTags"></div>
                }
                <div class="reactions">
-               @if (reply.reactions && (getVisibleReactionsReply(reply).length || getHiddenCountReply(reply))) {
-                  <div class="reactions-row">
-                     <!-- visible chips -->
-                     @for (r of getVisibleReactionsReply(reply); track r.emoji) {
-                     <button
-                        class="reaction-chip"
-                        type="button"
-                        [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
-                        [attr.title]="getReactionTooltip(r.emoji, r.users)">
-                        <span class="emoji">{{ r.emoji }}</span>
-                        <span class="count">{{ r.count }}</span>
-                        <div class="tooltip tooltip-list">
-                           @for (uid of r.users; track uid) {
-                           {{ r.emoji }} {{ getUserName(uid) }} hat reagiert
-                           }
-                        </div>
-                     </button>
-                     }
-
-                     <!-- +X chip -->
-                     @if (getHiddenCountReply(reply) > 0) {
-                     <button
-                        class="reaction-chip more"
-                        type="button"
-                        (click)="toggleReactionsPopover(reply.id!)"
-                        [attr.aria-expanded]="openReactionsPopoverFor === reply.id"
-                        [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCountReply(reply)">
-                        +{{ getHiddenCountReply(reply) }}
-                     </button>
-                     }
-                  </div>
-               }
-
-               <!-- popover with remaining -->
-               @if (openReactionsPopoverFor === reply.id) {
-                  <div class="reactions-popover" (mouseleave)="openReactionsPopoverFor = null">
-                     <div class="popover-header">Weitere Reaktionen</div>
-                     <div class="popover-grid">
-                     @for (r of getHiddenReactionsReply(reply); track r.emoji) {
-                        <div class="reaction-chip">
+                  @if (reply.reactions && (getVisibleReactionsReply(reply).length || getHiddenCountReply(reply))) {
+                     <div class="reactions-row">
+                        <!-- visible chips (merged by emoji) -->
+                        @for (r of getVisibleReactionsReply(reply); track r.emoji) {
+                        <button
+                           class="reaction-chip"
+                           type="button"
+                           [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
+                           [attr.title]="getReactionTooltip(r.emoji, r.users)"
+                        >
                            <span class="emoji">{{ r.emoji }}</span>
                            <span class="count">{{ r.count }}</span>
-                           <div class="tooltip tooltip-list">
-                           @for (uid of r.users; track uid) {
-                              {{ r.emoji }} {{ getUserName(uid) }} hat reagiert
-                           }
+                           <div class="tooltip">
+                              {{ getReactionTooltip(r.emoji, r.users) }}
                            </div>
+                        </button>
+                        }
+
+                        <!-- +X chip for remaining emojis -->
+                        @if (getHiddenCountReply(reply) > 0) {
+                        <button
+                           class="reaction-chip more"
+                           type="button"
+                           (click)="toggleReactionsPopover(reply.id!)"
+                           [attr.aria-expanded]="openReactionsPopoverFor === reply.id"
+                           [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCountReply(reply)"
+                        >
+                           +{{ getHiddenCountReply(reply) }}
+                        </button>
+                        }
+                     </div>
+
+                     <!-- popover with the rest -->
+                     @if (openReactionsPopoverFor === reply.id) {
+                        <div class="reactions-popover" (mouseleave)="openReactionsPopoverFor = null">
+                        <div class="popover-header">Weitere Reaktionen</div>
+                        <div class="popover-grid">
+                           @for (r of getHiddenReactionsReply(reply); track r.emoji) {
+                              <div
+                              class="reaction-chip"
+                              [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
+                              [attr.title]="getReactionTooltip(r.emoji, r.users)"
+                              >
+                              <span class="emoji">{{ r.emoji }}</span>
+                              <span class="count">{{ r.count }}</span>
+                              <div class="tooltip">
+                                 {{ getReactionTooltip(r.emoji, r.users) }}
+                              </div>
+                              </div>
+                           }
+                        </div>
                         </div>
                      }
-                     </div>
+                  }
                   </div>
-               }
-               </div>
+
             </div>
             @if (hoveredMessageId === reply.id) {
             <div class="message-toolbar">

@@ -305,8 +305,10 @@ export class DirectMessageComponent
 
   getReactionTooltip(emoji: string, userIds: string[]): string {
     const names = userIds.map(id => this.usersMap[id]?.name || 'Unbekannt');
-    return `${emoji} ${names.join(', ')} hat reagiert`;
+    const verb = names.length > 1 ? 'haben reagiert' : 'hat reagiert';
+    return `${emoji} ${names.join(', ')} ${verb}`;
   }
+
 
   loadUserProfiles(userIds: string[]) {
     this.userService.getUsersByIds(userIds).subscribe(users => {
