@@ -4,7 +4,7 @@
 .container {
   width: 400px;
   max-height: calc(100vh - 140px);
-
+  min-height: 100%;
   background-color: #fff;
   padding: 32px 30px;
   border-radius: 30px;
@@ -316,7 +316,7 @@ app-search-bar {
 
   .container {
     border-radius: 0px;
-    min-height: calc(100vh - 80px);
+
     padding: 20px;
   }
 }
