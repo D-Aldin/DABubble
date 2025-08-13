@@ -56,8 +56,8 @@
                      <div class="message-toolbar" *ngIf="hoveredMessageId === item.id"
                         [ngClass]="{ 'me': item.messageFrom !== currentUser?.userId, 'other': item.messageFrom !== currentUser?.userId }">
                         <div class="message-options">
-                           <span class="emoji-button" (click)="reactToDirectMessage(item.id, '👍')">✅</span>
-                           <span class="emoji-button" (click)="reactToDirectMessage(item.id, '✅')">👍</span>
+                           <span class="emoji-button" (click)="reactToDirectMessage(item.id, '👍')">👍</span>
+                           <span class="emoji-button" (click)="reactToDirectMessage(item.id, '✅')">✅</span>
 
                            <img src="assets/icons/add_reaction.svg" alt="Reaktion"
                               (click)="toggleEmojiPicker(item.id!)" />
@@ -80,30 +80,62 @@
 
                      <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount"
                         [ngClass]="{'me': item.messageFrom === currentUserId}">
-                        <div class="reply-info">
-                           <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
-                              {{ item.replyCount || 0 }} Antwort{{ (item.replyCount || 0) > 1 ? 'en' : '' }}
-                           </a>
+                     <div class="reply-info">
+                        <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
+                           {{ item.replyCount || 0 }} Antwort{{ (item.replyCount || 0) > 1 ? 'en' : '' }}
+                        </a>
+                        <ng-container *ngIf="item.reactions && objectKeys(item.reactions).length > 0">
+                           <div class="reactions-row">
+                           <!-- visible chips -->
+                           <button
+                              class="reaction-chip"
+                              *ngFor="let r of getVisibleReactions(item)"
+                              type="button"
+                              [attr.aria-label]="getReactionTooltip(r.emoji, r.users)">
+                              <span class="emoji">{{ r.emoji }}</span>
+                              <span class="count">{{ r.count }}</span>
+                              <div class="tooltip">
+                                 {{ getReactionTooltip(r.emoji, r.users) }}
+                              </div>
+                           </button>
+                           <!-- +X chip -->
+                           <button
+                              class="reaction-chip more"
+                              type="button"
+                              *ngIf="getHiddenCount(item) > 0"
+                              (click)="toggleReactionsPopover(item.id!)"
+                              [attr.aria-expanded]="openReactionsPopoverFor === item.id"
+                              [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCount(item)">
+                              +{{ getHiddenCount(item) }}
+                           </button>
+                           </div>
+                           <!-- popover with all remaining -->
+                           <div
+                           class="reactions-popover"
+                           *ngIf="openReactionsPopoverFor === item.id"
+                           (mouseleave)="openReactionsPopoverFor = null">
+                           <div class="popover-header">Weitere Reaktionen</div>
 
-                           <ng-container *ngIf="item.reactions && objectKeys(item.reactions).length > 0">
-                              <div class="reaction-group"
-                                 *ngFor="let emoji of objectKeys(getReactionGroups(item.reactions))">
-                                 <div class="reaction">
-                                    {{ emoji }} {{ getReactionGroups(item.reactions)[emoji].length }}
-                                    <div class="tooltip">
-                                       {{ getReactionTooltip(emoji, getReactionGroups(item.reactions)[emoji]) }}
-                                    </div>
+                           <div class="popover-grid">
+                              <div class="reaction-chip" *ngFor="let r of getHiddenReactions(item)">
+                                 <span class="emoji">{{ r.emoji }}</span>
+                                 <span class="count">{{ r.count }}</span>
+                                 <div class="tooltip">
+                                 {{ getReactionTooltip(r.emoji, r.users) }}
                                  </div>
                               </div>
-                           </ng-container>
+                           </div>
+                           </div>
+                        </ng-container>
 
-                           @if ((item.replyCount ?? 0) > 0 && item.lastReplyTimestamp) {
+                        @if ((item.replyCount ?? 0) > 0 && item.lastReplyTimestamp) {
                            <span class="last-reply-time">
-                              Letzte Antwort {{ getFormattedLastReplyTime(item.lastReplyTimestamp) }}
+                           Letzte Antwort {{ getFormattedLastReplyTime(item.lastReplyTimestamp) }}
                            </span>
-                           }
-                        </div>
+                        }
                      </div>
+                     </div>
+
                      <div *ngIf="showEmojiPickerFor === item.id">
                         <emoji-mart set="apple" (emojiSelect)="reactToMessage(item.id, $any($event).emoji.native)">
                         </emoji-mart>
