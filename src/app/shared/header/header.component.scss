@@ -300,6 +300,7 @@ header {
     position: relative;
     top: 0;
     right: 0;
+    height: fit-content;
 
     ::ng-deep .profile-card {
       max-width: 90vw;
