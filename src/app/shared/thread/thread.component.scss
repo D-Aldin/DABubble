@@ -433,28 +433,115 @@ app-message-field {
 }
 
 .reactions {
-  display: flex;
+  position: relative;
+  /* anchor the popover */
+}
+
+.reactions-row {
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
-  margin-top: 6px;
+  flex-wrap: nowrap;
+  overflow: visible;
+  /* allow tooltips to overflow */
+  max-width: 100%;
+}
 
-  .reaction-pill {
-    display: inline-flex;
-    align-items: center;
-    background-color: #ffffff;
-    border: 1px solid #d1d5db; // light gray
-    border-radius: 999px; // fully rounded
-    padding: 2px 8px;
+.reaction-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid #DADCE0;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: default;
+  user-select: none;
+
+  .emoji {
     font-size: 14px;
-    color: #333;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
 
-    .emoji {
-      margin-right: 4px;
-    }
+  .count {
+    font-weight: 600;
+  }
+}
 
-    .count {
-      font-weight: 500;
-    }
+.reaction-chip.more {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* keep the base tooltip */
+.reaction-chip .tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  background: #1d0264;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease;
+  z-index: 20;
+  min-width: 150px;
+  max-width: 200px;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.reaction-chip .tooltip.tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reaction-chip:hover .tooltip {
+  opacity: 1;
+}
+
+.reactions-popover {
+  position: absolute;
+  z-index: 40;
+  top: -8px;
+  left: 0;
+  transform: translateY(-100%);
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .12);
+  border-radius: 10px;
+  padding: 10px;
+  width: min(320px, 90vw);
+
+  .popover-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6B7280;
+    margin-bottom: 6px;
+  }
+
+  .popover-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .reaction-chip {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .reactions-popover .popover-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

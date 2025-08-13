@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { MessageFieldComponent } from '../message-field/message-field.component';
-import { Firestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, query, orderBy, onSnapshot, doc, getDoc, updateDoc, runTransaction  } from '@angular/fire/firestore';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
@@ -17,6 +17,7 @@ import { User } from '../../core/interfaces/user';
 import { Channel } from '../../core/interfaces/channel';
 import { MentioningService } from '../../core/services/mentioning.service';
 
+type ReactionEntry = { emoji: string; users: string[]; count: number };
 
 @Component({
   selector: 'app-thread',
@@ -46,6 +47,8 @@ export class ThreadComponent {
   @Input() messageId!: string;
   @Input() channelId!: string;
   @Output() closeThread = new EventEmitter<void>();
+  maxVisibleReactions = 3;
+  openReactionsPopoverFor: string | null = null;
 
   constructor(
     private firestore: Firestore,
@@ -77,6 +80,67 @@ export class ThreadComponent {
         this.loadDirectParentMessage(thread.channelId, thread.messageId);
       }
     });
+  }
+
+  private buildEntries(raw: any): ReactionEntry[] {
+    const groups = this.normalizeToNew(raw);
+    return Object.entries(groups)
+      .map(([emoji, users]) => ({ emoji, users: users as string[], count: (users as string[]).length }))
+      .sort((a, b) => b.count - a.count || a.emoji.localeCompare(b.emoji));
+  }
+
+  getVisibleReactionsReply(r: any): ReactionEntry[] {
+    return this.buildEntries(r.reactions).slice(0, this.maxVisibleReactions);
+  }
+
+  getHiddenReactionsReply(r: any): ReactionEntry[] {
+    return this.buildEntries(r.reactions).slice(this.maxVisibleReactions);
+  }
+
+  getHiddenCountReply(r: any): number {
+    return Math.max(0, this.buildEntries(r.reactions).length - this.maxVisibleReactions);
+  }
+
+  toggleReactionsPopover(messageId: string): void {
+    this.openReactionsPopoverFor =
+      this.openReactionsPopoverFor === messageId ? null : messageId;
+  }
+
+  getReactionTooltip(emoji: string, userIds: string[]): string {
+    const names = userIds.map(id => this.userMap[id]?.name || 'Unbekannt');
+    return `${emoji} ${names.join(', ')}`;
+  }
+
+  private normalizeToNew(raw?: any): Record<string, string[]> {
+    const out: Record<string, string[]> = {};
+    if (!raw) return out;
+    const ks = Object.keys(raw); if (!ks.length) return out;
+    const legacy = typeof (raw as any)[ks[0]] === 'string';
+    if (legacy) { for (const uid of ks) (out[(raw as any)[uid]] ||= []).push(uid); return out; }
+    for (const e of ks) {
+      const v = (raw as any)[e];
+      out[e] = Array.isArray(v)
+        ? Array.from(new Set((v as any[]).filter((x: any): x is string => typeof x === 'string')))
+        : [];
+    }
+    return out;
+  }
+
+  private countUserDistinct(m: Record<string, string[]>, uid: string): number {
+    return Object.values(m).reduce((n, list) => n + (list.includes(uid) ? 1 : 0), 0);
+  }
+
+  private toggleEmojiForUser(m: Record<string, string[]>, e: string, uid: string, max = 20): void {
+    const set = new Set(m[e] ?? []);
+    if (set.has(uid)) { set.delete(uid); const next = [...set]; next.length ? m[e] = next : delete m[e]; return; }
+    if (this.countUserDistinct(m, uid) >= max) throw new Error('REACTION_LIMIT_REACHED');
+    set.add(uid); m[e] = [...set];
+  }
+
+  private buildThreadReplyPath(t: ThreadState, replyId: string): string {
+    return t.threadType === 'channel'
+      ? `channels/${t.channelId}/messages/${t.messageId}/threads/${replyId}`
+      : `directMessages/${t.channelId}/messages/${t.messageId}/threads/${replyId}`;
   }
 
   private isValidThread(thread: ThreadState | null): thread is ThreadState {
@@ -189,35 +253,20 @@ export class ThreadComponent {
     this.emojiPickerForMessageId = this.emojiPickerForMessageId === messageId ? null : messageId;
   }
 
-  addEmojiToMessage(event: any, replyId: string) {
-    const emoji = event.emoji.native;
-    const thread = this.threadService.getCurrentThread();
-
-    if (!thread?.channelId || !thread?.messageId || !thread.threadType) {
-      console.warn('Missing thread context');
-      return;
-    }
-    const { channelId, messageId, threadType } = thread;
-    const refPath = threadType === 'channel'
-      ? `channels/${channelId}/messages/${messageId}/threads/${replyId}`
-      : `directMessages/${channelId}/messages/${messageId}/threads/${replyId}`;
-    const messageRef = doc(this.firestore, refPath);
-    getDoc(messageRef).then(docSnap => {
-      if (!docSnap.exists()) {
-        console.warn('❌ Document not found:', refPath);
-        return;
-      }
-      const data = docSnap.data();
-      const reactions = data['reactions'] || {};
-      const userId = this.authService.currentUserId;
-      if (reactions[userId] === emoji) {
-        delete reactions[userId];
-      } else {
-        reactions[userId] = emoji;
-      }
-      updateDoc(messageRef, { reactions });
-      this.emojiPickerForMessageId = null;
-    });
+  async addEmojiToMessage(ev: any, replyId: string) {
+    const t = this.threadService.getCurrentThread(); if (!t?.channelId || !t?.messageId) return;
+    const emoji = ev.emoji.native, ref = doc(this.firestore, this.buildThreadReplyPath(t, replyId));
+    try {
+      await runTransaction(this.firestore, async tx => {
+        const snap = await tx.get(ref); if (!snap.exists()) return;
+        const map = this.normalizeToNew(snap.data()['reactions']);
+        this.toggleEmojiForUser(map, emoji, this.authService.currentUserId, 20);
+        tx.update(ref, { reactions: map });
+      });
+    } catch (e: any) {
+      if (e?.message === 'REACTION_LIMIT_REACHED') console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
+      else console.error(e);
+    } finally { this.emojiPickerForMessageId = null; }
   }
 
   cancelEditing() {
@@ -309,12 +358,29 @@ export class ThreadComponent {
   }
 
   loadUserProfilesForThread() {
-    const userIds = new Set(this.replies.map(r => r.senderId));
-    if (this.parentMessage?.senderId) {
-      userIds.add(this.parentMessage.senderId);
-    }
+    const senderIds = new Set(this.replies.map(r => r.senderId));
+    if (this.parentMessage?.senderId) senderIds.add(this.parentMessage.senderId);
 
-    this.loadUserProfiles(Array.from(userIds));
+    const parentReactors = this.reactorIdsFrom(this.parentMessage?.reactions);
+    const replyReactors = this.replies.flatMap(r => this.reactorIdsFrom(r.reactions));
+
+    const ids = this.uniqIds([...senderIds], parentReactors, replyReactors);
+    if (ids.length === 0) return;
+
+    this.loadUserProfiles(ids);
+  }
+
+  private reactorIdsFrom(raw: any): string[] {
+    const map = this.normalizeToNew(raw);             
+    return Object.values(map).reduce<string[]>(
+      (acc, arr) => (acc.push(...arr), acc), []
+    );
+  }
+
+  private uniqIds(...lists: string[][]): string[] {
+    const s = new Set<string>();
+    lists.forEach(l => l?.forEach(id => id && s.add(id)));
+    return [...s];
   }
 
   getOtherParticipantId(): string {
