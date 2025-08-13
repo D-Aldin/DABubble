@@ -290,7 +290,7 @@ export class DashboardComponent {
 
   closePeopleDialog() {
     this.createdChannelName = '';
-    this.showPeopleDialog = false;
+    this.showPeopleDialogOnChannelCreation = false;
   }
 
   onChannelSelected(channelId: string): void {
@@ -415,6 +415,7 @@ export class DashboardComponent {
     this.mergeNewMembers(userIds);
     this.closeUserAddDialogs();
     this.refreshChannelPreviewAvatars();
+    this.closePeopleDialogOnChannelCreation()
   }
 
   private mergeNewMembers(userIds: string[]): void {
@@ -439,10 +440,10 @@ export class DashboardComponent {
   async handlePeopleConfirmed(selectedUsers: string[]): Promise<void> {
     const members = await this.resolveFinalMembers(selectedUsers);
     const channel = this.buildNewChannel(members);
-
-    this.channelService.createChannel(channel).then(() => {
-      this.closePeopleDialog();
-    });
+    const newId = await this.channelService.createChannelWithPresetId(channel);
+    this.closePeopleDialog();
+    this.closePeopleDialogOnChannelCreation();
+    this.router.navigate(['/dashboard/channel', newId]);
   }
 
   private async resolveFinalMembers(selectedUsers: string[]): Promise<string[]> {

@@ -14,9 +14,10 @@ import {
   where,
   QuerySnapshot,
   DocumentData,
- getDocs,
+  getDocs,
   getDoc,
-  
+  setDoc,
+
 } from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
 import { Channel } from '../interfaces/channel';
@@ -30,24 +31,30 @@ export class ChannelService {
   private openAddChannelDialogSubject = new Subject<void>();
   openAddChannelDialog$ = this.openAddChannelDialogSubject.asObservable();
 
-  getChannels(): Observable<Channel[]> {
+  getChannels(): Observable<(Channel & { id: string })[]> {
     const channelsRef = collection(this.firestore, 'channels');
-    return collectionData(channelsRef, { idField: 'id' }) as Observable<
-      Channel[]
-    >;
+    return collectionData(channelsRef, { idField: 'id' }) as Observable<(Channel & { id: string })[]>;
   }
 
   getChannelIdByTitle(
     title: string,
-    callback: (channel?: Channel) => void
+    callback: (channel?: Channel & { id: string }) => void
   ): void {
-    this.getChannels().subscribe((channels: Channel[]) => {
+    this.getChannels().subscribe((channels) => {
       const matchingChannel = channels.find(
         (channel) => channel.title === title
       );
       callback(matchingChannel);
     });
   }
+
+  async createChannelWithPresetId(channel: Channel): Promise<string> {
+    const channelsRef = collection(this.firestore, 'channels');
+    const newDocRef = doc(channelsRef);     // generate ID first
+    await setDoc(newDocRef, channel);       // write using that ID
+    return newDocRef.id;
+  }
+
 
   async createChannel(channel: Partial<Channel>): Promise<void> {
     // Validate required fields
@@ -83,9 +90,9 @@ export class ChannelService {
     });
   }
 
-  getChannelById(id: string): Observable<Channel> {
+  getChannelById(id: string): Observable<Channel & { id: string }> {
     const channelRef = doc(this.firestore, 'channels', id);
-    return docData(channelRef, { idField: 'id' }) as Observable<Channel>;
+    return docData(channelRef, { idField: 'id' }) as Observable<Channel & { id: string }>;
   }
 
   triggerAddChannelDialog() {
@@ -154,20 +161,20 @@ export class ChannelService {
   }
 
   async updateParentMessageThreadInfo(channelId: string, messageId: string): Promise<void> {
-  const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
-  const parentSnap = await getDoc(parentRef);
+    const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+    const parentSnap = await getDoc(parentRef);
 
-  if (!parentSnap.exists()) {
-    console.warn(`❗️Parent message not found for update: ${messageId}`);
-    return;
+    if (!parentSnap.exists()) {
+      console.warn(`❗️Parent message not found for update: ${messageId}`);
+      return;
+    }
+
+    const currentCount = parentSnap.data()?.['replyCount'] || 0;
+    await updateDoc(parentRef, {
+      replyCount: currentCount + 1,
+      lastReplyTimestamp: new Date()
+    });
   }
 
-  const currentCount = parentSnap.data()?.['replyCount'] || 0;
-  await updateDoc(parentRef, {
-    replyCount: currentCount + 1,
-    lastReplyTimestamp: new Date()
-  });
-}
 
-  
 }
