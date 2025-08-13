@@ -52,7 +52,7 @@
             </div>
             <input id="nameInput" name="nameInput" class="edit-input" [(ngModel)]="nameInput"
                [placeholder]="'Name eingeben'" minlength="4" maxlength="20" required #nameInputRef="ngModel"
-               [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }" pattern="^[a-zA-ZäöüÄÖÜß' -]+$" />
+               [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }" />
             <!-- Validation Message -->
             <p class="error-message">
                <span *ngIf="nameInputRef.invalid && nameInputRef.touched">
