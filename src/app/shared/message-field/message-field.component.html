@@ -1,43 +1,54 @@
 <div class="message-box">
-   <div class="user-channel-list" [ngStyle]="{'visibility': isUserMentionActive == true ? 'visible' : 'hidden'}">
-      @for (user of userArr; track $index) {
+  <div class="user-channel-list" [ngStyle]="{'visibility': isUserMentionActive ? 'visible' : 'hidden'}">
+    @for (user of userArr; track $index) {
       <div class="user-container" [class.hidden]="!user.name.toLowerCase().includes(searchTerm)" (click)="addUser(user.name)">
-         <div class="avatar-container">
-            <img [src]="user.avatarPath" alt="avatar">
-            <span class="online-dot position-dot" [ngStyle]="{'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey'}"></span>
-         </div>
-         <span>{{user.name}}</span>
+        <div class="avatar-container">
+          <img [src]="user.avatarPath" alt="avatar">
+          <span class="online-dot position-dot" [ngStyle]="{'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey'}"></span>
+        </div>
+        <span>{{user.name}}</span>
       </div>
-      }
-   </div>
-   <div class="user-channel-list" [ngStyle]="{'visibility': isChannelMentionActive == true ? 'visible' : 'hidden'}">
-      @for (channel of channelArr; track $index) {
-      <div class="channel-container" [class.hidden]="!channel.title.toLowerCase().includes(searchTerm)">
-         <div class="channel" (click)="addChannel(channel.title)">
-            {{channel.title}}
-         </div>
-      </div>
-      }
-   </div>
-   <div class="message-wrapper">
-      <textarea [disabled]="disabled" #inputRef name="message-box" placeholder="Nachricht schreiben..." [(ngModel)]="message"  (ngModelChange)="toggleUserMention(); toggleChannelMention()" (keydown)="handleTypingAttempt($event)" (focus)="handleTypingAttempt($event)"></textarea>
+    }
+  </div>
 
-       <div class="warning-message" *ngIf="warningShown">
-         ⚠️ Du musst Channel-Mitglied sein um eine Nachricht in diesem Channel schreiben zu können.
+  <div class="user-channel-list" [ngStyle]="{'visibility': isChannelMentionActive ? 'visible' : 'hidden'}">
+    @for (channel of channelArr; track $index) {
+      <div class="channel-container" [class.hidden]="!channel.title.toLowerCase().includes(searchTerm)">
+        <div class="channel" (click)="addChannel(channel.title)">
+          {{channel.title}}
+        </div>
       </div>
-      
-      <div class="button-bar">
-         <div class="left-side">
-            <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
-            <button class="tag-button" (click)="toggleAddUser()"></button>
-         </div>
-         <button class="send-button" (click)="captureMessage(); searchTerm = '' " >
-         <img src="assets/icons/send.png" alt="send" class="send-img" />
-         </button>
+    }
+  </div>
+
+  <div class="message-wrapper">
+    <textarea
+      [disabled]="disabled"
+      #inputRef
+      name="message-box"
+      placeholder="Nachricht schreiben..."
+      [(ngModel)]="message"
+      (ngModelChange)="toggleUserMention(); toggleChannelMention()">
+    </textarea>
+
+    <div class="button-bar">
+      <div class="left-side">
+        <button class="emoji-button" (click)="toggleEmojiPicker()"></button>
+        <button class="tag-button" (click)="toggleAddUser()"></button>
       </div>
-   </div>
+      <button class="send-button" (click)="captureMessage(); searchTerm = ''">
+        <img src="assets/icons/send.png" alt="send" class="send-img" />
+      </button>
+    </div>
+  </div>
 </div>
+
 <div class="emoji-wrapper">
-   <emoji-mart title="Pick your emoji…" emoji="point_up" set="apple" (emojiClick)="addEmoji($event)"
-   [hidden]="!emojiPicker"></emoji-mart>
+  <emoji-mart
+    title="Pick your emoji…"
+    emoji="point_up"
+    set="apple"
+    (emojiClick)="addEmoji($event)"
+    [hidden]="!emojiPicker">
+  </emoji-mart>
 </div>

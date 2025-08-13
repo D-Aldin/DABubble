@@ -1,10 +1,10 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { DirectMessagingService } from '../../core/services/direct-messaging.service';
-import { mergeScan, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
 
@@ -18,54 +18,32 @@ import { Channel } from '../../core/interfaces/channel';
 export class MessageFieldComponent implements AfterViewInit {
   @Input() customClass: string = '';
   @Output() messageSend = new EventEmitter<string>();
-  emojiPicker: boolean = false;
-  message: string = '';
-  input: string = '';
-  isUserMentionActive: boolean = false;
-  isChannelMentionActive: boolean = false;
+
+  emojiPicker = false;
+  message = '';
+  isUserMentionActive = false;
+  isChannelMentionActive = false;
   userArr: ChatUser[] = [];
   channelArr: Channel[] = [];
-  isVisible: boolean = false;
-  searchTerm: string = '';
-  warningShown: boolean = false;
-  @Input() disabled: boolean = false;
+  searchTerm = '';
+
+  @Input() disabled = false;
   @Input() channelId!: string;
-  @Input() isMember: boolean = true;
-  @Input() isGuestUser: boolean = false;
+
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
   constructor(
     private messagingService: DirectMessagingService,
     private channelService: ChannelService
-  ) { }
+  ) {}
 
-  users$: Observable<ChatUser[]> =
-    this.messagingService.getAllUsersExceptCurrent();
+  users$: Observable<ChatUser[]> = this.messagingService.getAllUsersExceptCurrent();
   channel$: Observable<Channel[]> = this.channelService.getChannels();
 
   captureMessage() {
-    if (!this.canSend()) {
-      this.warningShown = true;
-      return;
-    }
     if (this.message.trim()) {
-      this.messageSend.emit(this.message);
+      this.messageSend.emit(this.message.trim());
       this.message = '';
-      this.warningShown = false;
-    }
-  }
-
-  canSend(): boolean {
-    return this.isGuestUser || this.isMember;
-  }
-
-  handleTypingAttempt(event: Event) {
-    if (!this.isMember && !this.isGuestUser) {
-      event.preventDefault();
-      this.warningShown = true;
-      setTimeout(() => {
-        this.warningShown = false;
-      }, 3000);
     }
   }
 
@@ -80,50 +58,32 @@ export class MessageFieldComponent implements AfterViewInit {
 
   toggleAddUser() {
     this.isUserMentionActive = !this.isUserMentionActive;
-    if (this.isUserMentionActive == true) {
+    if (this.isUserMentionActive) {
       this.message += '@';
       this.getTheUser();
     }
   }
 
   getTheUser() {
-    this.users$.subscribe((users) => {
-      this.userArr = users;
-    });
+    this.users$.subscribe(users => (this.userArr = users));
   }
 
   getChannels() {
-    this.channel$.subscribe((channel) => {
-      this.channelArr = channel;
-    });
+    this.channel$.subscribe(channel => (this.channelArr = channel));
   }
 
   toggleUserMention() {
     const match = this.message.match(/(^|\s)@(\w*)$/);
-    if (match) {
-      this.searchTerm = match[2].toLowerCase();
-      this.isUserMentionActive = true;
-      this.getTheUser();
-    } else {
-      this.isUserMentionActive = false;
-      this.searchTerm = '';
-    }
+    this.isUserMentionActive = !!match;
+    this.searchTerm = match ? match[2].toLowerCase() : '';
+    if (this.isUserMentionActive) this.getTheUser();
   }
 
   toggleChannelMention() {
     const match = this.message.match(/(^|\s)#(\w*)$/);
-    if (match) {
-      this.searchTerm = match[2].toLowerCase();
-      this.isChannelMentionActive = true;
-      this.getChannels();
-    } else {
-      this.isChannelMentionActive = false;
-      this.searchTerm = '';
-    }
-  }
-
-  searchForUser() {
-    this.searchTerm = this.message.replace('@', '').toLowerCase();
+    this.isChannelMentionActive = !!match;
+    this.searchTerm = match ? match[2].toLowerCase() : '';
+    if (this.isChannelMentionActive) this.getChannels();
   }
 
   addUser(userName: string) {
@@ -141,8 +101,6 @@ export class MessageFieldComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.inputRef.nativeElement.focus();
-    });
+    setTimeout(() => this.inputRef.nativeElement.focus());
   }
 }

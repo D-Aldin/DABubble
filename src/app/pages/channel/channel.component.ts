@@ -67,8 +67,6 @@ export class ChannelComponent implements OnInit, AfterViewInit {
   channelId: string = '';
   showProfileCard$ = this.overlayService.isVisible$;
   selectedUser$ = this.overlayService.selectedUser$;
-  isGuestUser = false;
-  isMember = false;
 
   constructor(
     private channelService: ChannelService,
@@ -83,14 +81,8 @@ export class ChannelComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.checkIfGuestUser();
     this.handleRouteParamChanges();
     this.listenToAddChannelDialogTrigger();
-  }
-
-  private checkIfGuestUser(): void {
-    const currentUser = this.authService.getCurrentUser();
-    this.isGuestUser = currentUser?.isAnonymous ?? false;
   }
 
   private handleRouteParamChanges(): void {
@@ -113,16 +105,10 @@ export class ChannelComponent implements OnInit, AfterViewInit {
       }
       this.selectedChannel = channel;
       this.selectedChannel.members ||= [];
-      this.setMembershipStatus(channel);
       this.loadChannelUsers(channel);
       this.loadChannelCreator(channel.creatorId);
       this.isLoadingChannel = false;
     });
-  }
-
-  private setMembershipStatus(channel: Channel): void {
-    const currentUserId = this.authService.getCurrentUser()?.uid ?? '';
-    this.isMember = channel.members.includes(currentUserId);
   }
 
   private loadChannelUsers(channel: Channel): void {
