@@ -1,100 +1,102 @@
 <div class="main-content">
   <section>
-    <div class="container">
+    <div class="sidenav">
+      <!-- Header -->
       <div class="heading">
         <div class="logo-and-heading">
           <img src="assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
           <h1>Devspace</h1>
         </div>
-        <button (click)="onChannelClick('');" [routerLink]="'/dashboard/new-message'" class="edit-btn">
+        <button (click)="onChannelClick('')" [routerLink]="'/dashboard/new-message'" class="edit-btn">
           <span class="edit-icon"></span>
         </button>
       </div>
 
       <app-search-bar></app-search-bar>
 
-      <!-- Channels Section -->
-      <div class="section">
-        <div class="section-header" (click)="toggleChannels()">
-          <div class="section-left">
-            <img [class.rotate-img]="!showChannels" src="assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
-            <div class="channel-heading">
-              <img src="assets/images/sidenav-img/workspaces.svg" alt="Channels" />
-              <span>Channels</span>
-            </div>
-          </div>
-          <button class="plus-btn" (click)="emitOpenDialog()">+</button>
-        </div>
+      <!-- Lists wrapper (fills the rest) -->
+      <div class="lists">
 
-        @if (showChannels) {
-        <div class="section-body full-width channel-flex">
-          <div class="scroll-container-channels">
-            <!-- Spinner is shown while channels are loaded -->
-            <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
-              <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
-            </div>
-
-            <ng-template #usersLoaded>
-              @for (channel of channels$ | async; track channel.id) {
-              <div class="channel-item"
-                (click)="onChannelClick(channel.id); selectChannel(channel); triggerBounce(channel.id)"
-                [ngClass]="{'selected' : channel.id == selectedChannel && isURLChannel, 'bounce-x': bounceMap[channel.id] && isURLChannel}">
-                <b>#</b>
-                <span>{{ channel.title }}</span>
+        <!-- CHANNELS -->
+        <div class="section" [class.open]="showChannels">
+          <div class="section-header" (click)="toggleChannels()">
+            <div class="header-left">
+              <img [class.rotate-img]="!showChannels" src="assets/images/sidenav-img/arrow_drop_down.svg" alt="dropdown">
+              <div class="title">
+                <img src="assets/images/sidenav-img/workspaces.svg" alt="Channels" />
+                <span>Channels</span>
               </div>
-              }
-            </ng-template>
-          </div>
-          <div class="add-channel" (click)="emitOpenDialog()">
-            <img src="assets/images/sidenav-img/add_circle.svg" alt="add-channel">
-            Channel hinzufügen
-          </div>
-        </div>
-        }
-      </div>
-
-      <!-- Direktnachrichten Section -->
-      <div class="section">
-        <div class="section-header" (click)="toggleDMs()">
-          <div class="section-left">
-            <img src="assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="!showDMs" alt="">
-            <div class="direct-message">
-              <img src="assets/images/sidenav-img/account_circle.svg" alt="DMs" />
-              <span>Direktnachrichten</span>
             </div>
+            <button class="plus-btn" (click)="emitOpenDialog(); $event.stopPropagation()">+</button>
           </div>
-        </div>
 
-        @if (showDMs) {
-        <div class="section-body full-width section-flex">
-          <div class="scroll-container-dm">
-            <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
-              <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
-            </div>
-
-            <ng-template #usersLoaded>
-              @for (user of users$ | async; track user.uid) {
-              <div class="dm-item"
-                [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
-                [routerLink]="'direct-message'"
-                (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
-                <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
-                <span>
-                  {{ user.name }}
-                  @if (user.uid === authService.currentUserId) {
-                  <span class="du-label">(Du)</span>
-                  }
-                </span>
-
-                <span class="online-dot"
-                  [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
+          @if (showChannels) {
+          <div class="section-body">
+            <div class="list-scroll">
+              <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
+                <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
               </div>
-              }
-            </ng-template>
+
+              <ng-template #usersLoaded>
+                @for (channel of channels$ | async; track channel.id) {
+                  <div class="channel-item"
+                       (click)="onChannelClick(channel.id); selectChannel(channel); triggerBounce(channel.id)"
+                       [ngClass]="{'selected' : channel.id == selectedChannel && isURLChannel, 'bounce-x': bounceMap[channel.id] && isURLChannel}">
+                    <b>#</b>
+                    <span>{{ channel.title }}</span>
+                  </div>
+                }
+              </ng-template>
+            </div>
+
+            <button class="add-row" (click)="emitOpenDialog()">
+              <img src="assets/images/sidenav-img/add_circle.svg" alt="add-channel">
+              Channel hinzufügen
+            </button>
           </div>
+          }
         </div>
-        }
-      </div>
+
+        <!-- DIRECT MESSAGES -->
+        <div class="section" [class.open]="showDMs">
+          <div class="section-header" (click)="toggleDMs()">
+            <div class="header-left">
+              <img src="assets/images/sidenav-img/arrow_drop_down.svg" [class.rotate-img]="!showDMs" alt="">
+              <div class="title">
+                <img src="assets/images/sidenav-img/account_circle.svg" alt="DMs" />
+                <span>Direktnachrichten</span>
+              </div>
+            </div>
+          </div>
+
+          @if (showDMs) {
+          <div class="section-body">
+            <div class="list-scroll">
+              <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded2">
+                <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
+              </div>
+
+              <ng-template #usersLoaded2>
+                @for (user of users$ | async; track user.uid) {
+                  <div class="dm-item"
+                       [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
+                       [routerLink]="'direct-message'"
+                       (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
+                    <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+                    <span>
+                      {{ user.name }}
+                      @if (user.uid === authService.currentUserId) { <span class="du-label">(Du)</span> }
+                    </span>
+                    <span class="online-dot" [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
+                  </div>
+                }
+              </ng-template>
+            </div>
+          </div>
+          }
+        </div>
+
+      </div> <!-- /lists -->
     </div>
   </section>
 </div>
