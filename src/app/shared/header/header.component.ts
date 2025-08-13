@@ -92,6 +92,13 @@ export class HeaderComponent implements OnChanges {
     });
   }
 
+  backToLogin() {
+    this.router.events.subscribe(() => {
+      const url = this.router.url;
+      this;
+    });
+  }
+
   handleHeaderAppearancesForRoutes() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))

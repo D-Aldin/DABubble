@@ -1,5 +1,4 @@
-<div class="main-content">
-  <section>
+
     <div class="container">
       <div class="heading">
         <div class="logo-and-heading">
@@ -12,6 +11,7 @@
       </div>
 
       <app-search-bar></app-search-bar>
+
 
       <!-- Channels Section -->
       <div class="section">
@@ -65,8 +65,10 @@
           </div>
         </div>
 
-        @if (showDMs) {
-        <div class="section-body full-width section-flex">
+   
+      </div>
+           @if (showDMs) {
+        <div class="section-body full-width section-flex nav-user">
           <div class="scroll-container-dm">
             <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
               <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
@@ -94,7 +96,5 @@
           </div>
         </div>
         }
-      </div>
     </div>
-  </section>
-</div>
+
