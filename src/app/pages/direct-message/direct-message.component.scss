@@ -296,7 +296,7 @@ emoji-mart {
       align-items: center;
       gap: 6px;
       flex-wrap: nowrap;
-      overflow: hidden;
+      overflow: visible;
       /* guard edge cases */
       max-width: 100%;
     }
@@ -334,15 +334,21 @@ emoji-mart {
       left: 50%;
       bottom: calc(100% + 6px);
       transform: translateX(-50%);
-      background: #111827;
+      background: #1d0264;
       color: #fff;
-      padding: 6px 8px;
+      padding: 8px 8px;
       border-radius: 6px;
-      font-size: 16px !important;
+      font-size: 16px;
       white-space: nowrap;
       opacity: 0;
       pointer-events: none;
       transition: opacity .15s ease;
+      max-width: 200px;
+      overflow-y: auto;
+      white-space: pre-line;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 20;
     }
 
     .reaction-chip:hover .tooltip {
