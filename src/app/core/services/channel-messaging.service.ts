@@ -3,7 +3,7 @@ import { Firestore, collection, addDoc, collectionData, orderBy, query, serverTi
 import { Observable } from 'rxjs';
 import { Message } from '../../core/interfaces/message';
 import { ChannelMessage } from '../interfaces/channel-message';
-import { map } from 'rxjs/operators';
+import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 export class ChannelMessagingService {
   private firestore = inject(Firestore);
   private replyCountCache: { [key: string]: number } = {};
+  private static readonly MAX_EMOJIS_PER_USER_PER_MESSAGE = 20;
 
   constructor() { }
 
@@ -44,21 +45,51 @@ export class ChannelMessagingService {
   async toggleReaction(channelId: string, messageId: string, emoji: string, userId: string): Promise<void> {
     const msgRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
 
-    await runTransaction(this.firestore, async (transaction) => {
-      const msgSnap = await transaction.get(msgRef);
-      if (!msgSnap.exists()) return;
+    await runTransaction(this.firestore, async (tx) => {
+      const snap = await tx.get(msgRef);
+      if (!snap.exists()) return;
 
-      const data = msgSnap.data();
-      const reactions = data['reactions'] || {};
+      const data = snap.data() as ChannelMessage;
+      const reactions = normalizeToNew(data.reactions); // emoji -> userIds[]
 
-      if (reactions[userId] === emoji) {
-        delete reactions[userId]; // remove reaction
+      const set = new Set<string>(reactions[emoji] ?? []);
+      const already = set.has(userId);
+
+      const userEmojiCount = Object.values(reactions)
+        .reduce((acc, list) => acc + (list.includes(userId) ? 1 : 0), 0);
+
+      if (already) {
+        set.delete(userId);
+        const next = Array.from(set);
+        if (next.length === 0) delete reactions[emoji];
+        else reactions[emoji] = next;
       } else {
-        reactions[userId] = emoji; // add or change reaction
+        if (userEmojiCount >= ChannelMessagingService.MAX_EMOJIS_PER_USER_PER_MESSAGE) {
+          throw new Error('REACTION_LIMIT_REACHED');
+        }
+        set.add(userId);
+        reactions[emoji] = Array.from(set);
       }
 
-      transaction.update(msgRef, { reactions });
+      tx.update(msgRef, { reactions } as Partial<ChannelMessage>);
     });
+
+    function normalizeToNew(raw?: LegacyReactions | NewReactions | null): Record<string, string[]> {
+      const out: Record<string, string[]> = {};
+      if (!raw) return out;
+      const keys = Object.keys(raw);
+      if (keys.length === 0) return out;
+      const isLegacy = typeof (raw as any)[keys[0]] === 'string';
+      if (isLegacy) {
+        for (const uid of keys) {
+          const e = (raw as LegacyReactions)[uid];
+          (out[e] ||= []).push(uid);
+        }
+        return out;
+      }
+      for (const e of keys) out[e] = Array.isArray((raw as any)[e]) ? [ ...(raw as any)[e] ] : [];
+      return out;
+    }
   }
 
   async updateChannelMessageText(channelId: string, messageId: string, newText: string): Promise<void> {

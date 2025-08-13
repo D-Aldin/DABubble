@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-
-import { Firestore, doc, getDocs, setDoc, collection, collectionData, getDoc, updateDoc} from '@angular/fire/firestore';
+import { Firestore, doc, getDocs, setDoc, collection, collectionData, getDoc, updateDoc, runTransaction } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { Observable, map, of, timestamp } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
 import { addDoc, orderBy, query, serverTimestamp } from 'firebase/firestore';
-import { Message } from '../interfaces/message';
+import { Message, LegacyReactions, NewReactions } from '../interfaces/message';
 import { ProfileCard } from '../interfaces/profile-card';
 
+const MAX_EMOJIS_PER_USER_PER_MESSAGE = 20;
 @Injectable({
   providedIn: 'root',
 })
@@ -39,25 +39,51 @@ export class DirectMessagingService {
     });
   }
 
+ async toggleReaction( conversationId: string, messageId: string, emoji: string, userId: string ): Promise<void> {
+    const ref = doc(this.firestore, `directMessages/${conversationId}/messages/${messageId}`);
+    await runTransaction(this.firestore, async (tx) => {
+      const snap = await tx.get(ref);
+      if (!snap.exists()) return;
+      const data = snap.data() as Message;
+      const reactions = this.normalizeReactions(data.reactions); // emoji -> userIds[]
+      const currentUsersForEmoji = new Set<string>(reactions[emoji] ?? []);
+      const alreadyReactedWithThisEmoji = currentUsersForEmoji.has(userId);
+      const userEmojiCount = Object.values(reactions).reduce((acc, list) => acc + (list.includes(userId) ? 1 : 0), 0);
+      if (alreadyReactedWithThisEmoji) {
+        currentUsersForEmoji.delete(userId);
+        const next = Array.from(currentUsersForEmoji);
+        if (next.length === 0) delete reactions[emoji];
+        else reactions[emoji] = next;
+      } else {
+        if (userEmojiCount >= MAX_EMOJIS_PER_USER_PER_MESSAGE) {
+          throw new Error('REACTION_LIMIT_REACHED');
+        }
+        currentUsersForEmoji.add(userId);
+        reactions[emoji] = Array.from(currentUsersForEmoji);
+      }
+      tx.update(ref, { reactions } as Partial<Message>);
+    });
+  }
 
-  async toggleReaction(conversationId: string, messageId: string, emoji: string, userId: string): Promise<void> {
-    const messageRef = doc(this.firestore, `directMessages/${conversationId}/messages/${messageId}`);
-    const messageSnap = await getDoc(messageRef);
-
-    if (!messageSnap.exists()) return;
-
-    const messageData = messageSnap.data() as any;
-    const reactions = messageData.reactions || {};
-
-    if (reactions[userId] === emoji) {
-      // remove reaction
-      delete reactions[userId];
-    } else {
-      // add or change reaction
-      reactions[userId] = emoji;
+  /** Convert legacy {userId: emoji} -> new {emoji: userIds[]} (or clone if already new). */
+  private normalizeReactions(raw?: LegacyReactions | NewReactions): NewReactions {
+    const out: NewReactions = {};
+    if (!raw) return out;
+    const keys = Object.keys(raw);
+    if (keys.length === 0) return out;
+    const isLegacy = typeof (raw as any)[keys[0]] === 'string';
+    if (isLegacy) {
+      // Legacy: userId -> emoji
+      for (const userId of keys) {
+        const e = (raw as LegacyReactions)[userId];
+        if (!out[e]) out[e] = [];
+        out[e].push(userId);
+      }
+      return out;
     }
-
-    await updateDoc(messageRef, { reactions });
+    // New format already
+    for (const e of keys) out[e] = Array.isArray((raw as any)[e]) ? [ ...(raw as any)[e] ] : [];
+    return out;
   }
 
   async updateDirectMessage(conversationId: string, messageId: string, newText: string): Promise<void> {

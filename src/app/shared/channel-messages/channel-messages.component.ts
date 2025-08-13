@@ -31,6 +31,10 @@ import { Timestamp } from 'firebase/firestore';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { ReactionService } from '../../core/services/reaction.service';
 import { SearchService } from '../../core/services/search.service';
+import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
+
+type ReactionMap = Record<string, string[]>;
+type ReactionEntry = { emoji: string; users: string[]; count: number };
 
 @Component({
   selector: 'app-channel-messages',
@@ -74,6 +78,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
   groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
+  maxVisibleReactions = 4; 
+  openReactionsPopoverFor: string | null = null;
 
   constructor(
     private userService: UserService,
@@ -130,16 +136,45 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   reactToChannelMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
-    this.reactionService.toggleReaction('channel', this.channelId, messageId, emoji, this.currentUserId);
+    this.messagingService
+      .toggleReaction(this.channelId, messageId, emoji, this.currentUserId)
+      .catch(e => {
+        if (e?.message === 'REACTION_LIMIT_REACHED') {
+          console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
+        } else {
+          console.error(e);
+        }
+      });
   }
 
-  getReactionGroups(reactions: { [userId: string]: string }) {
-    const groups: { [emoji: string]: string[] } = {};
-    for (const [userId, emoji] of Object.entries(reactions)) {
-      if (!groups[emoji]) groups[emoji] = [];
-      groups[emoji].push(userId);
-    }
-    return groups;
+  getReactionGroups(reactions: LegacyReactions | NewReactions | null | undefined): ReactionMap {
+      return this.normalizeReactions(reactions);
+  }
+
+   private buildReactionEntries(reactions: LegacyReactions | NewReactions | null | undefined): ReactionEntry[] {
+    const groups = this.normalizeReactions(reactions);
+    return Object.entries(groups)
+      .map(([emoji, users]) => ({ emoji, users, count: users.length }))
+      .sort((a, b) => b.count - a.count || a.emoji.localeCompare(b.emoji));
+  }
+
+  getVisibleReactions(msg: ChannelMessage): ReactionEntry[] {
+    const all = this.buildReactionEntries(msg.reactions);
+    return all.slice(0, this.maxVisibleReactions);
+  }
+
+  getHiddenReactions(msg: ChannelMessage): ReactionEntry[] {
+    const all = this.buildReactionEntries(msg.reactions);
+    return all.slice(this.maxVisibleReactions);
+  }
+
+  getHiddenCount(msg: ChannelMessage): number {
+    const all = this.buildReactionEntries(msg.reactions);
+    return Math.max(0, all.length - this.maxVisibleReactions);
+  }
+
+  toggleReactionsPopover(messageId: string): void {
+    this.openReactionsPopoverFor = (this.openReactionsPopoverFor === messageId) ? null : messageId;
   }
 
   getUserNames(userIds: string[]): string {
@@ -231,13 +266,35 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
-    await this.messagingService.toggleReaction(
-      this.channelId,
-      messageId,
-      emoji,
-      this.currentUserId
-    );
-    this.showEmojiPickerFor = null;
+    try {
+      await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
+    } catch (e: any) {
+      if (e?.message === 'REACTION_LIMIT_REACHED') {
+        console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
+      } else {
+        console.error(e);
+      }
+    } finally {
+      this.showEmojiPickerFor = null;
+    }
+  }
+
+  private normalizeReactions(raw?: LegacyReactions | NewReactions | null): ReactionMap {
+    const out: ReactionMap = {};
+    if (!raw) return out;
+    const keys = Object.keys(raw);
+    if (keys.length === 0) return out;
+
+    const isLegacy = typeof (raw as any)[keys[0]] === 'string';
+    if (isLegacy) {
+      for (const uid of keys) {
+        const e = (raw as LegacyReactions)[uid];
+        (out[e] ||= []).push(uid);
+      }
+      return out;
+    }
+    for (const e of keys) out[e] = Array.isArray((raw as any)[e]) ? (raw as any)[e] : [];
+    return out;
   }
 
   handlingDateTime(date: Date): string {

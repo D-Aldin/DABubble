@@ -57,35 +57,57 @@
 
     <!-- Reactions, replies, and last reply time -->
     <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
-      @if(msg.replyCount! > 0) {
-             <div class="reply-info">
-        <a class="reply-count" (click)="openThread(msg.id!)">
-          {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
-        </a>
+      <div class="reply-info">
+        <!-- reply count (only if > 0) -->
+        @if ((msg.replyCount ?? 0) > 0) {
+          <a class="reply-count" (click)="openThread(msg.id!)">
+            {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+          </a>
+        }
 
+        <!-- reactions -->
         @if (msg.reactions && objectKeys(msg.reactions).length > 0) {
-        @for (emoji of objectKeys(getReactionGroups(msg.reactions || {})); track emoji) {
-        <div class="reaction-group">
-          <div class="reaction">
-            {{ emoji }} {{ getReactionGroups(msg.reactions || {})[emoji].length }}
-            <div class="tooltip">
-              {{ getReactionTooltip(emoji, getReactionGroups(msg.reactions || {})[emoji]) }}
-            </div>
-          </div>
-        </div>
-        }
-        }
+          <div class="reactions-row">
+            <!-- visible chips -->
+            @for (r of getVisibleReactions(msg); track r.emoji) {
+              <button class="reaction-chip" type="button"
+                      [attr.aria-label]="getReactionTooltip(r.emoji, r.users)">
+                <span class="emoji">{{ r.emoji }}</span>
+                <span class="count">{{ r.count }}</span>
+                <div class="tooltip">{{ getReactionTooltip(r.emoji, r.users) }}</div>
+              </button>
+            }
 
-        @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
-        <span class="last-reply-time">
-          Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
-        </span>
+            <!-- +X chip -->
+            @if (getHiddenCount(msg) > 0) {
+              <button class="reaction-chip more" type="button"
+                      (click)="toggleReactionsPopover(msg.id!)"
+                      [attr.aria-expanded]="openReactionsPopoverFor === msg.id"
+                      [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCount(msg)">
+                +{{ getHiddenCount(msg) }}
+              </button>
+            }
+          </div>
+
+          <!-- popover with remaining -->
+          @if (openReactionsPopoverFor === msg.id) {
+            <div class="reactions-popover" (mouseleave)="openReactionsPopoverFor = null">
+              <div class="popover-header">Weitere Reaktionen</div>
+              <div class="popover-grid">
+                @for (r of getHiddenReactions(msg); track r.emoji) {
+                  <div class="reaction-chip">
+                    <span class="emoji">{{ r.emoji }}</span>
+                    <span class="count">{{ r.count }}</span>
+                    <div class="tooltip">{{ getReactionTooltip(r.emoji, r.users) }}</div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
         }
       </div>
-        
-      }
- 
     </div>
+
     <!-- Emoji Picker -->
     @if (showEmojiPickerFor === msg.id) {
     <emoji-mart set="apple" (emojiSelect)="reactToMessage(msg.id, $event.emoji.native)">

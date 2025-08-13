@@ -2,7 +2,7 @@ import {
   AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription, take } from 'rxjs';
+import { from, Subscription, take } from 'rxjs';
 import { MessageFieldComponent } from '../../shared/message-field/message-field.component';
 import { SpinnerComponent } from '../../shared/spinner/spinner.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -23,10 +23,13 @@ import { Observable } from 'rxjs';
 import { ReactionService } from '../../core/services/reaction.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { SearchService } from '../../core/services/search.service';
+import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
 
 interface CurrentUserId {
   userId: string;
 }
+type ReactionMap = Record<string, string[]>;
+type ReactionEntry = { emoji: string; users: string[]; count: number };
 
 @Component({
   selector: 'app-direct-message',
@@ -73,6 +76,8 @@ export class DirectMessageComponent
   @ViewChild('scrollContainer')
   private scrollContainer?: ElementRef<HTMLElement>;
   @ViewChild('messageInput') messageFieldComponent!: MessageFieldComponent;
+  maxVisibleReactions = 4; // tweak: 3 on mobile if we need
+  openReactionsPopoverFor: string | null = null;
 
   constructor(
     public authService: AuthService,
@@ -133,13 +138,10 @@ export class DirectMessageComponent
   private loadReactorProfiles(messages: Message[]): void {
     const userIds = new Set<string>();
     messages.forEach((m) => {
-      if (m.reactions) {
-        Object.keys(m.reactions).forEach(uid => userIds.add(uid));
-      }
+      const groups = this.normalizeReactions(m.reactions);
+      Object.values(groups).forEach(list => list.forEach(uid => userIds.add(uid)));
     });
-    if (userIds.size > 0) {
-      this.loadUserProfiles(Array.from(userIds));
-    }
+    if (userIds.size > 0) this.loadUserProfiles(Array.from(userIds));
   }
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
@@ -204,30 +206,97 @@ export class DirectMessageComponent
     this.cancelEditing();
   }
 
-  reactToDirectMessage(messageId: string, emoji: string) {
+ reactToDirectMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.conversation) return;
-    if (!this.currentUser?.userId) return;
-    this.reactionService.toggleReaction('dm', this.conversation, messageId, emoji, this.currentUser?.userId);
+    this.messagingService
+      .toggleReaction(this.conversation, messageId, emoji, this.currentUserId)
+      .catch((e) => {
+        if (e?.message === 'REACTION_LIMIT_REACHED') {
+          console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
+        } else {
+          console.error(e);
+        }
+      });
   }
 
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUser?.userId || !this.conversation) return;
-    await this.messagingService.toggleReaction(
-      this.conversation,
-      messageId,
-      emoji,
-      this.currentUser.userId
-    );
-    this.showEmojiPickerFor = null;
+    try {
+      await this.messagingService.toggleReaction(this.conversation, messageId, emoji, this.currentUser.userId);
+    } catch (e: any) {
+      if (e?.message === 'REACTION_LIMIT_REACHED') {
+        console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
+      } else {
+        console.error(e);
+      }
+    } finally {
+      this.showEmojiPickerFor = null;
+    }
   }
 
-  getReactionGroups(reactions: { [userId: string]: string }) {
-    const groups: { [emoji: string]: string[] } = {};
-    for (const [userId, emoji] of Object.entries(reactions)) {
-      if (!groups[emoji]) groups[emoji] = [];
-      groups[emoji].push(userId);
+  private normalizeReactions(raw?: LegacyReactions | NewReactions | null): ReactionMap {
+    const out: ReactionMap = {};
+    if (!raw) return out;
+
+    const keys = Object.keys(raw);
+    if (keys.length === 0) return out;
+
+    const isLegacy = typeof (raw as any)[keys[0]] === 'string';
+    if (isLegacy) {
+      // legacy: userId -> emoji
+      for (const userId of keys) {
+        const e = (raw as LegacyReactions)[userId];
+        if (!out[e]) out[e] = [];
+        out[e].push(userId);
+      }
+      return out;
     }
-    return groups;
+
+    // new: emoji -> userIds[]
+    for (const e of keys) {
+      const arr = (raw as NewReactions)[e];
+      out[e] = Array.isArray(arr) ? [...arr] : [];
+    }
+    return out;
+  }
+
+  getReactionGroups(
+    reactions: LegacyReactions | NewReactions | null | undefined
+  ): ReactionMap {
+    return this.normalizeReactions(reactions);
+  }
+
+  getReactionsFor(
+    reactions: LegacyReactions | NewReactions | null | undefined,
+    emoji: string
+  ): string[] {
+    return this.normalizeReactions(reactions)[emoji] || [];
+  }
+
+  private buildReactionEntries(reactions: LegacyReactions | NewReactions | null | undefined): ReactionEntry[] {
+    const groups = this.normalizeReactions(reactions); // emoji -> userIds[]
+    return Object.entries(groups)
+      .map(([emoji, users]) => ({ emoji, users, count: users.length }))
+      .sort((a, b) => b.count - a.count || a.emoji.localeCompare(b.emoji));
+  }
+
+  getVisibleReactions(item: Message): ReactionEntry[] {
+    const all = this.buildReactionEntries(item.reactions);
+    return all.slice(0, this.maxVisibleReactions);
+  }
+
+  getHiddenReactions(item: Message): ReactionEntry[] {
+    const all = this.buildReactionEntries(item.reactions);
+    return all.slice(this.maxVisibleReactions);
+  }
+
+  getHiddenCount(item: Message): number {
+    const all = this.buildReactionEntries(item.reactions);
+    return Math.max(0, all.length - this.maxVisibleReactions);
+  }
+
+  toggleReactionsPopover(messageId: string): void {
+    this.openReactionsPopoverFor = (this.openReactionsPopoverFor === messageId) ? null : messageId;
   }
 
   getUserNames(userIds: string[]): string {
