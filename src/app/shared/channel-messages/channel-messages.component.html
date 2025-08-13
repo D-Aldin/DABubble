@@ -105,6 +105,12 @@
             </div>
           }
         }
+        <!-- last reply time -->
+        @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
+          <span class="last-reply-time">
+            Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
+          </span>
+        }
       </div>
     </div>
 
