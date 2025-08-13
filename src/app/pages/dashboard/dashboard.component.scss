@@ -88,8 +88,6 @@ section {
   }
 }
 
-
-
 .sidenav-toggle-btn {
   position: fixed;
   bottom: 5rem;
@@ -101,8 +99,8 @@ section {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   padding: 0.5rem;
   cursor: pointer;
-  height: 400px;
-  width: 56px;
+  height: 290px;
+  width: 35px;
   transition: transform 0.3s ease-in-out;
   animation: slideUpFromBottom 0.5s ease-out !important;
 
@@ -125,8 +123,8 @@ section {
     }
 
     .icon-box {
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.2rem;
+      height: 1.2rem;
       border: 1px solid currentColor;
       border-radius: 0.2rem;
       display: flex;
@@ -140,7 +138,7 @@ section {
     }
 
     .label {
-      font-size: 24px;
+      font-size: 19px;
       font-weight: 500;
       text-align: center;
     }
@@ -469,14 +467,9 @@ app-thread {
     z-index: 2;
     height: calc(100vh - 130px);
   }
-
-  .main-container.active .sidenav-toggle-btn {
-    display: flex;
-  }
 }
 
 @media (max-width: 580px) {
-
   .sidenav.active,
   .main-container.active,
   .thread-container.active {

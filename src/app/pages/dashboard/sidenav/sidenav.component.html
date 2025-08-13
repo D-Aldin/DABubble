@@ -2,6 +2,8 @@
   <section>
     <div class="sidenav">
       <!-- Header -->
+
+    <div class="container">
       <div class="heading">
         <div class="logo-and-heading">
           <img src="assets/images/sidenav-img/Workspace logo.svg" alt="logo" />
@@ -13,6 +15,7 @@
       </div>
 
       <app-search-bar></app-search-bar>
+
 
       <!-- Lists wrapper (fills the rest) -->
       <div class="lists">
@@ -75,6 +78,14 @@
               <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded2">
                 <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
               </div>
+   
+      </div>
+           @if (showDMs) {
+        <div class="section-body full-width section-flex nav-user">
+          <div class="scroll-container-dm">
+            <div class="spinner-container" *ngIf="!(users$ | async); else usersLoaded">
+              <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
+            </div>
 
               <ng-template #usersLoaded2>
                 @for (user of users$ | async; track user.uid) {
@@ -100,3 +111,28 @@
     </div>
   </section>
 </div>
+
+            <ng-template #usersLoaded>
+              @for (user of users$ | async; track user.uid) {
+              <div class="dm-item"
+                [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
+                [routerLink]="'direct-message'"
+                (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
+                <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+                <span>
+                  {{ user.name }}
+                  @if (user.uid === authService.currentUserId) {
+                  <span class="du-label">(Du)</span>
+                  }
+                </span>
+
+                <span class="online-dot"
+                  [ngStyle]="{ 'background-color': user.online ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
+              </div>
+              }
+            </ng-template>
+          </div>
+        </div>
+        }
+    </div>
+
