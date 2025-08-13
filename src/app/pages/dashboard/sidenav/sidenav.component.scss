@@ -5,17 +5,11 @@
   width: 400px;
   max-height: calc(100vh - 140px);
   min-height: 100%;
-  height: calc(100vh - 140px);
   background-color: #fff;
   padding: 32px 30px;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-height: 0;
-}
 
   .heading {
     display: flex;
@@ -139,7 +133,8 @@
       }
 
       &:hover {
-        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+          brightness(94%) contrast(92%);
       }
 
       .plus-btn {
@@ -203,7 +198,8 @@
         }
 
         &:hover {
-          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+          filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+            brightness(94%) contrast(92%);
         }
       }
     }
@@ -249,22 +245,6 @@
   flex: 1 !important;
   max-height: 100% !important;
   overflow: auto !important;
-.dm-item {
-  font-size: 1.1rem;
-  border-radius: 35px;
-  .avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-  .online-dot {
-    position: relative;
-    left: -15px;
-    bottom: 4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
 }
 
 .full-width {
@@ -319,12 +299,10 @@
 app-search-bar {
   display: none;
 }
-
 @media (min-width: 1399px) {
   .container {
     width: 100%;
     height: 100vh;
-    // height: 100vh;
     padding: 32px 30px;
     border-radius: 30px;
   }
@@ -339,10 +317,6 @@ app-search-bar {
   .container {
     border-radius: 0px;
 
-
-  .sidenav {
-    border-radius: 0;
-    height: calc(100vh - 80px);
     padding: 20px;
   }
 }
