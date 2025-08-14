@@ -32,6 +32,7 @@ import { ThreadMessagingService } from '../../core/services/thread-messaging.ser
 import { ReactionService } from '../../core/services/reaction.service';
 import { SearchService } from '../../core/services/search.service';
 import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
+import { AutoYScrollDirective } from '../../core/directives/auto-y-scroll.directive';
 
 type ReactionMap = Record<string, string[]>;
 type ReactionEntry = { emoji: string; users: string[]; count: number };
@@ -47,6 +48,7 @@ type ReactionEntry = { emoji: string; users: string[]; count: number };
     FormsModule,
     TimestampLineComponent,
     SpinnerComponent,
+    AutoYScrollDirective
   ],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss'],

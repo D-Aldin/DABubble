@@ -78,7 +78,7 @@
                         (profileClick)="openProfileCard(item.messageFrom)" [userId]="item.messageFrom"
                         [isParentHovered]="hoveredMessageId === item.id"></app-chat-box>
 
-                     <div class="message-reactions-container" *ngIf="hasReactions(item) || hasReplies(item)" [ngClass]="{'me': item.messageFrom === currentUserId}" >
+                     <div class="message-reactions-container" *ngIf="hasReactions(item) || hasReplies(item)" [ngClass]="{'me': item.messageFrom === currentUserId}" appAutoYScroll [enabledBreakpoint]="580" [speed]="24">
                         <div class="reply-info">
                            @if (hasReplies(item)) {
                               <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">

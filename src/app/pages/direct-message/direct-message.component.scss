@@ -212,15 +212,15 @@ h3 {
   }
 
   img[src$="add_reaction.svg"]:hover {
-    content: url("/assets/icons/add_reaction_hover.svg");
+    content: url("../../../assets/icons/add_reaction_hover.svg");
   }
 
   img[src$="option.svg"]:hover {
-    content: url("/assets/icons/option-hover.svg");
+    content: url("../../../assets/icons/option-hover.svg");
   }
 
   img[src$="Answer.svg"]:hover {
-    content: url("/assets/icons/Answer_hover.svg");
+    content: url("../../../assets/icons/Answer_hover.svg");
   }
 
   .emoji-button {
@@ -266,10 +266,16 @@ emoji-mart {
 .message-reactions-container {
   display: flex;
   justify-content: flex-start;
+  flex-direction: column;
   padding: 0 60px;
   margin-top: 4px;
   position: relative;
-  /* anchor popover */
+  overflow-y: hidden;
+  overflow-x: auto;
+  will-change: scroll-position;
+  max-height: 140px;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
   z-index: 1;
 
   &.me {
@@ -574,6 +580,15 @@ emoji-mart {
 
   .message-reactions-container,
   .message-reactions-container.me {
-    padding: 0 77px;
+    padding: 0;
+    margin: 0 16px;
+    width: auto;
+    justify-content: unset;
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE/Edge
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }

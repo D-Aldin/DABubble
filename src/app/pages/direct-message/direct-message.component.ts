@@ -24,6 +24,7 @@ import { ReactionService } from '../../core/services/reaction.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { SearchService } from '../../core/services/search.service';
 import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
+import { AutoYScrollDirective } from '../../core/directives/auto-y-scroll.directive';
 
 interface CurrentUserId {
   userId: string;
@@ -41,7 +42,8 @@ type ReactionEntry = { emoji: string; users: string[]; count: number };
     ChatBoxComponent,
     TimestampLineComponent,
     PickerModule,
-    FormsModule
+    FormsModule,
+    AutoYScrollDirective
   ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
