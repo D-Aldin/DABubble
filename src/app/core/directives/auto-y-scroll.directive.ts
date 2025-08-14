@@ -114,6 +114,9 @@ export class AutoYScrollDirective {
   }
 
   private setupTrack() {
+    // Only set up and run auto-scroll if viewport is mobile size
+    if (!this.isMobile()) return;
+
     const host = this.el.nativeElement;
     if (this.trackEl) return;
 
@@ -129,8 +132,7 @@ export class AutoYScrollDirective {
     host.appendChild(track);
     this.trackEl = track;
 
-    host.style.overflowX = 'scroll';
-    host.style.overflowY = 'hidden';
+    host.style.overflowX = 'auto';
     host.style.whiteSpace = 'nowrap';
   }
 

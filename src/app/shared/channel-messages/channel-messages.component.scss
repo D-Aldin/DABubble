@@ -153,8 +153,6 @@ emoji-mart {
   padding: 0 60px;
   margin-top: 4px;
   position: relative; // anchor popover
-  overflow-y: hidden;
-  overflow-x: auto;
   will-change: scroll-position;
   max-height: 140px;
   scroll-behavior: auto;
@@ -367,6 +365,8 @@ emoji-mart {
   .message-reactions-container,
   .message-reactions-container.me {
     padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
     margin: 0 16px;
     width: auto;
     justify-content: unset;
