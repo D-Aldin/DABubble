@@ -56,17 +56,17 @@
     </div>
 
     <!-- Reactions, replies, and last reply time -->
-    <div class="message-reactions-container" [ngClass]="{'me': msg.senderId === currentUserId}">
+    <div class="message-reactions-container" *ngIf="hasReactions(msg) || hasReplies(msg)" [ngClass]="{'me': msg.senderId === currentUserId}" >
       <div class="reply-info">
         <!-- reply count (only if > 0) -->
-        @if ((msg.replyCount ?? 0) > 0) {
+        @if (hasReplies(msg)) {
           <a class="reply-count" (click)="openThread(msg.id!)">
-            {{ msg.replyCount || 0 }} Antwort{{ (msg.replyCount || 0) > 1 ? 'en' : '' }}
+            {{ msg.replyCount }} Antwort{{ msg.replyCount! > 1 ? 'en' : '' }}
           </a>
         }
 
-        <!-- reactions -->
-        @if (msg.reactions && objectKeys(msg.reactions).length > 0) {
+        <!-- reactions (independent of replies) -->
+        @if (hasReactions(msg)) {
           <div class="reactions-row">
             <!-- visible chips -->
             @for (r of getVisibleReactions(msg); track r.emoji) {
@@ -105,14 +105,15 @@
             </div>
           }
         }
-        <!-- last reply time -->
-        @if ((msg.replyCount ?? 0) > 0 && msg.lastReplyTimestamp) {
+
+        <!-- last reply time (only if replies exist and timestamp present) -->
+        @if (hasReplies(msg) && msg.lastReplyTimestamp) {
           <span class="last-reply-time">
             Letzte Antwort {{ getFormattedLastReplyTime(msg.lastReplyTimestamp) }}
           </span>
         }
       </div>
-    </div>
+  </div>
 
     <!-- Emoji Picker -->
     @if (showEmojiPickerFor === msg.id) {

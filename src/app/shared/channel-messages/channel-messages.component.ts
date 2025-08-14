@@ -134,6 +134,14 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     this.getObserveableProfileCardData();
   }
 
+  hasReplies(msg: ChannelMessage): boolean {
+    return (msg.replyCount ?? 0) > 0;
+  }
+
+  hasReactions(msg: ChannelMessage): boolean {
+    return this.buildReactionEntries(msg.reactions).length > 0;
+  }
+
   reactToChannelMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
     this.messagingService
