@@ -110,6 +110,14 @@ export class DirectMessageComponent
     });
   }
 
+  hasReplies(item: Message): boolean {
+    return (item.replyCount ?? 0) > 0;
+  }
+
+  hasReactions(item: Message): boolean {
+    return this.buildReactionEntries(item.reactions).length > 0;
+  }
+
   private async handleDirectMessageLoad(selectedUid: string): Promise<void> {
     this.areMessagesLoaded = false;
     const userDoc = await this.userService.getUserDocument(selectedUid);

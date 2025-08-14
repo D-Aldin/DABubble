@@ -78,62 +78,64 @@
                         (profileClick)="openProfileCard(item.messageFrom)" [userId]="item.messageFrom"
                         [isParentHovered]="hoveredMessageId === item.id"></app-chat-box>
 
-                     <div class="message-reactions-container" *ngIf="item.reactions || item.replyCount"
-                        [ngClass]="{'me': item.messageFrom === currentUserId}">
-                     <div class="reply-info">
-                        <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
-                           {{ item.replyCount || 0 }} Antwort{{ (item.replyCount || 0) > 1 ? 'en' : '' }}
-                        </a>
-                        <ng-container *ngIf="item.reactions && objectKeys(item.reactions).length > 0">
-                           <div class="reactions-row">
-                           <!-- visible chips -->
-                           <button
-                              class="reaction-chip"
-                              *ngFor="let r of getVisibleReactions(item)"
-                              type="button"
-                              [attr.aria-label]="getReactionTooltip(r.emoji, r.users)">
-                              <span class="emoji">{{ r.emoji }}</span>
-                              <span class="count">{{ r.count }}</span>
-                              <div class="tooltip">
-                                 {{ getReactionTooltip(r.emoji, r.users) }}
+                     <div class="message-reactions-container" *ngIf="hasReactions(item) || hasReplies(item)" [ngClass]="{'me': item.messageFrom === currentUserId}" >
+                        <div class="reply-info">
+                           @if (hasReplies(item)) {
+                              <a class="reply-count" *ngIf="item.id" (click)="openThread(item.id)">
+                              {{ item.replyCount }} Antwort{{ item.replyCount! > 1 ? 'en' : '' }}
+                              </a>
+                              @if (item.lastReplyTimestamp) {
+                              <span class="last-reply-time">
+                                 Letzte Antwort {{ getFormattedLastReplyTime(item.lastReplyTimestamp) }}
+                              </span>
+                              }
+                           }
+                           @if (hasReactions(item)) {
+                              <div class="reactions-row">
+                              <!-- visible chips -->
+                              @for (r of getVisibleReactions(item); track r.emoji) {
+                                 <button
+                                    class="reaction-chip"
+                                    type="button"
+                                    [attr.aria-label]="getReactionTooltip(r.emoji, r.users)">
+                                    <span class="emoji">{{ r.emoji }}</span>
+                                    <span class="count">{{ r.count }}</span>
+                                    <div class="tooltip">
+                                    {{ getReactionTooltip(r.emoji, r.users) }}
+                                    </div>
+                                 </button>
+                              }
+                              <!-- +X chip -->
+                              @if (getHiddenCount(item) > 0) {
+                                 <button
+                                    class="reaction-chip more"
+                                    type="button"
+                                    (click)="toggleReactionsPopover(item.id!)"
+                                    [attr.aria-expanded]="openReactionsPopoverFor === item.id"
+                                    [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCount(item)">
+                                    +{{ getHiddenCount(item) }}
+                                 </button>
+                              }
                               </div>
-                           </button>
-                           <!-- +X chip -->
-                           <button
-                              class="reaction-chip more"
-                              type="button"
-                              *ngIf="getHiddenCount(item) > 0"
-                              (click)="toggleReactionsPopover(item.id!)"
-                              [attr.aria-expanded]="openReactionsPopoverFor === item.id"
-                              [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCount(item)">
-                              +{{ getHiddenCount(item) }}
-                           </button>
-                           </div>
-                           <!-- popover with all remaining -->
-                           <div
-                           class="reactions-popover"
-                           *ngIf="openReactionsPopoverFor === item.id"
-                           (mouseleave)="openReactionsPopoverFor = null">
-                           <div class="popover-header">Weitere Reaktionen</div>
-
-                           <div class="popover-grid">
-                              <div class="reaction-chip" *ngFor="let r of getHiddenReactions(item)">
-                                 <span class="emoji">{{ r.emoji }}</span>
-                                 <span class="count">{{ r.count }}</span>
-                                 <div class="tooltip">
-                                 {{ getReactionTooltip(r.emoji, r.users) }}
+                              <!-- popover with all remaining -->
+                              @if (openReactionsPopoverFor === item.id) {
+                              <div class="reactions-popover" (mouseleave)="openReactionsPopoverFor = null">
+                                 <div class="popover-header">Weitere Reaktionen</div>
+                                 <div class="popover-grid">
+                                    @for (r of getHiddenReactions(item); track r.emoji) {
+                                    <div class="reaction-chip">
+                                       <span class="emoji">{{ r.emoji }}</span>
+                                       <span class="count">{{ r.count }}</span>
+                                       <div class="tooltip">
+                                          {{ getReactionTooltip(r.emoji, r.users) }}
+                                       </div>
+                                    </div>
+                                    }
                                  </div>
                               </div>
-                           </div>
-                           </div>
-                        </ng-container>
-
-                        @if ((item.replyCount ?? 0) > 0 && item.lastReplyTimestamp) {
-                           <span class="last-reply-time">
-                           Letzte Antwort {{ getFormattedLastReplyTime(item.lastReplyTimestamp) }}
-                           </span>
-                        }
-                     </div>
+                              }
+                           }
+                        </div>
                      </div>
 
                      <div *ngIf="showEmojiPickerFor === item.id">
