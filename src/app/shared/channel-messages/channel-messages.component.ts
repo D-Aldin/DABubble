@@ -151,7 +151,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       return this.normalizeReactions(reactions);
   }
 
-   private buildReactionEntries(reactions: LegacyReactions | NewReactions | null | undefined): ReactionEntry[] {
+  private buildReactionEntries(reactions: LegacyReactions | NewReactions | null | undefined): ReactionEntry[] {
     const groups = this.normalizeReactions(reactions);
     return Object.entries(groups)
       .map(([emoji, users]) => ({ emoji, users, count: users.length }))
@@ -282,20 +282,36 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   private normalizeReactions(raw?: LegacyReactions | NewReactions | null): ReactionMap {
-    const out: ReactionMap = {};
-    if (!raw) return out;
-    const keys = Object.keys(raw);
-    if (keys.length === 0) return out;
+    if (!raw) return {};
+    const ent = Object.entries(raw);
+    if (!ent.length) return {};
 
-    const isLegacy = typeof (raw as any)[keys[0]] === 'string';
-    if (isLegacy) {
-      for (const uid of keys) {
-        const e = (raw as LegacyReactions)[uid];
-        (out[e] ||= []).push(uid);
-      }
-      return out;
+    if (ent.some(([k]) => this.isEmojiish(k))) return this.fromKeyEmoji(ent);
+    if (ent.some(([, v]) => typeof v === 'string' && this.isEmojiish(v as string))) return this.fromValEmoji(ent);
+    if (ent.every(([, v]) => Array.isArray(v)))
+      return Object.fromEntries(ent.map(([e, u]) => [e, (u as string[]).slice()])) as ReactionMap;
+
+    const out: ReactionMap = {};
+    for (const [e, v] of ent) out[e] = Array.isArray(v) ? (v as string[]) : [];
+    return out;
+  }
+
+  private isEmojiish(s: string): boolean {
+    return /[^\w\s-]/.test(s);
+  }
+
+  private fromKeyEmoji(ent: [string, any][]): ReactionMap {
+    const out: ReactionMap = {};
+    for (const [emoji, v] of ent) {
+      const users = Array.isArray(v) ? (v as string[]) : typeof v === 'string' ? [v as string] : [];
+      if (users.length) out[emoji] = users;
     }
-    for (const e of keys) out[e] = Array.isArray((raw as any)[e]) ? (raw as any)[e] : [];
+    return out;
+  }
+
+  private fromValEmoji(ent: [string, string][]): ReactionMap {
+    const out: ReactionMap = {};
+    for (const [uid, emoji] of ent) (out[emoji] ||= []).push(uid);
     return out;
   }
 
@@ -323,7 +339,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   getUserName(uid: string): string {
-    return this.usersMap[uid]?.name ?? uid;
+    return this.usersMap[uid]?.name || 'Unbekannt';
   }
 
   getAvatarPath(uid: string): string {
