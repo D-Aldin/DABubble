@@ -1,5 +1,12 @@
 import {
-  AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild,
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { from, Subscription, take } from 'rxjs';
@@ -18,13 +25,21 @@ import { OpenProfileCardService } from '../../core/services/open-profile-card.se
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { Output, EventEmitter } from '@angular/core';
-import { FormsModule } from '@angular/forms'; import { Firestore, collection, collectionData, query, orderBy } from '@angular/fire/firestore';
+import { FormsModule } from '@angular/forms';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  query,
+  orderBy,
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { ReactionService } from '../../core/services/reaction.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { SearchService } from '../../core/services/search.service';
 import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
 import { AutoYScrollDirective } from '../../core/directives/auto-y-scroll.directive';
+import { scrollToBottom } from '../../core/utility/scrollToBottom';
 
 interface CurrentUserId {
   userId: string;
@@ -43,13 +58,14 @@ type ReactionEntry = { emoji: string; users: string[]; count: number };
     TimestampLineComponent,
     PickerModule,
     FormsModule,
-    AutoYScrollDirective
+    AutoYScrollDirective,
   ],
   templateUrl: './direct-message.component.html',
   styleUrl: './direct-message.component.scss',
 })
 export class DirectMessageComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewInit
+{
   messages: Message[] = [];
   selectedUser: any = null;
   currentUser: CurrentUserId | null = null;
@@ -96,7 +112,7 @@ export class DirectMessageComponent
     private reactionService: ReactionService,
     private searchService: SearchService,
     private el: ElementRef<HTMLElement>
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadCurrentUserId();
@@ -137,29 +153,34 @@ export class DirectMessageComponent
   }
 
   private subscribeToDirectMessages(): void {
-    this.messagingService.getMessages(this.conversation).subscribe((messages: Message[]) => {
-      this.directMessages = messages;
-      this.loadReactorProfiles(messages);
-      this.areMessagesLoaded = true;
-      this.cdr.detectChanges();
-    });
+    this.messagingService
+      .getMessages(this.conversation)
+      .subscribe((messages: Message[]) => {
+        this.directMessages = messages;
+        this.loadReactorProfiles(messages);
+        this.areMessagesLoaded = true;
+        this.cdr.detectChanges();
+      });
   }
 
   private loadReactorProfiles(messages: Message[]): void {
     const userIds = new Set<string>();
     messages.forEach((m) => {
       const groups = this.normalizeReactions(m.reactions);
-      Object.values(groups).forEach(list => list.forEach(uid => userIds.add(uid)));
+      Object.values(groups).forEach((list) =>
+        list.forEach((uid) => userIds.add(uid))
+      );
     });
     if (userIds.size > 0) this.loadUserProfiles(Array.from(userIds));
   }
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
     if (!timestamp) return '';
-    const date = timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
+    const date =
+      timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
     return new Intl.DateTimeFormat('de-DE', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
   }
 
@@ -167,14 +188,19 @@ export class DirectMessageComponent
     return obj ? Object.keys(obj) : [];
   }
 
-  getThreadReplies(conversationId: string, messageId: string): Observable<Message[]> {
+  getThreadReplies(
+    conversationId: string,
+    messageId: string
+  ): Observable<Message[]> {
     const threadCollection = collection(
       this.firestore,
       `directMessages/${conversationId}/messages/${messageId}/threads`
     );
 
     const sortByTime = query(threadCollection, orderBy('timestamp', 'asc'));
-    return collectionData(sortByTime, { idField: 'id' }) as Observable<Message[]>;
+    return collectionData(sortByTime, { idField: 'id' }) as Observable<
+      Message[]
+    >;
   }
 
   openThread(messageId: string) {
@@ -190,11 +216,12 @@ export class DirectMessageComponent
   }
 
   toggleEmojiPicker(messageId: string) {
-    this.showEmojiPickerFor = this.showEmojiPickerFor === messageId ? null : messageId;
+    this.showEmojiPickerFor =
+      this.showEmojiPickerFor === messageId ? null : messageId;
   }
 
   startEditing(msg: Message) {
-    if (msg.messageFrom !== this.currentUserId) return;//only logged-in user can edit his message
+    if (msg.messageFrom !== this.currentUserId) return; //only logged-in user can edit his message
     this.editingMessageId = msg.id!;
     this.editedMessageText = msg.message;
     this.showEmojiPickerFor = null;
@@ -212,11 +239,15 @@ export class DirectMessageComponent
 
   async saveEditedMessage(msgId: string) {
     if (!msgId || !this.editedMessageText.trim()) return;
-    await this.messagingService.updateDirectMessage(this.conversation, msgId, this.editedMessageText.trim());
+    await this.messagingService.updateDirectMessage(
+      this.conversation,
+      msgId,
+      this.editedMessageText.trim()
+    );
     this.cancelEditing();
   }
 
- reactToDirectMessage(messageId: string, emoji: string) {
+  reactToDirectMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.conversation) return;
     this.messagingService
       .toggleReaction(this.conversation, messageId, emoji, this.currentUserId)
@@ -232,7 +263,12 @@ export class DirectMessageComponent
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUser?.userId || !this.conversation) return;
     try {
-      await this.messagingService.toggleReaction(this.conversation, messageId, emoji, this.currentUser.userId);
+      await this.messagingService.toggleReaction(
+        this.conversation,
+        messageId,
+        emoji,
+        this.currentUser.userId
+      );
     } catch (e: any) {
       if (e?.message === 'REACTION_LIMIT_REACHED') {
         console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
@@ -244,7 +280,9 @@ export class DirectMessageComponent
     }
   }
 
-  private normalizeReactions(raw?: LegacyReactions | NewReactions | null): ReactionMap {
+  private normalizeReactions(
+    raw?: LegacyReactions | NewReactions | null
+  ): ReactionMap {
     const out: ReactionMap = {};
     if (!raw) return out;
 
@@ -283,7 +321,9 @@ export class DirectMessageComponent
     return this.normalizeReactions(reactions)[emoji] || [];
   }
 
-  private buildReactionEntries(reactions: LegacyReactions | NewReactions | null | undefined): ReactionEntry[] {
+  private buildReactionEntries(
+    reactions: LegacyReactions | NewReactions | null | undefined
+  ): ReactionEntry[] {
     const groups = this.normalizeReactions(reactions); // emoji -> userIds[]
     return Object.entries(groups)
       .map(([emoji, users]) => ({ emoji, users, count: users.length }))
@@ -306,23 +346,25 @@ export class DirectMessageComponent
   }
 
   toggleReactionsPopover(messageId: string): void {
-    this.openReactionsPopoverFor = (this.openReactionsPopoverFor === messageId) ? null : messageId;
+    this.openReactionsPopoverFor =
+      this.openReactionsPopoverFor === messageId ? null : messageId;
   }
 
   getUserNames(userIds: string[]): string {
-    return userIds.map(id => this.usersMap[id]?.name || 'Unbekannt').join(', ');
+    return userIds
+      .map((id) => this.usersMap[id]?.name || 'Unbekannt')
+      .join(', ');
   }
 
   getReactionTooltip(emoji: string, userIds: string[]): string {
-    const names = userIds.map(id => this.usersMap[id]?.name || 'Unbekannt');
+    const names = userIds.map((id) => this.usersMap[id]?.name || 'Unbekannt');
     const verb = names.length > 1 ? 'haben reagiert' : 'hat reagiert';
     return `${emoji} ${names.join(', ')} ${verb}`;
   }
 
-
   loadUserProfiles(userIds: string[]) {
-    this.userService.getUsersByIds(userIds).subscribe(users => {
-      users.forEach(user => {
+    this.userService.getUsersByIds(userIds).subscribe((users) => {
+      users.forEach((user) => {
         this.usersMap[user.uid] = user;
       });
     });
@@ -330,10 +372,9 @@ export class DirectMessageComponent
 
   ngAfterViewInit(): void {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
-      this.scrollToBottom();
+      scrollToBottom(this.scrollContainer);
     });
-    this.searchService.handleHighlightScroll(".message", this.el, this.route)
-
+    this.searchService.handleHighlightScroll('.message', this.el, this.route);
   }
 
   ngOnDestroy() {
@@ -352,8 +393,14 @@ export class DirectMessageComponent
     }
   }
 
-  async createConversation(currentUserId: string, selectedUserId: string): Promise<void> {
-    const conversationId = this.messagingService.generateConversationId(currentUserId, selectedUserId);
+  async createConversation(
+    currentUserId: string,
+    selectedUserId: string
+  ): Promise<void> {
+    const conversationId = this.messagingService.generateConversationId(
+      currentUserId,
+      selectedUserId
+    );
 
     this.conversation = conversationId;
     await this.messagingService.createConversation(conversationId, [
@@ -378,11 +425,13 @@ export class DirectMessageComponent
   async loadMessages(id: string): Promise<void> {
     this.prepareForNewMessages();
 
-    this.subscription = this.messagingService.getMessages(id).subscribe(async (msg) => {
-      await this.enrichMessagesWithUserData(msg);
-      this.updateMessageState(msg);
-      this.renderMessages();
-    });
+    this.subscription = this.messagingService
+      .getMessages(id)
+      .subscribe(async (msg) => {
+        await this.enrichMessagesWithUserData(msg);
+        this.updateMessageState(msg);
+        this.renderMessages();
+      });
   }
 
   private prepareForNewMessages(): void {
@@ -414,7 +463,7 @@ export class DirectMessageComponent
     setTimeout(() => {
       this.areMessagesRendered = true;
       this.zone.onStable.pipe(take(1)).subscribe(() => {
-        this.scrollToBottom();
+        scrollToBottom(this.scrollContainer);
       });
       this.cdr.detectChanges();
     });
@@ -450,14 +499,6 @@ export class DirectMessageComponent
     return '';
   }
 
-  scrollToBottom(): void {
-    if (!this.scrollContainer) {
-      return;
-    }
-    const el = this.scrollContainer.nativeElement;
-    el.scrollTop = el.scrollHeight;
-  }
-
   checkArray(arr: Object[]) {
     this.isMessagesArrayEmpty = arr.length < 1;
   }
@@ -490,6 +531,6 @@ export class DirectMessageComponent
   }
 
   openProfileCard(userId: string | undefined): void {
-    this.openCardService.openProfileCard(userId)
+    this.openCardService.openProfileCard(userId);
   }
 }

@@ -33,6 +33,7 @@ import { ReactionService } from '../../core/services/reaction.service';
 import { SearchService } from '../../core/services/search.service';
 import { LegacyReactions, NewReactions } from '../../core/interfaces/message';
 import { AutoYScrollDirective } from '../../core/directives/auto-y-scroll.directive';
+import { scrollToBottom } from '../../core/utility/scrollToBottom';
 
 type ReactionMap = Record<string, string[]>;
 type ReactionEntry = { emoji: string; users: string[]; count: number };
@@ -48,7 +49,7 @@ type ReactionEntry = { emoji: string; users: string[]; count: number };
     FormsModule,
     TimestampLineComponent,
     SpinnerComponent,
-    AutoYScrollDirective
+    AutoYScrollDirective,
   ],
   templateUrl: './channel-messages.component.html',
   styleUrls: ['./channel-messages.component.scss'],
@@ -79,8 +80,9 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollContainer', { static: false })
   scrollContainer?: ElementRef<HTMLElement>;
   lastReplyTimestamp?: Timestamp | Date;
-  groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } = {};
-  maxVisibleReactions = 4; 
+  groupedReactionsMap: { [messageId: string]: { [emoji: string]: string[] } } =
+    {};
+  maxVisibleReactions = 4;
   openReactionsPopoverFor: string | null = null;
 
   constructor(
@@ -97,41 +99,44 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     private reactionService: ReactionService,
     private el: ElementRef,
     private searchService: SearchService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUser()?.uid ?? '';
     this.isLoading = true;
     this.hasScrolledAfterLoad = false;
 
-    this.userService.getAllUsers().pipe(
-      tap((users) => {
-        this.usersMap = {};
-        users.forEach((user) => {
-          this.usersMap[user.id] = {
-            ...user,
-            uid: user.id,
-            online: false,
-            email: '',
-          };
-        });
-      }),
-      switchMap(() =>
-        this.messagingService.getChannelMessages(this.channelId)
+    this.userService
+      .getAllUsers()
+      .pipe(
+        tap((users) => {
+          this.usersMap = {};
+          users.forEach((user) => {
+            this.usersMap[user.id] = {
+              ...user,
+              uid: user.id,
+              online: false,
+              email: '',
+            };
+          });
+        }),
+        switchMap(() =>
+          this.messagingService.getChannelMessages(this.channelId)
+        )
       )
-    ).subscribe((msgs) => {
-      const withReplyCounts = msgs.map((msg) => ({
-        ...msg,
-        replyCount: msg.replyCount ?? 0,
-        lastReplyTimestamp: msg.lastReplyTimestamp ?? undefined
-      }));
+      .subscribe((msgs) => {
+        const withReplyCounts = msgs.map((msg) => ({
+          ...msg,
+          replyCount: msg.replyCount ?? 0,
+          lastReplyTimestamp: msg.lastReplyTimestamp ?? undefined,
+        }));
 
-      Promise.all(withReplyCounts).then((results) => {
-        this.groupedMessages = this.groupMessagesByDate(results);
-        this.cdRef.detectChanges();
-        this.isLoading = false;
+        Promise.all(withReplyCounts).then((results) => {
+          this.groupedMessages = this.groupMessagesByDate(results);
+          this.cdRef.detectChanges();
+          this.isLoading = false;
+        });
       });
-    });
 
     this.getObserveableProfileCardData();
   }
@@ -148,7 +153,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     if (!this.currentUserId || !this.channelId) return;
     this.messagingService
       .toggleReaction(this.channelId, messageId, emoji, this.currentUserId)
-      .catch(e => {
+      .catch((e) => {
         if (e?.message === 'REACTION_LIMIT_REACHED') {
           console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
         } else {
@@ -157,11 +162,15 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getReactionGroups(reactions: LegacyReactions | NewReactions | null | undefined): ReactionMap {
-      return this.normalizeReactions(reactions);
+  getReactionGroups(
+    reactions: LegacyReactions | NewReactions | null | undefined
+  ): ReactionMap {
+    return this.normalizeReactions(reactions);
   }
 
-  private buildReactionEntries(reactions: LegacyReactions | NewReactions | null | undefined): ReactionEntry[] {
+  private buildReactionEntries(
+    reactions: LegacyReactions | NewReactions | null | undefined
+  ): ReactionEntry[] {
     const groups = this.normalizeReactions(reactions);
     return Object.entries(groups)
       .map(([emoji, users]) => ({ emoji, users, count: users.length }))
@@ -184,7 +193,8 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   toggleReactionsPopover(messageId: string): void {
-    this.openReactionsPopoverFor = (this.openReactionsPopoverFor === messageId) ? null : messageId;
+    this.openReactionsPopoverFor =
+      this.openReactionsPopoverFor === messageId ? null : messageId;
   }
 
   getUserNames(userIds: string[]): string {
@@ -194,15 +204,14 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   }
 
   getReactionTooltip(emoji: string, userIds: string[]): string {
-    const names = userIds.map(id => this.usersMap[id]?.name || 'Unbekannt');
+    const names = userIds.map((id) => this.usersMap[id]?.name || 'Unbekannt');
     const verb = names.length > 1 ? 'haben reagiert' : 'hat reagiert';
     return `${emoji} ${names.join(', ')} ${verb}`;
   }
 
-
   getLastReplyTime(messages: ChannelMessage[]): Date | null {
     const timestamps = messages
-      .map(m => {
+      .map((m) => {
         const ts = m.lastReplyTimestamp;
         if (ts instanceof Timestamp) {
           return ts.toDate();
@@ -216,10 +225,11 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   getFormattedLastReplyTime(timestamp: Timestamp | Date | undefined): string {
     if (!timestamp) return '';
-    const date = timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
+    const date =
+      timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
     return new Intl.DateTimeFormat('de-DE', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
   }
 
@@ -233,7 +243,9 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     return this.mapGroupedEntriesToDateObjects(grouped);
   }
 
-  private groupMessagesByKey(messages: ChannelMessage[]): Record<string, ChannelMessage[]> {
+  private groupMessagesByKey(
+    messages: ChannelMessage[]
+  ): Record<string, ChannelMessage[]> {
     const grouped: Record<string, ChannelMessage[]> = {};
 
     for (const msg of messages) {
@@ -250,10 +262,15 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     if (!timestamp || typeof timestamp.toDate !== 'function') return null;
 
     const date = timestamp.toDate();
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      '0'
+    )}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
-  private mapGroupedEntriesToDateObjects(grouped: Record<string, ChannelMessage[]>): {
+  private mapGroupedEntriesToDateObjects(
+    grouped: Record<string, ChannelMessage[]>
+  ): {
     date: Date;
     dateString: string;
     messages: ChannelMessage[];
@@ -270,8 +287,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   formatDate(date: Date): string {
     const today = new Date();
-    const msgDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
-    const todayDate = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
+    const msgDate =
+      date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    const todayDate =
+      today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
     if (msgDate === todayDate) return 'today';
     return date.toLocaleDateString('de-DE');
   }
@@ -279,7 +298,12 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   async reactToMessage(messageId: string, emoji: string) {
     if (!this.currentUserId || !this.channelId) return;
     try {
-      await this.messagingService.toggleReaction(this.channelId, messageId, emoji, this.currentUserId);
+      await this.messagingService.toggleReaction(
+        this.channelId,
+        messageId,
+        emoji,
+        this.currentUserId
+      );
     } catch (e: any) {
       if (e?.message === 'REACTION_LIMIT_REACHED') {
         console.warn('Maximal 20 Emojis pro Nachricht und Nutzer.');
@@ -291,15 +315,22 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private normalizeReactions(raw?: LegacyReactions | NewReactions | null): ReactionMap {
+  private normalizeReactions(
+    raw?: LegacyReactions | NewReactions | null
+  ): ReactionMap {
     if (!raw) return {};
     const ent = Object.entries(raw);
     if (!ent.length) return {};
 
     if (ent.some(([k]) => this.isEmojiish(k))) return this.fromKeyEmoji(ent);
-    if (ent.some(([, v]) => typeof v === 'string' && this.isEmojiish(v as string))) return this.fromValEmoji(ent);
+    if (
+      ent.some(([, v]) => typeof v === 'string' && this.isEmojiish(v as string))
+    )
+      return this.fromValEmoji(ent);
     if (ent.every(([, v]) => Array.isArray(v)))
-      return Object.fromEntries(ent.map(([e, u]) => [e, (u as string[]).slice()])) as ReactionMap;
+      return Object.fromEntries(
+        ent.map(([e, u]) => [e, (u as string[]).slice()])
+      ) as ReactionMap;
 
     const out: ReactionMap = {};
     for (const [e, v] of ent) out[e] = Array.isArray(v) ? (v as string[]) : [];
@@ -313,7 +344,11 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
   private fromKeyEmoji(ent: [string, any][]): ReactionMap {
     const out: ReactionMap = {};
     for (const [emoji, v] of ent) {
-      const users = Array.isArray(v) ? (v as string[]) : typeof v === 'string' ? [v as string] : [];
+      const users = Array.isArray(v)
+        ? (v as string[])
+        : typeof v === 'string'
+        ? [v as string]
+        : [];
       if (users.length) out[emoji] = users;
     }
     return out;
@@ -329,7 +364,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     return new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     }).format(date);
   }
 
@@ -414,24 +449,20 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
     this.selectedUserForProfileCard = null;
   }
 
-  scrollToBottom(): void {
-    if (!this.scrollContainer) {
-      return;
-    }
-    const el = this.scrollContainer.nativeElement;
-    el.scrollTop = el.scrollHeight;
-  }
-
   ngAfterViewInit(): void {
     this.zone.onStable.pipe(take(1)).subscribe(() => {
-      this.scrollToBottom();
+      scrollToBottom(this.scrollContainer);
     });
-    this.searchService.handleHighlightScroll(".message-wrapper", this.el, this.route)
+    this.searchService.handleHighlightScroll(
+      '.message-wrapper',
+      this.el,
+      this.route
+    );
   }
 
   ngAfterViewChecked(): void {
     if (!this.isLoading && !this.hasScrolledAfterLoad) {
-      this.scrollToBottom();
+      scrollToBottom(this.scrollContainer);
       this.hasScrolledAfterLoad = true;
     }
   }
@@ -442,17 +473,17 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       email: '',
       avatarPath: '',
       online: false,
-      direktMessageLink: `/dashboard/direct-message/${userId}`
+      direktMessageLink: `/dashboard/direct-message/${userId}`,
     };
     this.overlayService.open(initialProfile);
-    this.userService.getUserById(userId).subscribe(userDoc => {
+    this.userService.getUserById(userId).subscribe((userDoc) => {
       if (!userDoc) return;
       this.overlayService.updatePartial({
         name: userDoc.name,
         email: userDoc.email,
         avatarPath: userDoc.avatarPath,
         online: userDoc.online,
-        direktMessageLink: `/dashboard/direct-message/${userId}`
+        direktMessageLink: `/dashboard/direct-message/${userId}`,
       });
     });
   }
