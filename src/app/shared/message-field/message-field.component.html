@@ -28,7 +28,7 @@
       name="message-box"
       placeholder="Nachricht schreiben..."
       [(ngModel)]="message"
-      (ngModelChange)="toggleUserMention(); toggleChannelMention()">
+      (ngModelChange)="toggleUserMention(); toggleChannelMention()" (keydown)="onEnter($event)" >
     </textarea>
 
     <div class="button-bar">

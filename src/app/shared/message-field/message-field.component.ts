@@ -1,4 +1,12 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { CommonModule } from '@angular/common';
@@ -37,13 +45,21 @@ export class MessageFieldComponent implements AfterViewInit {
     private channelService: ChannelService
   ) {}
 
-  users$: Observable<ChatUser[]> = this.messagingService.getAllUsersExceptCurrent();
+  users$: Observable<ChatUser[]> =
+    this.messagingService.getAllUsersExceptCurrent();
   channel$: Observable<Channel[]> = this.channelService.getChannels();
 
   captureMessage() {
     if (this.message.trim()) {
       this.messageSend.emit(this.message.trim());
       this.message = '';
+    }
+  }
+
+  onEnter(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.captureMessage();
     }
   }
 
@@ -65,11 +81,11 @@ export class MessageFieldComponent implements AfterViewInit {
   }
 
   getTheUser() {
-    this.users$.subscribe(users => (this.userArr = users));
+    this.users$.subscribe((users) => (this.userArr = users));
   }
 
   getChannels() {
-    this.channel$.subscribe(channel => (this.channelArr = channel));
+    this.channel$.subscribe((channel) => (this.channelArr = channel));
   }
 
   toggleUserMention() {
