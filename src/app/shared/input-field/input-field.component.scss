@@ -3,6 +3,7 @@
 
 .input-wrapper {
   display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 500px;
 
@@ -79,6 +80,14 @@
     .validation-message {
       margin-top: 0px;
       font-size: 0.75rem;
+    }
+  }
+
+  @include mixins.iphone-four() {
+    .custom-input {
+      height: 33px;
+      padding-top: 7px;
+      padding-bottom: 7px;
     }
   }
 }

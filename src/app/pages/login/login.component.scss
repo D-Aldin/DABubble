@@ -119,6 +119,22 @@ body {
       font-size: 16px !important;
     }
   }
+
+  @include mixins.iphone-four() {
+    .signup-text {
+      display: none;
+    }
+
+    .link-container {
+      height: 33px !important;
+    }
+
+    .signup-link {
+      font-size: 14.4px !important;
+      display: flex;
+      align-items: center;
+    }
+  }
 }
 
 .login-card {
@@ -307,6 +323,17 @@ body {
 
     form {
       gap: 0.8rem;
+    }
+
+    .google-button,
+    .primary-btn,
+    .secondary-btn {
+      height: 39px !important;
+      font-size: 0.9rem !important;
+    }
+
+    .google-button {
+      width: 220px !important;
     }
   }
 
