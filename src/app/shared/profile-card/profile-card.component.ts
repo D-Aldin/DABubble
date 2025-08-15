@@ -28,10 +28,13 @@ export class ProfileCardComponent implements OnInit {
   @Output() save = new EventEmitter<string>();
   @Output() closeCard = new EventEmitter<void>();
 
-  constructor(private authService: AuthService, private userService: UserService) { }
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    this.checkIfLoggedInUserIsGuest()
+    this.checkIfLoggedInUserIsGuest();
   }
 
   onClose() {
@@ -53,12 +56,13 @@ export class ProfileCardComponent implements OnInit {
     this.name = this.nameInput;
     this.isEditing = false;
     this.save.emit(this.nameInput);
+    console.log(this.nameInput);
   }
 
   checkIfLoggedInUserIsGuest(): void {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser?.uid) {
-      this.userService.getUserById(currentUser.uid).subscribe(userDoc => {
+      this.userService.getUserById(currentUser.uid).subscribe((userDoc) => {
         if (userDoc?.name?.includes('Guest')) {
           this.isCurrentUserAllowedToEditName = false;
         } else {

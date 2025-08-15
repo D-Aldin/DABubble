@@ -52,15 +52,15 @@
             </div>
             <input id="nameInput" name="nameInput" class="edit-input" [(ngModel)]="nameInput"
                [placeholder]="'Name eingeben'" minlength="4" maxlength="20" required #nameInputRef="ngModel"
-               [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }" />
+               [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }" 
+               pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*\s+[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"/>
             <!-- Validation Message -->
             <p class="error-message">
                <span *ngIf="nameInputRef.invalid && nameInputRef.touched">
                   <span *ngIf="nameInputRef.errors?.['required']">Der Name ist erforderlich.</span>
                   <span *ngIf="nameInputRef.errors?.['minlength']">Mindestens 4 Zeichen.</span>
                   <span *ngIf="nameInputRef.errors?.['maxlength']">Maximal 20 Zeichen.</span>
-                  <span *ngIf="nameInputRef.errors?.['pattern']">Nur Buchstaben, Leerzeichen, Bindestrich oder Apostroph
-                     erlaubt.</span>
+                  <span *ngIf="nameInputRef.errors?.['pattern']">Bitte den vollen Vor- und Nachnamen angeben.</span>
                </span>
             </p>
             <div class="button-row">
