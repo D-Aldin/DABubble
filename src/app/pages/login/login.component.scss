@@ -259,6 +259,9 @@ body {
   }
 
   @include mixins.respond-between(320px, 670px) {
+    padding: 0.7rem 0.8rem;
+    width: 95%;
+
     form {
       gap: 1rem;
     }
@@ -292,10 +295,25 @@ body {
     }
   }
 
-  @include mixins.respond-between(320px, 580px) {
-    padding: 0.7rem 0.8rem;
-    width: 95%;
+  @include mixins.iphone-four(320px, 480px) {
+    .title {
+      font-size: 1.125rem !important;
+      margin-bottom: 0.6rem;
+    }
+
+    .subtitle {
+      margin-bottom: 0.8rem;
+    }
+
+    form {
+      gap: 0.8rem;
+    }
   }
+
+  // @include mixins.respond-between(320px, 580px) {
+  //   padding: 0.7rem 0.8rem;
+  //   width: 95%;
+  // }
 }
 
 .login-card-wrapper {

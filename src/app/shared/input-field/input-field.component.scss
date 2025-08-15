@@ -3,7 +3,6 @@
 
 .input-wrapper {
   display: flex;
-  flex-direction: column;
   width: 100%;
   max-width: 500px;
 
@@ -63,7 +62,7 @@
   }
 
   .validation-message {
-    min-height: 20px; // reserve vertical space
+    min-height: 20px;
     margin-top: 4px;
     font-size: 0.85rem;
     color: $error-msg-color;

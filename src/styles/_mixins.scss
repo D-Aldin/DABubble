@@ -122,18 +122,6 @@
   }
 }
 
-// @keyframes slideInFromRight {
-//   from {
-//     transform: translateX(100%);
-//     opacity: 0;
-//   }
-
-//   to {
-//     transform: translateX(0);
-//     opacity: 1;
-//   }
-// }
-
 @keyframes slideToLeft {
   from {
     transform: translateX(0);
@@ -219,6 +207,12 @@
 }
 
 @mixin respond-between($min, $max) {
+  @media only screen and (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
+
+@mixin iphone-four($min, $max) {
   @media only screen and (min-width: $min) and (max-width: $max) {
     @content;
   }
