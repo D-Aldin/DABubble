@@ -1,4 +1,5 @@
 @use "../../../styles/variables" as *;
+@use "../../../styles/mixins";
 
 .input-wrapper {
   display: flex;
@@ -67,6 +68,19 @@
     font-size: 0.85rem;
     color: $error-msg-color;
     font-weight: 500;
+  }
+
+  @include mixins.respond-between(320px, 670px) {
+    .custom-input {
+      height: 40px;
+      padding-top: 13px;
+      padding-bottom: 13px;
+    }
+
+    .validation-message {
+      margin-top: 0px;
+      font-size: 0.75rem;
+    }
   }
 }
 
