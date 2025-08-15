@@ -375,6 +375,11 @@ export class DirectMessageComponent
       scrollToBottom(this.scrollContainer);
     });
     this.searchService.handleHighlightScroll('.message', this.el, this.route);
+
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollTop =
+        this.scrollContainer.nativeElement.scrollHeight;
+    }
   }
 
   ngOnDestroy() {

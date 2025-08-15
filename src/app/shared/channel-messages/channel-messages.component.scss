@@ -198,7 +198,7 @@ emoji-mart {
       align-items: center;
       gap: 6px;
       padding: 6px 8px;
-      border: 1px solid #DADCE0;
+      border: 1px solid #dadce0;
       border-radius: 14px;
       background: #fff;
       font-size: 16px;
@@ -233,7 +233,7 @@ emoji-mart {
       white-space: nowrap;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .15s ease;
+      transition: opacity 0.15s ease;
       max-width: 200px;
       overflow-y: auto;
       white-space: pre-line;
@@ -261,8 +261,8 @@ emoji-mart {
     left: 0;
     transform: translateY(-100%);
     background: #fff;
-    border: 1px solid #E5E7EB;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, .12);
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     border-radius: 10px;
     padding: 10px;
     width: min(320px, 90vw);
@@ -270,7 +270,7 @@ emoji-mart {
     .popover-header {
       font-size: 12px;
       font-weight: 600;
-      color: #6B7280;
+      color: #6b7280;
       margin-bottom: 6px;
     }
 
@@ -361,7 +361,6 @@ emoji-mart {
 }
 
 @media (max-width: 580px) {
-
   .message-reactions-container,
   .message-reactions-container.me {
     padding: 0;

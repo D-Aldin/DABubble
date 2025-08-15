@@ -465,6 +465,10 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       scrollToBottom(this.scrollContainer);
       this.hasScrolledAfterLoad = true;
     }
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollTop =
+        this.scrollContainer.nativeElement.scrollHeight;
+    }
   }
 
   openProfileCard(userId: string): void {
