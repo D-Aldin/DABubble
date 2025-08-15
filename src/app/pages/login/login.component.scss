@@ -295,7 +295,7 @@ body {
     }
   }
 
-  @include mixins.iphone-four(320px, 480px) {
+  @include mixins.iphone-four() {
     .title {
       font-size: 1.125rem !important;
       margin-bottom: 0.6rem;

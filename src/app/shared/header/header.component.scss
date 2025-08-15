@@ -275,8 +275,10 @@ header {
     }
   }
 
-  @include mixins.iphone-four(320px, 480px) {
-    // min-height: 45px !important;
+  @include mixins.iphone-four() {
+    .logo-img {
+      height: 33px !important;
+    }
   }
 }
 

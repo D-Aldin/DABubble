@@ -212,8 +212,8 @@
   }
 }
 
-@mixin iphone-four($min, $max) {
-  @media only screen and (min-width: $min) and (max-width: $max) {
+@mixin iphone-four() {
+  @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
     @content;
   }
 }
