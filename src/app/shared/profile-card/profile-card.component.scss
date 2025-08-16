@@ -328,6 +328,33 @@
   display: none;
 }
 
+.edit-avatar {
+  position: relative;
+  top: 80px;
+  right: 40px;
+
+  img {
+    width: 30px !important;
+    height: 30px !important;
+    cursor: pointer;
+  }
+}
+
+.avatar-list {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 10px;
+
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
 @media (max-width: 580px) {
   .profile-card {
     max-width: 95vw !important;

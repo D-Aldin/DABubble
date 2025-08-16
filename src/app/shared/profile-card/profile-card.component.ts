@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
+import { avatarImgPaths } from '../../pages/register/avatar-selection.config';
+import { ChatUser } from '../../core/interfaces/chat-user';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-profile-card',
@@ -17,6 +20,8 @@ export class ProfileCardComponent implements OnInit {
   nameInput: string = '';
   isCurrentUserAllowedToEditName: boolean = false;
   showGuestEditWarning: boolean = false;
+  avatarImgPaths = avatarImgPaths;
+  editAvatarActive = false;
 
   @Input({ required: true }) src!: string;
   @Input({ required: true }) name!: string;
@@ -86,6 +91,25 @@ export class ProfileCardComponent implements OnInit {
       this.showGuestEditWarning = true;
     } else if (!isEntering) {
       this.showGuestEditWarning = false;
+    }
+  }
+
+  changeAvatar(event: Event) {
+    const imgElement = event.target as HTMLImageElement;
+    const newAvatarPath = imgElement.getAttribute('src') || '';
+    const currentUser = this.authService.getCurrentUser()?.uid;
+    if (currentUser) {
+      this.userService
+        .updateUserAvatar(currentUser, newAvatarPath)
+        .catch((err) => console.error('Error updating avatar:', err));
+    }
+  }
+
+  toggleEditAvatar() {
+    if (this.editAvatarActive === false) {
+      this.editAvatarActive = true;
+    } else {
+      this.editAvatarActive = false;
     }
   }
 }

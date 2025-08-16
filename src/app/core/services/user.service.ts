@@ -1,27 +1,49 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, doc, getDoc, setDoc, collection, collectionData, docData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  collectionData,
+  docData,
+} from '@angular/fire/firestore';
 import { Observable, combineLatest } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
+import { updateDoc } from 'firebase/firestore';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private firestore = inject(Firestore);
 
-  async createUserDocument(uid: string, avatarPath: string, name: string, email: string): Promise<void> {
+  async createUserDocument(
+    uid: string,
+    avatarPath: string,
+    name: string,
+    email: string
+  ): Promise<void> {
     const userRef = doc(this.firestore, 'users', uid);
     await setDoc(userRef, {
-      avatarPath, name, email
+      avatarPath,
+      name,
+      email,
     });
   }
 
-  async getUserDocument(uid: string): Promise<{ avatarPath: string, name: string, email: string } | null> {
+  async getUserDocument(
+    uid: string
+  ): Promise<{ avatarPath: string; name: string; email: string } | null> {
     const userRef = doc(this.firestore, 'users', uid);
     const docSnap = await getDoc(userRef);
 
     if (docSnap.exists()) {
-      const data = docSnap.data() as { avatarPath: string; name: string, email: string };
+      const data = docSnap.data() as {
+        avatarPath: string;
+        name: string;
+        email: string;
+      };
       return data;
     } else {
       console.warn('No such document!');
@@ -34,26 +56,35 @@ export class UserService {
     await setDoc(userRef, { online }, { merge: true });
   }
 
-  getAllUsers(): Observable<{ id: string, avatarPath: string, name: string }[]> {
+  getAllUsers(): Observable<
+    { id: string; avatarPath: string; name: string }[]
+  > {
     const usersRef = collection(this.firestore, 'users');
-    return collectionData(usersRef, { idField: 'id' }) as Observable<{ id: string, avatarPath: string, name: string }[]>;
+    return collectionData(usersRef, { idField: 'id' }) as Observable<
+      { id: string; avatarPath: string; name: string }[]
+    >;
   }
 
-  getAllUsersForDropdown(): Observable<{ id: string, avatarPath: string, name: string, email: string }[]> {
+  getAllUsersForDropdown(): Observable<
+    { id: string; avatarPath: string; name: string; email: string }[]
+  > {
     const usersRef = collection(this.firestore, 'users');
-    return collectionData(usersRef, { idField: 'id' }) as Observable<{ id: string, avatarPath: string, name: string, email: string }[]>;
+    return collectionData(usersRef, { idField: 'id' }) as Observable<
+      { id: string; avatarPath: string; name: string; email: string }[]
+    >;
   }
 
-  getUsersByIds(ids: string[]): Observable<ChatUser[]> { //to get multiple users
-    const userRefs = ids.map(id => doc(this.firestore, 'users', id));
-    const userObservables = userRefs.map(ref =>
-      docData(ref, { idField: 'uid' }) as Observable<ChatUser> // uid instead of id
+  getUsersByIds(ids: string[]): Observable<ChatUser[]> {
+    //to get multiple users
+    const userRefs = ids.map((id) => doc(this.firestore, 'users', id));
+    const userObservables = userRefs.map(
+      (ref) => docData(ref, { idField: 'uid' }) as Observable<ChatUser> // uid instead of id
     );
     return combineLatest(userObservables);
   }
 
-
-  getUserById(id: string): Observable<ChatUser> { // to get single user
+  getUserById(id: string): Observable<ChatUser> {
+    // to get single user
     const userRef = doc(this.firestore, 'users', id);
     return docData(userRef, { idField: 'id' }) as Observable<ChatUser>;
   }
@@ -62,12 +93,12 @@ export class UserService {
     users: { id: string; name: string; avatarPath: string }[],
     currentUserId: string
   ): ChatUser[] {
-    const chatUsers: ChatUser[] = users.map(u => ({
+    const chatUsers: ChatUser[] = users.map((u) => ({
       uid: u.id,
       name: u.name,
       avatarPath: u.avatarPath,
       email: '',
-      online: false
+      online: false,
     }));
 
     return chatUsers.sort((a, b) => {
@@ -77,4 +108,8 @@ export class UserService {
     });
   }
 
+  updateUserAvatar(userId: string, newAvatarPath: string) {
+    const userRef = doc(this.firestore, `users/${userId}`);
+    return updateDoc(userRef, { avatarPath: newAvatarPath });
+  }
 }
