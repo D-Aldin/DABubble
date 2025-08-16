@@ -79,9 +79,6 @@ export class DashboardComponent {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
     this.screenWidth = width;
-    if (width < 700) {
-      this.toggleIntro();
-    }
   }
 
   constructor(
@@ -93,7 +90,9 @@ export class DashboardComponent {
     private userService: UserService,
     private firestore: Firestore,
     public authService: AuthService
-  ) {}
+  ) {
+    console.log(this.screenWidth);
+  }
 
   closeProfileCard(): void {
     this.overlayService.close();
@@ -493,8 +492,10 @@ export class DashboardComponent {
   }
 
   toggleIntro() {
-    this.showSidenav = true;
-    this.currentView = 'sidenav';
-    this.isIntroSectionVisible = false;
+    if (this.screenWidth < 700) {
+      this.showSidenav = true;
+      this.currentView = 'sidenav';
+      this.isIntroSectionVisible = false;
+    }
   }
 }
