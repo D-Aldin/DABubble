@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, OnChanges, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  HostListener,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { ThreadComponent } from '../../shared/thread/thread.component';
@@ -9,10 +16,10 @@ import { CommonModule } from '@angular/common';
 import { ThreadMessagingService } from '../../core/services/thread-messaging.service';
 import { DashboardIntroComponent } from './dashboard-intro/dashboard-intro.component';
 import { filter } from 'rxjs';
-import { ProfileCardComponent } from "../../shared/profile-card/profile-card.component";
+import { ProfileCardComponent } from '../../shared/profile-card/profile-card.component';
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
-import { AddChannelComponent } from "../../shared/add-channel/add-channel.component";
-import { AddPeopleComponent } from "../../shared/add-channel/add-people/add-people.component";
+import { AddChannelComponent } from '../../shared/add-channel/add-channel.component';
+import { AddPeopleComponent } from '../../shared/add-channel/add-people/add-people.component';
 import { ChannelService } from '../../core/services/channel.service';
 import { UserService } from '../../core/services/user.service';
 import { ChatUser } from '../../core/interfaces/chat-user';
@@ -32,7 +39,7 @@ import { AuthService } from '../../core/services/auth.service';
     DashboardIntroComponent,
     ProfileCardComponent,
     AddChannelComponent,
-    AddPeopleComponent
+    AddPeopleComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -60,7 +67,7 @@ export class DashboardComponent {
   selectedChannel: undefined | Channel = undefined;
   selectedChannelPreviewUsers: ChatUser[] = [];
   isIntroSectionVisible: boolean = true;
-  showPeopleDialogOnChannelCreation: boolean = false
+  showPeopleDialogOnChannelCreation: boolean = false;
   screenWidth: number = window.innerWidth;
   public showProfileCard$ = this.overlayService.isVisible$;
   public selectedUser$ = this.overlayService.selectedUser$;
@@ -72,6 +79,9 @@ export class DashboardComponent {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
     this.screenWidth = width;
+    if (width < 700) {
+      this.toggleIntro();
+    }
   }
 
   constructor(
@@ -82,8 +92,8 @@ export class DashboardComponent {
     private channelService: ChannelService,
     private userService: UserService,
     private firestore: Firestore,
-    public authService: AuthService,
-  ) { }
+    public authService: AuthService
+  ) {}
 
   closeProfileCard(): void {
     this.overlayService.close();
@@ -140,7 +150,12 @@ export class DashboardComponent {
     let lastBase = '';
 
     this.router.events
-      .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter(
+          (event: Event): event is NavigationEnd =>
+            event instanceof NavigationEnd
+        )
+      )
       .subscribe((event) => {
         this.currentUrl = event.urlAfterRedirects;
         const baseRoute = this.extractBaseRoute(this.currentUrl);
@@ -163,7 +178,9 @@ export class DashboardComponent {
 
   private handleDashboardRoute(url: string, isMobile: boolean): void {
     if (url === '/dashboard') {
-      isMobile ? this.setupMobileDashboardView() : this.setupDesktopDashboardView();
+      isMobile
+        ? this.setupMobileDashboardView()
+        : this.setupDesktopDashboardView();
     } else {
       this.isIntroSectionVisible = false;
       if (isMobile && this.currentView === 'sidenav') {
@@ -268,7 +285,7 @@ export class DashboardComponent {
 
   closeAddChannelDialog() {
     if (window.innerWidth <= 979) {
-      this.setViewToSidenavIfMobile()
+      this.setViewToSidenavIfMobile();
     }
     this.createdChannelName = '';
     this.showAddChannelDialog = false;
@@ -364,12 +381,15 @@ export class DashboardComponent {
 
   onCloseAddChannelDialog(): void {
     if (window.innerWidth <= 979) {
-      this.setViewToSidenavIfMobile()
+      this.setViewToSidenavIfMobile();
     }
     this.showAddChannelDialog = false;
   }
 
-  openAddPeopleDialogOnChannelCreation(data?: { name: string; description: string }) {
+  openAddPeopleDialogOnChannelCreation(data?: {
+    name: string;
+    description: string;
+  }) {
     if (window.innerWidth <= 979) {
       this.currentView = 'main';
     }
@@ -384,9 +404,14 @@ export class DashboardComponent {
     this.showPeopleDialog = false;
   }
 
-  handleProceedToPeopleOnChannelCreation(data: { name: string; description: string }) {
+  handleProceedToPeopleOnChannelCreation(data: {
+    name: string;
+    description: string;
+  }) {
     this.channelDataBuffer = {
-      title: data.name, description: data.description, createdAt: new Date(),
+      title: data.name,
+      description: data.description,
+      createdAt: new Date(),
     };
     this.createdChannelName = data.name;
     this.closeAddChannelDialog();
@@ -397,7 +422,7 @@ export class DashboardComponent {
   }
 
   closePeopleDialogOnChannelCreation() {
-    this.showPeopleDialogOnChannelCreation = false
+    this.showPeopleDialogOnChannelCreation = false;
   }
 
   handleUserAddCancel() {
@@ -415,12 +440,14 @@ export class DashboardComponent {
     this.mergeNewMembers(userIds);
     this.closeUserAddDialogs();
     this.refreshChannelPreviewAvatars();
-    this.closePeopleDialogOnChannelCreation()
+    this.closePeopleDialogOnChannelCreation();
   }
 
   private mergeNewMembers(userIds: string[]): void {
     if (!this.selectedChannel) return;
-    const newIds = userIds.filter(id => !this.selectedChannel!.members.includes(id));
+    const newIds = userIds.filter(
+      (id) => !this.selectedChannel!.members.includes(id)
+    );
     this.selectedChannel.members.push(...newIds);
   }
 
@@ -432,7 +459,7 @@ export class DashboardComponent {
 
   private refreshChannelPreviewAvatars(): void {
     const previewIds = this.selectedChannel!.members.slice(0, 3);
-    this.userService.getUsersByIds(previewIds).subscribe(users => {
+    this.userService.getUsersByIds(previewIds).subscribe((users) => {
       this.selectedChannelPreviewUsers = users;
     });
   }
@@ -446,10 +473,12 @@ export class DashboardComponent {
     this.router.navigate(['/dashboard/channel', newId]);
   }
 
-  private async resolveFinalMembers(selectedUsers: string[]): Promise<string[]> {
+  private async resolveFinalMembers(
+    selectedUsers: string[]
+  ): Promise<string[]> {
     if (selectedUsers.length === 1 && selectedUsers[0] === 'ALL') {
       const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
-      return usersSnapshot.docs.map(doc => doc.id);
+      return usersSnapshot.docs.map((doc) => doc.id);
     }
 
     return selectedUsers;
@@ -461,5 +490,11 @@ export class DashboardComponent {
       members,
       creatorId: this.authService.currentUserId,
     } as Channel;
+  }
+
+  toggleIntro() {
+    this.showSidenav = true;
+    this.currentView = 'sidenav';
+    this.isIntroSectionVisible = false;
   }
 }

@@ -10,12 +10,15 @@
    </div>
       
    </div>
-  
-   <div class="avatar-list" [ngStyle]="{ display: editAvatarActive ? 'flex' : 'none'}">
+   <div class="avatar-list-wrapper">
+         <div class="avatar-list fadeIn" [ngStyle]="{ display: editAvatarActive ? 'flex' : 'none'}" >
       @for(avatar of avatarImgPaths; track avatar){
          <img [src]="avatar" (click)="changeAvatar($event)">
       }
    </div>
+
+   </div>
+
    
    <div class="main-content">
       <div *ngIf="!isEditing; else editMode">
