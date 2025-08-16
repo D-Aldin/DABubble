@@ -66,6 +66,16 @@ body {
         letter-spacing: 0%;
       }
     }
+
+    @include mixins.iphone-four() {
+      .link-container {
+        height: 30px !important;
+        padding: 0px;
+        width: 120px;
+        display: flex;
+        justify-content: center;
+      }
+    }
   }
 
   .privacy-policy-legal-notice-container {
@@ -89,6 +99,13 @@ body {
       &:hover {
         color: $primary-button-color;
         border: 1px solid $primary-color;
+      }
+    }
+
+    @include mixins.iphone-four() {
+      span {
+        font-size: 0.75rem !important;
+        padding: 2px 6px;
       }
     }
   }
@@ -313,11 +330,12 @@ body {
 
   @include mixins.iphone-four() {
     .title {
-      font-size: 1.125rem !important;
+      font-size: 1rem !important;
       margin-bottom: 0.6rem;
     }
 
     .subtitle {
+      font-size: 0.813rem;
       margin-bottom: 0.8rem;
     }
 
@@ -325,11 +343,22 @@ body {
       gap: 0.8rem;
     }
 
+    .forgot-password {
+      font-size: 0.75rem !important;
+    }
+
+    .divider {
+      span {
+        font-size: 0.813rem !important;
+      }
+    }
+
     .google-button,
     .primary-btn,
     .secondary-btn {
-      height: 39px !important;
+      height: 30px !important;
       font-size: 0.9rem !important;
+      padding: 0px !important;
     }
 
     .google-button {

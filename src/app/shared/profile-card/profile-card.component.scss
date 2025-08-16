@@ -10,6 +10,11 @@
   border-radius: 30px;
   padding: 40px;
   box-shadow: 1px 1px 10px 1px rgb(203, 203, 203);
+
+  @include iphone-four() {
+    height: 400px !important;
+    padding: 20px !important;
+  }
 }
 
 .headline {
@@ -21,6 +26,12 @@
     font-size: 24px;
     line-height: 100%;
     letter-spacing: 0%;
+  }
+
+  @include iphone-four() {
+    h3 {
+      font-size: 1.125rem;
+    }
   }
 }
 
@@ -47,6 +58,15 @@
     width: 200px;
     height: 200px;
     border-radius: 500px;
+  }
+
+  @include iphone-four() {
+    margin-top: 35px !important;
+
+    img {
+      width: 120px;
+      height: 120px;
+    }
   }
 }
 
@@ -119,6 +139,14 @@
       }
     }
   }
+
+  @include iphone-four() {
+    margin-top: 1px !important;
+
+    h2 {
+      font-size: 1.25rem;
+    }
+  }
 }
 
 .status {
@@ -132,6 +160,12 @@
     font-size: 20px;
     line-height: 100%;
     letter-spacing: 0%;
+  }
+
+  @include iphone-four() {
+    p {
+      font-size: 0.875rem;
+    }
   }
 }
 
@@ -172,6 +206,19 @@
     line-height: 100%;
     letter-spacing: 0%;
   }
+
+  @include iphone-four() {
+    margin-top: 15px;
+
+    img {
+      width: 19px;
+      height: 19px;
+    }
+
+    p {
+      font-size: 1.125rem;
+    }
+  }
 }
 
 .email-link {
@@ -182,6 +229,10 @@
   font-size: 18px;
   line-height: 120%;
   letter-spacing: 0%;
+
+  @include iphone-four() {
+    font-size: 0.875rem;
+  }
 }
 
 .edit-mode {
@@ -341,6 +392,16 @@
 
   &:hover {
     scale: 1.3;
+  }
+
+  @include iphone-four() {
+    top: 50px;
+    right: 33px;
+
+    img {
+      width: 25px !important;
+      height: 25px !important;
+    }
   }
 }
 

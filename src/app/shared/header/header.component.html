@@ -6,7 +6,7 @@
                 [routerLink]="dashboardIntroRouting(currentURL)" class="logo-img" [src]="headerLogo" alt="Logo" />
             <div *ngIf="showBackToSidenav && currentView !== 'sidenav'" class="logo-and-heading"
                 (click)="onBackClick()">
-                <img src="assets/icons/Arrow.svg" alt="">
+                <img class="arrow" src="assets/icons/Arrow.svg" alt="">
                 <img src="assets/images/sidenav-img/Workspace logo.svg" alt="">
                 <h1>Devspace</h1>
             </div>
