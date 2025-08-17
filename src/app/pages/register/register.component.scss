@@ -87,6 +87,30 @@ section {
       }
     }
   }
+
+  @include mixins.iphone-four() {
+    h1 {
+      font-size: 1.125rem !important;
+    }
+
+    .subtitle {
+      font-size: 0.813rem !important;
+      margin: 18px 0 18px 0;
+    }
+
+    .checkbox-container {
+      font-size: 0.813rem !important;
+    }
+
+    form {
+      gap: 0.7rem;
+
+      input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+      }
+    }
+  }
 }
 
 .button-container {
@@ -112,10 +136,14 @@ section {
     letter-spacing: 0%;
   }
 
-  //   @include mixins.respond-between(320px, 480px) {
-  //     width: 96px !important;
-  //     // height: 40px !important;
-  //   }
+  @include mixins.iphone-four() {
+    .submit-button {
+      width: 85px;
+      height: 36px;
+      font-size: 0.938rem;
+      margin-top: 0.2rem;
+    }
+  }
 }
 
 .heading-container {
@@ -154,6 +182,13 @@ section {
       height: 36px;
     }
   }
+
+  @include mixins.iphone-four() {
+    .back-button-img {
+      width: 32px !important;
+      height: 32px !important;
+    }
+  }
 }
 
 .avatar-selection {
@@ -167,7 +202,6 @@ section {
 
   h1 {
     color: $primary-button-color;
-    // margin-bottom: 30px;
     width: 100%;
     font-weight: 700;
     font-style: Bold;
@@ -312,6 +346,41 @@ section {
   @include mixins.respond-between(521px, 570px) {
     width: 500px;
   }
+
+  @include mixins.iphone-four() {
+    padding: 15px;
+    height: 415px;
+
+    h1 {
+      font-size: 1.125rem;
+    }
+
+    .avatar-preview {
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    .selected-avatar {
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.75rem !important;
+    }
+
+    .select-label {
+      font-size: 0.875rem;
+    }
+
+    .avatar-list {
+      margin-bottom: 10px;
+    }
+
+    .button-container {
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+  }
 }
 
 @media (max-width: 640px) {
@@ -335,7 +404,7 @@ section {
 
 @media (max-width: 440px) {
   .register-card {
-    padding: 1rem;
+    padding: 0.8rem;
 
     .title {
       font-size: 28px;
