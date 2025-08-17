@@ -78,6 +78,7 @@ export class MessageFieldComponent implements AfterViewInit {
       this.message += '@';
       this.getTheUser();
     }
+    console.log(this.userArr);
   }
 
   getTheUser() {
