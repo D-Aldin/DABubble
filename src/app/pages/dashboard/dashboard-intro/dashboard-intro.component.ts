@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard-intro.component.html',
-  styleUrl: './dashboard-intro.component.scss'
+  styleUrl: './dashboard-intro.component.scss',
 })
 export class DashboardIntroComponent {
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   isOnDashboard(): boolean {
     return this.router.url === '/dashboard';

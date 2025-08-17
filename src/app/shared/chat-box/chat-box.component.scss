@@ -99,18 +99,33 @@
     height: 70px;
     border-radius: 50%;
   }
+
+  @include iphone-four() {
+    img {
+      width: 30px !important;
+      height: 30px !important;
+    }
+  }
 }
 
 .user-name {
   font-weight: bold;
   margin: 0 10px 0px 0;
   width: max-content;
-  font-size: 18px;
+  font-size: 1.125rem;
+
+  @include iphone-four() {
+    font-size: 1rem;
+  }
 }
 
 .time {
   font-size: 14px;
   color: rgb(104, 104, 104);
+
+  @include iphone-four() {
+    font-size: 0.813rem;
+  }
 }
 
 .message {
@@ -126,6 +141,11 @@
   font-size: 18px;
   line-height: 100%;
   letter-spacing: 0%;
+
+  @include iphone-four() {
+    padding: 13px;
+    font-size: 1rem;
+  }
 }
 
 .emoji-container {

@@ -79,7 +79,6 @@ export class DashboardComponent {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
     this.screenWidth = width;
-    this.toggleIntro();
   }
 
   constructor(
@@ -102,6 +101,7 @@ export class DashboardComponent {
     this.listenToThreadState();
     this.toggleSidenav();
     this.checkDashboardRouting();
+    this.toggleIntro();
   }
 
   private initializeResponsiveBehavior(): void {
@@ -181,8 +181,8 @@ export class DashboardComponent {
         : this.setupDesktopDashboardView();
     } else {
       this.isIntroSectionVisible = false;
-      if (isMobile && this.currentView === 'sidenav') {
-        this.currentView = 'main';
+      if (!url.startsWith('/dashboard')) {
+        this.isIntroSectionVisible = false;
       }
     }
   }
@@ -492,8 +492,6 @@ export class DashboardComponent {
 
   toggleIntro() {
     if (this.screenWidth < 700) {
-      this.showSidenav = true;
-      this.currentView = 'sidenav';
       this.isIntroSectionVisible = false;
     }
   }
