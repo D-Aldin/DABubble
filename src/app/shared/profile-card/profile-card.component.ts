@@ -107,7 +107,10 @@ export class ProfileCardComponent implements OnInit {
   }
 
   toggleEditAvatar() {
-    if (this.editAvatarActive === false) {
+    if (
+      this.editAvatarActive === false &&
+      this.authService.getCurrentUser()?.email === this.email
+    ) {
       this.editAvatarActive = true;
     } else {
       this.editAvatarActive = false;
