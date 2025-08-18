@@ -253,6 +253,10 @@
       margin-bottom: 10px;
     }
   }
+
+  @include mixins.iphone-pro() {
+    min-height: 96%;
+  }
 }
 
 .avatar {

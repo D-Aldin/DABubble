@@ -218,6 +218,12 @@
   }
 }
 
+@mixin iphone-pro {
+  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    @content;
+  }
+}
+
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;

@@ -406,7 +406,7 @@ app-search-bar {
 
       .profile-menu {
         position: fixed;
-        bottom: 0;
+        bottom: 0px;
         left: 0;
         right: 0;
         top: unset;
@@ -419,6 +419,7 @@ app-search-bar {
         background-color: white;
         z-index: 9999;
         gap: 0;
+        padding-bottom: 50px;
 
         button {
           font-size: 20px;

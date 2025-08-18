@@ -425,7 +425,7 @@ body {
   left: 0;
   position: fixed;
   z-index: 1;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   animation: fadeOut 2s ease-in-out forwards;
   animation-delay: 2s;
@@ -467,7 +467,7 @@ body {
   }
 
   @include mixins.respond-between(320px, 440px) {
-    animation: moveShrinkFadeMobile 0.7s ease-in-out forwards 2s;
+    animation: moveShrinkFadeMobile 0.7s ease-in-out forwards 2s !important;
     width: 300px;
   }
 }
@@ -494,7 +494,7 @@ body {
   }
 
   @include mixins.respond-between(320px, 440px) {
-    left: 94%;
+    left: 91%;
 
     img {
       width: 60px;
@@ -536,97 +536,12 @@ body {
   }
 
   @include mixins.respond-between(320px, 440px) {
-    left: 0%;
+    left: 10%;
     display: flex;
     align-items: center;
 
     h1 {
       font-size: 36px;
-    }
-  }
-
-  @keyframes moveLeft {
-    0% {
-      transform: translateX(0);
-    }
-
-    100% {
-      transform: translateX(-270px);
-    }
-  }
-
-  @keyframes slideIn {
-    0% {
-      left: -100%;
-      opacity: 0;
-    }
-
-    100% {
-      left: 25%;
-      opacity: 1;
-    }
-  }
-
-  @keyframes moveShrinkFade {
-    0% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-    }
-
-    10% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-    }
-
-    100% {
-      transform: translate(-50%, -50%) scale(0.4);
-      opacity: 0.2;
-      position: absolute;
-      top: 55px;
-      left: 120px;
-    }
-  }
-
-  @keyframes moveShrinkFadeMobile {
-    0% {
-      transform: translate(-0%, -0%) scale(1);
-      opacity: 1;
-      position: absolute;
-      top: 40%;
-    }
-
-    10% {
-      transform: translate(-0%, -0%) scale(1);
-      opacity: 1;
-      position: absolute;
-      top: 40%;
-    }
-
-    100% {
-      opacity: 0.2;
-      position: absolute;
-      top: 1%;
-    }
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0.5;
-    }
-
-    to {
-      display: none;
-      opacity: 0;
     }
   }
 
@@ -667,5 +582,102 @@ body {
 @media (max-width: 660px) {
   .login-container .login-card-wrapper .signup-link-box {
     display: block !important;
+  }
+}
+
+@keyframes moveLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-270px);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+
+  100% {
+    left: 25%;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  to {
+    display: none;
+    opacity: 0;
+  }
+}
+
+@keyframes moveShrinkFade {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+
+  10% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0.2;
+    position: absolute;
+    top: 55px;
+    left: 120px;
+  }
+}
+
+:global {
+  @keyframes moveShrinkFadeMobile {
+    0% {
+      transform: translate(-0%, -0%) scale(1);
+      opacity: 1;
+      position: absolute;
+      top: 40%;
+    }
+
+    10% {
+      transform: translate(-0%, -0%) scale(1);
+      opacity: 1;
+      position: absolute;
+      top: 40%;
+    }
+
+    100% {
+      opacity: 0.2;
+      position: absolute;
+      top: 1%;
+    }
+  }
+}
+
+@media only screen and (width: 480px) and (height: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+  .logo-container {
+    left: 100% !important;
+  }
+
+  .wrapper-animation {
+    animation: moveShrinkFadeMobile 0.7s ease-in-out forwards 2s !important;
   }
 }

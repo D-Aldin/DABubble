@@ -364,7 +364,7 @@ app-thread {
 
 .new-message-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 2%;
   right: 20px;
   width: 60px;
   height: 60px;
@@ -379,6 +379,10 @@ app-thread {
     height: 100%;
     object-fit: contain;
     pointer-events: none;
+  }
+
+  @include mixins.iphone-pro() {
+    bottom: 52px !important;
   }
 }
 
