@@ -174,5 +174,10 @@
    </div>
 </div>
 </div>
-<app-message-field (messageSend)="sendThreadMessage($event)"></app-message-field>
+<div class="thread-composer">
+  <app-message-field
+    class="thread-message-field"
+    (messageSend)="sendThreadMessage($event)">
+  </app-message-field>
+</div>
 </div>
