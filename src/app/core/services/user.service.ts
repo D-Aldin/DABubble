@@ -8,7 +8,7 @@ import {
   collectionData,
   docData,
 } from '@angular/fire/firestore';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { ChatUser } from '../interfaces/chat-user';
 import { updateDoc } from 'firebase/firestore';
 
@@ -17,6 +17,10 @@ import { updateDoc } from 'firebase/firestore';
 })
 export class UserService {
   private firestore = inject(Firestore);
+  private avatarPathSubject = new BehaviorSubject<string>(
+    'assets/default-avatar.png'
+  );
+  avatarPath$ = this.avatarPathSubject.asObservable();
 
   async createUserDocument(
     uid: string,
@@ -108,8 +112,13 @@ export class UserService {
     });
   }
 
-  updateUserAvatar(userId: string, newAvatarPath: string) {
-    const userRef = doc(this.firestore, `users/${userId}`);
-    return updateDoc(userRef, { avatarPath: newAvatarPath });
+  async updateUserAvatar(uid: string, newAvatarPath: string): Promise<void> {
+    const userRef = doc(this.firestore, 'users', uid);
+    await setDoc(userRef, { avatarPath: newAvatarPath }, { merge: true });
+    this.avatarPathSubject.next(newAvatarPath);
+  }
+
+  setInitialAvatar(path: string) {
+    this.avatarPathSubject.next(path);
   }
 }

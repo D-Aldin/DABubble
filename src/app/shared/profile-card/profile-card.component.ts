@@ -98,6 +98,7 @@ export class ProfileCardComponent implements OnInit {
     const imgElement = event.target as HTMLImageElement;
     const newAvatarPath = imgElement.getAttribute('src') || '';
     const currentUser = this.authService.getCurrentUser()?.uid;
+
     if (currentUser) {
       this.userService
         .updateUserAvatar(currentUser, newAvatarPath)
