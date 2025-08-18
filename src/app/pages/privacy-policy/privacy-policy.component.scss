@@ -1,4 +1,5 @@
 @use "../../../styles/variables" as *;
+@use "../../../styles/mixins";
 
 section {
   display: flex;
@@ -52,7 +53,7 @@ section {
       }
 
       a {
-        color: #007BFF;
+        color: #007bff;
         text-decoration: underline;
       }
     }
@@ -65,16 +66,46 @@ section {
       .back-button-img {
         width: 40px;
         height: 40px;
-        background-image: url('/assets/icons/arrow_back.svg');
+        background-image: url("/assets/icons/arrow_back.svg");
         background-size: contain;
         background-repeat: no-repeat;
         transition: background-image 0.125s ease;
 
         &:hover {
-          background-image: url('/assets/icons/arrow-back-hover.svg');
+          background-image: url("/assets/icons/arrow-back-hover.svg");
         }
       }
     }
   }
 
+  @include mixins.respond-between(320px, 615px) {
+    .privacy-dialog {
+      padding: 1rem;
+      width: 95%;
+    }
+  }
+
+  @include mixins.iphone-four() {
+    .privacy-policy {
+      padding: 0rem !important;
+
+      h1,
+      h2 {
+        margin-top: 0px;
+      }
+
+      h1 {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.3rem;
+      }
+
+      h2 {
+        font-size: 1rem !important;
+      }
+
+      p {
+        font-size: 0.875rem !important;
+      }
+    }
+  }
 }
