@@ -135,6 +135,13 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
           this.groupedMessages = this.groupMessagesByDate(results);
           this.cdRef.detectChanges();
           this.isLoading = false;
+          const last = results[results.length - 1];
+          if (!this.hasScrolledAfterLoad || last?.senderId === this.currentUserId) {
+            requestAnimationFrame(() => {
+              scrollToBottom(this.scrollContainer);
+              this.hasScrolledAfterLoad = true;
+            });
+          }
         });
       });
 
@@ -458,17 +465,6 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
       this.el,
       this.route
     );
-  }
-
-  ngAfterViewChecked(): void {
-    if (!this.isLoading && !this.hasScrolledAfterLoad) {
-      scrollToBottom(this.scrollContainer);
-      this.hasScrolledAfterLoad = true;
-    }
-    if (this.scrollContainer) {
-      this.scrollContainer.nativeElement.scrollTop =
-        this.scrollContainer.nativeElement.scrollHeight;
-    }
   }
 
   openProfileCard(userId: string): void {
