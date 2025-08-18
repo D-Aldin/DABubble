@@ -1,59 +1,84 @@
-.impressum-content{
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins";
+
+.impressum-content {
   background-color: #eceefe;
   height: calc(100vh - 200px);
- 
+
   .dialog-container {
-      background: white;
-      padding: 2rem 2rem 2rem 3rem;
-      border-radius: 1.5rem;
-      max-width: 600px;
-      height: 100%;
-      max-height: 669px;
-      overflow-y: auto;
-      margin: 0 auto;
-      color: #333;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      position: relative;
-  
-      h1 {
-        font-size: 2rem;
-        color: #4e5bff;
-        margin-top: 3rem;
-        margin-bottom: 1rem;
-      }
-  
-      h2 {
-        margin-top: 1.5rem;
-        color: #4e5bff;
-      }
-  
-      p {
-        line-height: 1.6;
-        color: #555;
-      }
-  
-      a {
-        color: #007BFF;
-        text-decoration: underline;
-      }
-  
-      .back-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-      
-        .back-button-img {
-          width: 40px;
-          height: 40px;
-          background-image: url('/assets/icons/arrow_back.svg');
-          background-size: contain;
-          background-repeat: no-repeat;
-          transition: background-image 0.125s ease;
-      
-          &:hover {
-            background-image: url('/assets/icons/arrow-back-hover.svg');
-          }
+    background: white;
+    padding: 2rem 2rem 2rem 3rem;
+    border-radius: 1.5rem;
+    max-width: 600px;
+    height: 100%;
+    max-height: 669px;
+    overflow-y: auto;
+    margin: 0 auto;
+    color: #333;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    position: relative;
+
+    h1 {
+      font-size: 2rem;
+      color: #4e5bff;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      margin-top: 1.5rem;
+      color: #4e5bff;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #555;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: underline;
+    }
+
+    .back-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      .back-button-img {
+        width: 40px;
+        height: 40px;
+        background-image: url("/assets/icons/arrow_back.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        transition: background-image 0.125s ease;
+
+        &:hover {
+          background-image: url("/assets/icons/arrow-back-hover.svg");
         }
       }
     }
+  }
+
+  @include mixins.respond-between(320px, 615px) {
+    .dialog-container {
+      padding: 1rem;
+      width: 95%;
+    }
+  }
+
+  @include mixins.iphone-four() {
+    h1 {
+      font-size: 1rem !important;
+      margin-top: 0.7rem !important;
+    }
+
+    p {
+      font-size: 0.875rem !important;
+    }
+
+    h2 {
+      font-size: 1rem !important;
+    }
+  }
 }
