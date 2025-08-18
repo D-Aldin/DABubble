@@ -79,6 +79,9 @@ export class DashboardComponent {
     const width = window.innerWidth;
     this.isMediumScreen = width >= 980 && width <= 1400;
     this.screenWidth = width;
+    if (this.screenWidth < 700) {
+      this.setupMobileDashboardView();
+    }
   }
 
   constructor(
@@ -101,7 +104,6 @@ export class DashboardComponent {
     this.listenToThreadState();
     this.toggleSidenav();
     this.checkDashboardRouting();
-    this.toggleIntro();
   }
 
   private initializeResponsiveBehavior(): void {
@@ -174,7 +176,7 @@ export class DashboardComponent {
     return window.innerWidth <= 580;
   }
 
-  private handleDashboardRoute(url: string, isMobile: boolean): void {
+  handleDashboardRoute(url: string, isMobile: boolean): void {
     if (url === '/dashboard') {
       isMobile
         ? this.setupMobileDashboardView()
@@ -488,11 +490,5 @@ export class DashboardComponent {
       members,
       creatorId: this.authService.currentUserId,
     } as Channel;
-  }
-
-  toggleIntro() {
-    if (this.screenWidth < 700) {
-      this.isIntroSectionVisible = false;
-    }
   }
 }

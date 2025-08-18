@@ -168,6 +168,10 @@ export class HeaderComponent implements OnChanges {
   ngOnInit(): void {
     this.loadUserData();
     this.changeLogo();
+
+    this.userService.avatarPath$.subscribe((path) => {
+      this.avatarPath = path;
+    });
   }
 
   private async loadUserData(): Promise<void> {

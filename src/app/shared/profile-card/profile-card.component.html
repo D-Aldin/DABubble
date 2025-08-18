@@ -57,7 +57,6 @@
       </div>
 
 
-      <!-- Edit Mode Template, nur für profile-card im header!! -->
       <ng-template #editMode>
          <form #editForm="ngForm" (ngSubmit)="saveChanges()" class="edit-mode">
             <div class="input-label">
@@ -68,7 +67,6 @@
                [placeholder]="'Name eingeben'" minlength="4" maxlength="20" required #nameInputRef="ngModel"
                [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }" 
                pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*\s+[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"/>
-            <!-- Validation Message -->
             <p class="error-message">
                <span *ngIf="nameInputRef.invalid && nameInputRef.touched">
                   <span *ngIf="nameInputRef.errors?.['required']">Der Name ist erforderlich.</span>

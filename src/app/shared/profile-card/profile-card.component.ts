@@ -98,6 +98,7 @@ export class ProfileCardComponent implements OnInit {
     const imgElement = event.target as HTMLImageElement;
     const newAvatarPath = imgElement.getAttribute('src') || '';
     const currentUser = this.authService.getCurrentUser()?.uid;
+
     if (currentUser) {
       this.userService
         .updateUserAvatar(currentUser, newAvatarPath)
@@ -106,7 +107,10 @@ export class ProfileCardComponent implements OnInit {
   }
 
   toggleEditAvatar() {
-    if (this.editAvatarActive === false) {
+    if (
+      this.editAvatarActive === false &&
+      this.authService.getCurrentUser()?.email === this.email
+    ) {
       this.editAvatarActive = true;
     } else {
       this.editAvatarActive = false;
