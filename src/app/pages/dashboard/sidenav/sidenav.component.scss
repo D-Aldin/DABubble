@@ -144,8 +144,7 @@
       }
 
       &:hover {
-        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
-          brightness(94%) contrast(92%);
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
       }
 
       .plus-btn {
@@ -216,8 +215,7 @@
       }
 
       &:hover {
-        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
-          brightness(94%) contrast(92%);
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
       }
     }
   }
@@ -282,9 +280,19 @@
     background-color: $secondary-color;
   }
 
-  .online-dot {
+  .online-dot-sidenav {
     left: 57px;
     bottom: 4px;
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background-color: grey;
+  }
+
+  .online-dot-sidenav.is-online {
+    background-color: rgba(146, 200, 62, 1);
   }
 
   &.selected {
@@ -301,7 +309,7 @@
       height: 24px;
     }
 
-    .online-dot {
+    .online-dot-sidenav {
       position: static;
       left: auto;
       bottom: auto;
@@ -375,6 +383,7 @@
 app-search-bar {
   display: none;
 }
+
 @media (min-width: 1399px) {
   .container {
     width: 100%;

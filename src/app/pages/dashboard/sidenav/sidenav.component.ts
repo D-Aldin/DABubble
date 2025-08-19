@@ -49,8 +49,8 @@ export class SidenavComponent implements OnInit {
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
 
-  users$: Observable<ChatUser[]> = this.userService.getAllUsers().pipe(
-    map(users => this.userService.sortUsersWithCurrentFirst(users, this.authService.currentUserId))
+  users$: Observable<ChatUser[]> = this.userService.getAllUsersForSidenav().pipe(
+    map(users => this.userService.sortUsersWithCurrentFirstForSidenav(users, this.authService.currentUserId))
   );
 
   ngOnInit(): void {
@@ -74,6 +74,10 @@ export class SidenavComponent implements OnInit {
 
   subscribeToUsers(): void {
     this.users$.subscribe((users) => {
+      for (let i = 0; i < users.length; i++) {
+        console.log(users[i].online);
+      }
+
       this.usersArray = users;
     });
   }
