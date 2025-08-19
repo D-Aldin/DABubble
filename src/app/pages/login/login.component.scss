@@ -420,6 +420,7 @@ body {
 }
 
 .intro-animation {
+  border: 3px solid rgb(246, 250, 0);
   @include mixins.flex-setup();
   top: 0;
   left: 0;
@@ -433,6 +434,7 @@ body {
 }
 
 .intro-overlay {
+  border: 8px solid chartreuse;
   width: calc(100vw - 100px);
   height: calc(100vh - 100px);
   max-width: 1920px;
@@ -452,7 +454,8 @@ body {
 }
 
 .wrapper-animation {
-  width: 615px;
+  border: 1px solid red;
+  width: 853px;
   height: 200px;
   display: flex;
   align-items: center;
@@ -473,7 +476,8 @@ body {
 }
 
 .logo-container {
-  position: absolute;
+  position: relative;
+  border: 1px solid green;
   left: 50%;
   animation: moveLeft 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   z-index: 1;
@@ -501,20 +505,27 @@ body {
       height: 60px;
     }
   }
+
+  @include mixins.iphone-4() {
+    left: 100%;
+  }
 }
 
 .dabubble-text {
+  border: 1px solid orange;
   width: 600px;
   height: 100px;
   overflow: hidden;
-  position: relative;
+  // position: relative;
+  margin-left: 13%;
   right: 50%;
   left: 13%;
 
   h1 {
     font-size: 80px;
     color: white;
-    position: absolute;
+    // position: absolute;
+    margin-left: 10%;
     white-space: nowrap;
     left: -100%;
     animation: slideIn 1.2s forwards;
@@ -537,11 +548,13 @@ body {
 
   @include mixins.respond-between(320px, 440px) {
     left: 10%;
+    margin-left: 2%;
     display: flex;
     align-items: center;
 
     h1 {
       font-size: 36px;
+      margin-left: 2%;
     }
   }
 
@@ -602,7 +615,7 @@ body {
   }
 
   100% {
-    left: 25%;
+    left: 12%;
     opacity: 1;
   }
 }
@@ -672,12 +685,12 @@ body {
   }
 }
 
-@media only screen and (width: 480px) and (height: 320px) and (-webkit-min-device-pixel-ratio: 2) {
-  .logo-container {
-    left: 100% !important;
-  }
+// @media only screen and (width: 480px) and (height: 320px) and (-webkit-min-device-pixel-ratio: 2) {
+//   .logo-container {
+//     left: 100% !important;
+//   }
 
-  .wrapper-animation {
-    animation: moveShrinkFadeMobile 0.7s ease-in-out forwards 2s !important;
-  }
-}
+//   .wrapper-animation {
+//     animation: moveShrinkFadeMobile 0.7s ease-in-out forwards 2s !important;
+//   }
+// }

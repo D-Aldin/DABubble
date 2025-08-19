@@ -11,9 +11,8 @@ import { SharedService } from '../../../core/services/shared.service';
 import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { map } from 'rxjs/operators';
-import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
+import { SearchBarComponent } from '../../../shared/search-bar/search-bar.component';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
 
 @Component({
   selector: 'app-sidenav',
@@ -36,7 +35,7 @@ export class SidenavComponent implements OnInit {
     public userService: UserService,
     public authService: AuthService,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {}
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
   @Output() channelSelected = new EventEmitter<string>();
@@ -51,9 +50,16 @@ export class SidenavComponent implements OnInit {
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
 
-  users$: Observable<ChatUser[]> = this.userService.getAllUsersForSidenav().pipe(
-    map(users => this.userService.sortUsersWithCurrentFirstForSidenav(users, this.authService.currentUserId))
-  );
+  users$: Observable<ChatUser[]> = this.userService
+    .getAllUsersForSidenav()
+    .pipe(
+      map((users) =>
+        this.userService.sortUsersWithCurrentFirstForSidenav(
+          users,
+          this.authService.currentUserId
+        )
+      )
+    );
 
   ngOnInit(): void {
     this.subscribeToUsers();
@@ -63,13 +69,17 @@ export class SidenavComponent implements OnInit {
     this.subscribeToRouterEvents();
   }
 
-   safeUrl(url: string): SafeUrl {
+  safeUrl(url: string): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   subscribeToRouterEvents(): void {
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        )
+      )
       .subscribe((event) => {
         this.currentURL = event.urlAfterRedirects;
         this.checkGivenURL();
@@ -85,7 +95,9 @@ export class SidenavComponent implements OnInit {
   }
 
   updateSelectedUserFromUrl(): void {
-    const match = this.currentURL.match(/\/dashboard\/direct-message\/([^\/]+)/);
+    const match = this.currentURL.match(
+      /\/dashboard\/direct-message\/([^\/]+)/
+    );
     if (match && match[1]) {
       this.selectedUserId = match[1];
     } else {
@@ -133,14 +145,14 @@ export class SidenavComponent implements OnInit {
 
     if (userIdFromURL && !this.selectedUserId) {
       // Already have users loaded
-      const user = this.usersArray.find(u => u.uid === userIdFromURL);
+      const user = this.usersArray.find((u) => u.uid === userIdFromURL);
       if (user) {
         this.selectUser(user.name);
       } else {
         // Wait for users to load if not already
         this.users$
           .pipe(
-            filter(users => !!users && users.length > 0),
+            filter((users) => !!users && users.length > 0),
             take(1)
           )
           .subscribe((users) => {
