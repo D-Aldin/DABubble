@@ -80,7 +80,7 @@
                 [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
                 [routerLink]="'direct-message'"
                 (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
-                <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
+                <img [src]="safeUrl(user.avatarPath)" alt="Avatar" class="avatar" />
                 <span>
                   {{ user.name }}
                   @if (user.uid === authService.currentUserId) {

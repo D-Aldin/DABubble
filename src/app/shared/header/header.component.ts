@@ -20,6 +20,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { HostListener } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-header',
@@ -65,7 +66,8 @@ export class HeaderComponent implements OnChanges {
   constructor(
     public router: Router,
     private userAuthService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private sanitizer: DomSanitizer
   ) {
     this.handleHeaderAppearancesForRoutes();
     this.onResize();
@@ -77,6 +79,10 @@ export class HeaderComponent implements OnChanges {
       this.showBackToSidenav =
         this.shouldShowBackButtonByRoute && this.currentView !== 'sidenav';
     }
+  }
+
+   safeUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   @HostListener('window:resize', ['$event'])
