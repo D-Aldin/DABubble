@@ -396,7 +396,7 @@ export class ChannelMessagesComponent implements OnInit, AfterViewInit {
 
   getAvatarPath(uid: string): string {
     return (
-      this.usersMap[uid]?.avatarPath ?? '/assets/images/default-avatar.svg'
+      this.usersMap[uid].avatarPath ?? 'assets/images/register/default-profile-img.svg'
     );
   }
 
