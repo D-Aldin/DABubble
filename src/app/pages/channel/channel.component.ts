@@ -7,7 +7,6 @@ import { UserService } from '../../core/services/user.service';
 import { Channel } from '../../core/interfaces/channel';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { ThreadComponent } from "../../shared/thread/thread.component";
-import { AddChannelComponent } from "../../shared/add-channel/add-channel.component";
 import { AddPeopleComponent } from "../../shared/add-channel/add-people/add-people.component";
 import { CommonModule } from '@angular/common';
 import { MessageFieldComponent } from "../../shared/message-field/message-field.component";
@@ -24,7 +23,6 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   selector: 'app-channel',
   standalone: true,
   imports: [
-    AddChannelComponent,
     AddPeopleComponent,
     CommonModule,
     MessageFieldComponent,
