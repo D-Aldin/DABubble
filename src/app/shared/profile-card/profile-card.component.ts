@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -7,6 +7,7 @@ import { UserService } from '../../core/services/user.service';
 import { avatarImgPaths } from '../../pages/register/avatar-selection.config';
 import { ChatUser } from '../../core/interfaces/chat-user';
 import { Observable } from 'rxjs';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-profile-card',
@@ -22,6 +23,7 @@ export class ProfileCardComponent implements OnInit {
   showGuestEditWarning: boolean = false;
   avatarImgPaths = avatarImgPaths;
   editAvatarActive = false;
+  private readonly parentHeader = inject(HeaderComponent, { optional: true });
 
   @Input({ required: true }) src!: string;
   @Input({ required: true }) name!: string;
@@ -36,7 +38,7 @@ export class ProfileCardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userService: UserService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.checkIfLoggedInUserIsGuest();
@@ -44,6 +46,10 @@ export class ProfileCardComponent implements OnInit {
 
   onClose() {
     this.closeCard.emit();
+  }
+
+  shouldShowEditAvatar(): boolean {
+    return !!this.parentHeader;
   }
 
   startEdit() {

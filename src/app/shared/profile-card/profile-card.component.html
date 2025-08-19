@@ -5,29 +5,28 @@
    </div>
    <div class="profile-img">
       <img [src]="src" alt="profile-image">
-      <div class="edit-avatar">
-      <img src="assets/icons/edit.png" alt="" (click)="toggleEditAvatar()">
-   </div>
-      
+      <div class="edit-avatar" *ngIf="shouldShowEditAvatar()">
+         <img src="assets/icons/edit.png" alt="" (click)="toggleEditAvatar()">
+      </div>
    </div>
    <div class="avatar-list-wrapper">
-         <div class="avatar-list fadeIn" [ngStyle]="{ display: editAvatarActive ? 'flex' : 'none'}" >
-      @for(avatar of avatarImgPaths; track avatar){
+      <div class="avatar-list fadeIn" [ngStyle]="{ display: editAvatarActive ? 'flex' : 'none'}">
+         @for(avatar of avatarImgPaths; track avatar){
          <img [src]="avatar" (click)="changeAvatar($event)">
-      }
-   </div>
+         }
+      </div>
 
    </div>
 
-   
+
    <div class="main-content">
       <div *ngIf="!isEditing; else editMode">
          <div class="name-and-edit-button-container">
             <h2>{{ name }}</h2>
 
             <button *ngIf="isInsertedInHeader" class="edit-button" (click)="startEdit()"
-               [disabled]="!isCurrentUserAllowedToEditName" (mouseenter)="handleHover(true)" (mouseleave)="handleHover(false)"
-               (touchstart)="handleGuestEditAttempt()">
+               [disabled]="!isCurrentUserAllowedToEditName" (mouseenter)="handleHover(true)"
+               (mouseleave)="handleHover(false)" (touchstart)="handleGuestEditAttempt()">
                Bearbeiten
             </button>
 
@@ -65,8 +64,8 @@
             </div>
             <input id="nameInput" name="nameInput" class="edit-input" [(ngModel)]="nameInput"
                [placeholder]="'Name eingeben'" minlength="4" maxlength="20" required #nameInputRef="ngModel"
-               [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }" 
-               pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*\s+[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"/>
+               [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }"
+               pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*\s+[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*$" />
             <p class="error-message">
                <span *ngIf="nameInputRef.invalid && nameInputRef.touched">
                   <span *ngIf="nameInputRef.errors?.['required']">Der Name ist erforderlich.</span>
