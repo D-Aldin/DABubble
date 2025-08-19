@@ -80,10 +80,6 @@ export class SidenavComponent implements OnInit {
 
   subscribeToUsers(): void {
     this.users$.subscribe((users) => {
-      for (let i = 0; i < users.length; i++) {
-        console.log(users[i].online);
-      }
-
       this.usersArray = users;
     });
   }
