@@ -73,19 +73,19 @@
         <app-spinner [size]="30" [color]="'rgb(68, 77, 242)'"></app-spinner>
       </div>
 
-      <ng-template #usersLoaded>
-        @for (user of users$ | async; track user.uid) {
-        <div class="dm-item"
-          [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
-          [routerLink]="'direct-message'"
-          (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
-          <img [src]="user.avatarPath" alt="Avatar" class="avatar" />
-          <span>
-            {{ user.name }}
-            @if (user.uid === authService.currentUserId) {
-            <span class="du-label">(Du)</span>
-            }
-          </span>
+            <ng-template #usersLoaded>
+              @for (user of users$ | async; track user.uid) {
+              <div class="dm-item"
+                [ngClass]="{'selected': user.uid === selectedUserId && !isURLChannel,'bounce-x': bounceMap[user.uid] && !isURLChannel}"
+                [routerLink]="'direct-message'"
+                (click)="onUserClick(user.uid); selectUser(user.name); triggerBounce(user.uid)">
+                <img [src]="safeUrl(user.avatarPath)" alt="Avatar" class="avatar" />
+                <span>
+                  {{ user.name }}
+                  @if (user.uid === authService.currentUserId) {
+                  <span class="du-label">(Du)</span>
+                  }
+                </span>
 
           <span class="online-dot-sidenav" [class.is-online]="user.online === true"></span>
         </div>

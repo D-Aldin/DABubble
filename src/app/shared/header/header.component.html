@@ -30,7 +30,7 @@
             (mouseleave)="isChevronHovered = false">
             <span class="user-name">{{userName}}</span>
             <div class="avatar-wrapper">
-                <img [src]="avatarPath" alt="Profilbild" class="avatar-image" />
+                <img [src]="safeUrl(avatarPath)" alt="Profilbild" class="avatar-image" />
                 <span class="online-indicator"
                     [ngStyle]="{ 'background-color': onlineStatus ? 'rgba(146, 200, 62, 1)' : 'grey' }"></span>
             </div>

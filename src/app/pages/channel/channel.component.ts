@@ -18,6 +18,7 @@ import { ThreadMessagingService } from '../../core/services/thread-messaging.ser
 import { ProfileOverlayService } from '../../core/services/profile-overlay.service';
 import { OpenProfileCardService } from '../../core/services/open-profile-card.service';
 import { AfterViewInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-channel',
@@ -78,11 +79,16 @@ export class ChannelComponent implements OnInit, AfterViewInit {
     private threadService: ThreadMessagingService,
     public overlayService: ProfileOverlayService,
     private openCardService: OpenProfileCardService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
     this.handleRouteParamChanges();
     this.listenToAddChannelDialogTrigger();
+  }
+
+   safeUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   private handleRouteParamChanges(): void {

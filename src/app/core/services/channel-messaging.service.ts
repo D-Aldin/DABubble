@@ -23,8 +23,8 @@ export class ChannelMessagingService {
         const messages = snapshot.docs.map(doc => {
           const data = doc.data();
           return {
-            id: doc.id,
             ...data,
+            id: doc.id,
             lastReplyTimestamp: (data as any)['lastReplyTimestamp'] ?? null,
           } as ChannelMessage;
         });

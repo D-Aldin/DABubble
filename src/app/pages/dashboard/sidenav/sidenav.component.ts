@@ -12,6 +12,7 @@ import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { map } from 'rxjs/operators';
 import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class SidenavComponent implements OnInit {
     private router: Router,
     public userService: UserService,
     public authService: AuthService,
+    private sanitizer: DomSanitizer
   ) { }
 
   @Output() openAddChannelDialog = new EventEmitter<void>();
@@ -59,6 +61,10 @@ export class SidenavComponent implements OnInit {
     this.checkGivenURL();
     this.handleRouteSelectionOnPageReload();
     this.subscribeToRouterEvents();
+  }
+
+   safeUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   subscribeToRouterEvents(): void {
