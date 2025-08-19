@@ -79,16 +79,14 @@ export class UserService {
   }
 
   getUsersByIds(ids: string[]): Observable<ChatUser[]> {
-    //to get multiple users
     const userRefs = ids.map((id) => doc(this.firestore, 'users', id));
     const userObservables = userRefs.map(
-      (ref) => docData(ref, { idField: 'uid' }) as Observable<ChatUser> // uid instead of id
+      (ref) => docData(ref, { idField: 'uid' }) as Observable<ChatUser>
     );
     return combineLatest(userObservables);
   }
 
   getUserById(id: string): Observable<ChatUser> {
-    // to get single user
     const userRef = doc(this.firestore, 'users', id);
     return docData(userRef, { idField: 'id' }) as Observable<ChatUser>;
   }
@@ -110,6 +108,17 @@ export class UserService {
       if (b.uid === currentUserId) return 1;
       return 0;
     });
+  }
+
+  getAllUsersForSidenav(): Observable<ChatUser[]> {
+    const usersRef = collection(this.firestore, 'users');
+    // idField must match what you use in the template → uid
+    return collectionData(usersRef, { idField: 'uid' }) as Observable<ChatUser[]>;
+  }
+
+  sortUsersWithCurrentFirstForSidenav(users: ChatUser[], currentUserId: string): ChatUser[] {
+    const arr = users.slice(); // new array, no mutation
+    return arr.sort((a, b) => (a.uid === currentUserId ? -1 : b.uid === currentUserId ? 1 : 0));
   }
 
   async updateUserAvatar(uid: string, newAvatarPath: string): Promise<void> {

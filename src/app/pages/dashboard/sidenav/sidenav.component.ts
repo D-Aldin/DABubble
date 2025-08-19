@@ -51,8 +51,8 @@ export class SidenavComponent implements OnInit {
 
   channels$: Observable<Channel[]> = this.channelService.getChannels();
 
-  users$: Observable<ChatUser[]> = this.userService.getAllUsers().pipe(
-    map(users => this.userService.sortUsersWithCurrentFirst(users, this.authService.currentUserId))
+  users$: Observable<ChatUser[]> = this.userService.getAllUsersForSidenav().pipe(
+    map(users => this.userService.sortUsersWithCurrentFirstForSidenav(users, this.authService.currentUserId))
   );
 
   ngOnInit(): void {
