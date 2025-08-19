@@ -70,7 +70,7 @@
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 1rem;
       cursor: pointer;
       width: 100%;
       padding-left: 23px;
@@ -191,7 +191,7 @@
         }
 
         @include mixins.iphone-four() {
-          font-size: 0.875rem;
+          font-size: 1rem;
           margin-top: 9px;
           padding: 3px 20px;
         }
@@ -235,7 +235,7 @@
     }
 
     .add-channel {
-      font-size: 0.875rem !important;
+      font-size: 1rem !important;
     }
 
     .direct-message {
@@ -294,7 +294,7 @@
   }
 
   @include mixins.iphone-four() {
-    font-size: 0.875rem;
+    font-size: 1rem;
 
     img {
       width: 24px !important;

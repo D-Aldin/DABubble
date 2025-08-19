@@ -18,7 +18,7 @@ import { updateDoc } from 'firebase/firestore';
 export class UserService {
   private firestore = inject(Firestore);
   private avatarPathSubject = new BehaviorSubject<string>(
-    'assets/default-avatar.png'
+    '/assets/images/register/default-profile-img.svg'
   );
   avatarPath$ = this.avatarPathSubject.asObservable();
 

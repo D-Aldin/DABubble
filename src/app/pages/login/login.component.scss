@@ -26,7 +26,7 @@ body {
     position: relative;
     text-align: center;
     padding: 1rem;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #333;
 
     .signup-text {
@@ -89,7 +89,7 @@ body {
       font-size: 18px;
       line-height: 120%;
       letter-spacing: 0%;
-      color: $primary-color;
+      color: rgb(99, 103, 224);
       border: 1px solid transparent;
       cursor: pointer;
       transition: 125ms ease-in-out;
@@ -104,7 +104,7 @@ body {
 
     @include mixins.iphone-four() {
       span {
-        font-size: 0.75rem !important;
+        font-size: 1rem !important;
         padding: 2px 6px;
       }
     }
@@ -173,7 +173,7 @@ body {
   }
 
   .subtitle {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: black;
     text-align: center;
     margin-bottom: 2rem;
@@ -209,7 +209,7 @@ body {
       margin: 1rem 0;
 
       span {
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 500;
         white-space: nowrap;
         color: #000;
@@ -335,7 +335,7 @@ body {
     }
 
     .subtitle {
-      font-size: 0.813rem;
+      font-size: 1rem;
       margin-bottom: 0.8rem;
     }
 
@@ -344,7 +344,7 @@ body {
     }
 
     .forgot-password {
-      font-size: 0.75rem !important;
+      font-size: 1rem !important;
     }
 
     .divider {
@@ -357,7 +357,7 @@ body {
     .primary-btn,
     .secondary-btn {
       height: 30px !important;
-      font-size: 0.9rem !important;
+      font-size: 1rem !important;
       padding: 0px !important;
     }
 
