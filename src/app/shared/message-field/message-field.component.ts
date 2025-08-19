@@ -15,6 +15,7 @@ import { DirectMessagingService } from '../../core/services/direct-messaging.ser
 import { Observable } from 'rxjs';
 import { ChannelService } from '../../core/services/channel.service';
 import { Channel } from '../../core/interfaces/channel';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-message-field',
@@ -42,7 +43,8 @@ export class MessageFieldComponent implements AfterViewInit {
 
   constructor(
     private messagingService: DirectMessagingService,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private sanitizer: DomSanitizer
   ) {}
 
   users$: Observable<ChatUser[]> =
@@ -54,6 +56,10 @@ export class MessageFieldComponent implements AfterViewInit {
       this.messageSend.emit(this.message.trim());
       this.message = '';
     }
+  }
+
+   safeUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
   onEnter(event: KeyboardEvent) {
