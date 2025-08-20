@@ -65,7 +65,8 @@
             <input id="nameInput" name="nameInput" class="edit-input" [(ngModel)]="nameInput"
                [placeholder]="'Name eingeben'" minlength="4" maxlength="20" required #nameInputRef="ngModel"
                [ngClass]="{ 'error': nameInputRef.invalid && nameInputRef.touched }"
-               pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*\s+[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' -][A-Za-zÀ-ÖØ-öø-ÿ]+)*$" />
+               pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' \-][A-Za-zÀ-ÖØ-öø-ÿ]+)*\s+[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[' \-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+ />
             <p class="error-message">
                <span *ngIf="nameInputRef.invalid && nameInputRef.touched">
                   <span *ngIf="nameInputRef.errors?.['required']">Der Name ist erforderlich.</span>
