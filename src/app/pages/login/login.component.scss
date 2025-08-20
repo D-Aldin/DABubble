@@ -420,7 +420,7 @@ body {
 }
 
 .intro-animation {
-  border: 3px solid rgb(246, 250, 0);
+  // border: 3px solid rgb(246, 250, 0);
   @include mixins.flex-setup();
   top: 0;
   left: 0;
@@ -434,7 +434,7 @@ body {
 }
 
 .intro-overlay {
-  border: 8px solid chartreuse;
+  // border: 8px solid chartreuse;
   width: calc(100vw - 100px);
   height: calc(100vh - 100px);
   max-width: 1920px;
@@ -454,7 +454,7 @@ body {
 }
 
 .wrapper-animation {
-  border: 1px solid red;
+  // border: 1px solid red;
   width: 853px;
   height: 200px;
   display: flex;
@@ -477,7 +477,7 @@ body {
 
 .logo-container {
   position: relative;
-  border: 1px solid green;
+  // border: 1px solid green;
   left: 50%;
   animation: moveLeft 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   z-index: 1;
@@ -512,7 +512,7 @@ body {
 }
 
 .dabubble-text {
-  border: 1px solid orange;
+  // border: 1px solid orange;
   width: 600px;
   height: 100px;
   overflow: hidden;

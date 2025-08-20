@@ -75,12 +75,16 @@
       height: 40px;
       padding-top: 13px;
       padding-bottom: 13px;
+      width: 470px;
     }
 
     .validation-message {
       margin-top: 0px;
       font-size: 1rem;
     }
+  }
+
+  @include mixins.respond-between(590px, 670px) {
   }
 
   @include mixins.iphone-four() {

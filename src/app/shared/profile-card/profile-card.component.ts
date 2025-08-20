@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ɵEmptyOutletComponent } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -38,7 +45,7 @@ export class ProfileCardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private userService: UserService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.checkIfLoggedInUserIsGuest();
@@ -67,7 +74,6 @@ export class ProfileCardComponent implements OnInit {
     this.name = this.nameInput;
     this.isEditing = false;
     this.save.emit(this.nameInput);
-    console.log(this.nameInput);
   }
 
   checkIfLoggedInUserIsGuest(): void {

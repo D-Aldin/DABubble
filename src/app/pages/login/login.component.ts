@@ -31,6 +31,7 @@ export class LoginComponent {
   loginForm!: FormGroup;
   showErrorToast: boolean = false;
   showSuccessToast: boolean = false;
+  playAnimation: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -52,6 +53,7 @@ export class LoginComponent {
       ],
       password: ['', Validators.required],
     });
+    this.saveValueInStorage();
   }
 
   onSubmit(): void {
@@ -145,5 +147,14 @@ export class LoginComponent {
     setTimeout(() => {
       this.router.navigateByUrl('/dashboard');
     }, delayTime);
+  }
+
+  saveValueInStorage() {
+    if (sessionStorage.getItem('playAnimation')) {
+      this.playAnimation = false;
+    } else {
+      this.playAnimation = true;
+      sessionStorage.setItem('playAnimation', 'true');
+    }
   }
 }
