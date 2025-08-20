@@ -134,17 +134,17 @@
   grid-row: 2;
 }
 
-.emoji-container {
-  width: 64px;
-  height: 29px;
-  grid-column-start: 2;
-  padding: 10px;
-  border: 1px solid rgb(173, 176, 217);
-  border-radius: 30px;
-  @include flex-setup();
-  gap: 10px;
-  margin-top: 10px;
-}
+// .emoji-container {
+//   width: 64px;
+//   height: 29px;
+//   grid-column-start: 2;
+//   padding: 10px;
+//   border: 1px solid rgb(173, 176, 217);
+//   border-radius: 30px;
+//   @include flex-setup();
+//   gap: 10px;
+//   margin-top: 10px;
+// }
 
 .add-reaction {
   grid-column-start: 3;
@@ -203,6 +203,8 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding: 0;
+  position: relative;
+  overflow: visible;
 
   .scroll-container::-webkit-scrollbar {
     display: none;
@@ -313,13 +315,6 @@
   }
 }
 
-.emoji-wrapper {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  bottom: 525px;
-}
-
 .thread-composer {
   position: relative;
   overflow: visible;
@@ -386,9 +381,9 @@
 }
 
 .message-toolbar {
-  position: absolute;
+  position: relative;
   top: -20px;
-  right: 20px;
+  right: 10px;
   display: flex;
   gap: 10px;
   background-color: #fff;
@@ -396,10 +391,11 @@
   border-radius: 24px;
   padding: 6px 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  z-index: 10;
+  z-index: 50;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
+  overflow: visible;
 
   button {
     background: transparent;
@@ -419,6 +415,25 @@
       transform: scale(1.1);
     }
   }
+  .emoji-popover {
+      position: absolute;
+      top: calc(100% + 8px);
+      bottom: auto;
+      left: 0;
+      width: min(320px, calc(100% - 16px));
+      z-index: 10000;
+    }
+  
+    .message-toolbar .emoji-popover .emoji-mart {
+      width: 100% !important;
+      max-height: min(60svh, 420px);
+      overflow: auto;
+      box-sizing: border-box;
+    }
+    .thread-reply.me .message-toolbar .emoji-popover {
+      left: auto;
+      right: 0;
+    }
 }
 
 .edit-message-box {
@@ -601,5 +616,17 @@
       padding: 10px 16px;
       height: 80px;
     }
+  }
+  :host ::ng-deep .thread-message-field .emoji-wrapper {
+      position: absolute;
+      top: auto !important;
+      bottom: calc(100% + 120px) !important;
+      width: min(320px, calc(100% - 16px));
+      right: 12px;
+      z-index: 10000;
+  }
+  :host ::ng-deep .thread-message-field .emoji-wrapper .emoji-mart {
+      max-height: calc(100vh - 340px);
+      overflow: auto;
   }
 }
