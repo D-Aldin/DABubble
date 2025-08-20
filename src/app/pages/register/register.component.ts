@@ -88,7 +88,7 @@ export class RegisterComponent {
         case 'maxlength':
           return 'Name darf maximal 20 Satzzeichen lang sein';
         case 'pattern':
-          return 'Vor- und Nachnamen eingeben, ohne Sonderzeichen und Zahlen';
+          return 'Namen eingeben, ohne Sonderzeichen';
         default:
           return '';
       }
