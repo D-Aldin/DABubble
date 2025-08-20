@@ -1,18 +1,30 @@
 import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AddPeopleComponent } from './add-people/add-people.component';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { getDocs, collection, query, where } from '@angular/fire/firestore';
 import { Firestore } from '@angular/fire/firestore';
 
-
 @Component({
   selector: 'app-add-channel',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddPeopleComponent, InputFieldComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    AddPeopleComponent,
+    InputFieldComponent,
+    ReactiveFormsModule,
+  ],
   templateUrl: './add-channel.component.html',
-  styleUrl: './add-channel.component.scss'
+  styleUrl: './add-channel.component.scss',
 })
 export class AddChannelComponent {
   @Input() channelName: string = '';
@@ -20,19 +32,28 @@ export class AddChannelComponent {
   @Output() complete = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
   @Output() openAddPeopleDialog = new EventEmitter<void>();
-  @Output() proceedToPeople = new EventEmitter<{ name: string; description: string }>();
-  @Output() confirm = new EventEmitter<{ title: string; description: string }>();
+  @Output() proceedToPeople = new EventEmitter<{
+    name: string;
+    description: string;
+  }>();
+  @Output() confirm = new EventEmitter<{
+    title: string;
+    description: string;
+  }>();
   channelDescription = '';
   showPeopleStep = false;
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private firestore: Firestore) {
     this.form = this.fb.group({
-      channelname: ['', {
-        validators: [Validators.required, Validators.minLength(4)],
-        asyncValidators: [this.channelNameTakenValidator.bind(this)],
-        updateOn: 'blur'
-      }],
+      channelname: [
+        '',
+        {
+          validators: [Validators.required, Validators.minLength(4)],
+          asyncValidators: [this.channelNameTakenValidator.bind(this)],
+          updateOn: 'blur',
+        },
+      ],
       channeldescription: [''],
     });
   }
@@ -44,7 +65,7 @@ export class AddChannelComponent {
     }
     this.proceedToPeople.emit({
       name: this.form.value.channelname,
-      description: this.form.value.channeldescription
+      description: this.form.value.channeldescription,
     });
   }
 
@@ -79,11 +100,14 @@ export class AddChannelComponent {
   }
 
   async channelNameTakenValidator(control: FormControl) {
-    const name = control.value.trim();
+    const name = control.value.trim().toLowerCase();
     if (!name) return Promise.resolve(null);
-    const q = query(collection(this.firestore, 'channels'), where('title', '==', name));
-    return getDocs(q).then(snapshot => {
-      return snapshot.empty ? null : { duplicate: true };
+    const q = query(collection(this.firestore, 'channels'));
+    const snapshot = await getDocs(q);
+    const exists = snapshot.docs.some((doc) => {
+      const title = (doc.data()['title'] as string)?.toLowerCase();
+      return title === name;
     });
+    return exists ? { duplicate: true } : null;
   }
 }
