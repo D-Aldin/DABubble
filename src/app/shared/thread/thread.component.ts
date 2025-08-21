@@ -463,64 +463,48 @@ export class ThreadComponent {
   }
 
   toggleEmojiPicker(messageId: string, ev: MouseEvent) {
-  ev.stopPropagation();
-
-  // close if already open for this message
-  if (this.emojiPickerForMessageId === messageId) {
-    this.emojiPickerForMessageId = null;
-    return;
+    ev.stopPropagation();
+    if (this.emojiPickerForMessageId === messageId) {
+      this.emojiPickerForMessageId = null;
+      return;
+    }
+    const btn = ev.currentTarget as HTMLElement;
+    this.positionAndShowEmojiPopover(btn, messageId);
   }
 
-  const btn = ev.currentTarget as HTMLElement;
-  this.positionAndShowEmojiPopover(btn, messageId);
-}
-
-/** Decide up/down before rendering, scroll the thread so the whole picker is visible, then show. */
-private positionAndShowEmojiPopover(btnEl: HTMLElement, messageId: string) {
-  const root = this.threadRoot?.nativeElement;
-  const scrollEl = this.scroller?.nativeElement;
-  if (!root || !scrollEl) { this.emojiPickerForMessageId = messageId; return; }
-
-  const MARGIN = 8;
-  const PICKER_H = Math.min(window.innerHeight * 0.6, 420); // same height you cap in CSS
-
-  const rootRect   = root.getBoundingClientRect();
-  let   btnRect    = btnEl.getBoundingClientRect();
-  const scrollRect = scrollEl.getBoundingClientRect();
-
-  // Decide direction ONCE (no flicker)
-  const spaceBelow = rootRect.bottom - btnRect.bottom - MARGIN;
-  const spaceAbove = btnRect.top    - rootRect.top    - MARGIN;
-  const openUp = (spaceBelow < PICKER_H) && (spaceAbove >= spaceBelow);
-
-  // Compute where it WOULD go relative to the root
-  let top = openUp
-    ? Math.round(btnRect.top - rootRect.top - PICKER_H - MARGIN)     // above button
-    : Math.round(btnRect.bottom - rootRect.top + MARGIN);            // below button
-
-  // If that position would be outside the scroller viewport, scroll just enough
-  const overlayTopAbs    = rootRect.top + top;
-  const overlayBottomAbs = overlayTopAbs + PICKER_H;
-
-  let delta = 0;
-  if (overlayBottomAbs > (scrollRect.bottom - MARGIN)) {
-    delta = overlayBottomAbs - (scrollRect.bottom - MARGIN); // scroll down
-  } else if (overlayTopAbs < (scrollRect.top + MARGIN)) {
-    delta = overlayTopAbs - (scrollRect.top + MARGIN);       // scroll up (negative)
+  private positionAndShowEmojiPopover(btnEl: HTMLElement, messageId: string) {
+    const root = this.threadRoot?.nativeElement;
+    const scrollEl = this.scroller?.nativeElement;
+    if (!root || !scrollEl) { this.emojiPickerForMessageId = messageId; return; }
+    const MARGIN = 8;
+    const PICKER_H = Math.min(window.innerHeight * 0.6, 420); 
+    const rootRect   = root.getBoundingClientRect();
+    let   btnRect    = btnEl.getBoundingClientRect();
+    const scrollRect = scrollEl.getBoundingClientRect();
+    const spaceBelow = rootRect.bottom - btnRect.bottom - MARGIN;
+    const spaceAbove = btnRect.top    - rootRect.top    - MARGIN;
+    const openUp = (spaceBelow < PICKER_H) && (spaceAbove >= spaceBelow);
+    let top = openUp
+      ? Math.round(btnRect.top - rootRect.top - PICKER_H - MARGIN)     
+      : Math.round(btnRect.bottom - rootRect.top + MARGIN);           
+    const overlayTopAbs    = rootRect.top + top;
+    const overlayBottomAbs = overlayTopAbs + PICKER_H;
+    let delta = 0;
+    if (overlayBottomAbs > (scrollRect.bottom - MARGIN)) {
+      delta = overlayBottomAbs - (scrollRect.bottom - MARGIN); 
+    } else if (overlayTopAbs < (scrollRect.top + MARGIN)) {
+      delta = overlayTopAbs - (scrollRect.top + MARGIN);       
+    }
+    if (delta !== 0) {
+      scrollEl.scrollTop += delta;
+      btnRect = btnEl.getBoundingClientRect();
+      top = openUp
+        ? Math.round(btnRect.top - rootRect.top - PICKER_H - MARGIN)
+        : Math.round(btnRect.bottom - rootRect.top + MARGIN);
+    }
+    this.emojiTop = Math.max(MARGIN, top);
+    this.emojiPickerForMessageId = messageId;
   }
-  if (delta !== 0) {
-    scrollEl.scrollTop += delta;
-    // RE-MEASURE after scrolling so the overlay stays with the clicked button
-    btnRect = btnEl.getBoundingClientRect();
-    top = openUp
-      ? Math.round(btnRect.top - rootRect.top - PICKER_H - MARGIN)
-      : Math.round(btnRect.bottom - rootRect.top + MARGIN);
-  }
-
-  // Clamp a little just in case
-  this.emojiTop = Math.max(MARGIN, top);
-  this.emojiPickerForMessageId = messageId;
-}
 
 
   addEmoji(event: any) {
