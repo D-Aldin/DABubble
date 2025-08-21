@@ -15,6 +15,10 @@
   border-radius: 30px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  /* anchor for centered overlay */
+  overflow: visible;
+  /* allow overlay to overflow safely */
 }
 
 .headline {
@@ -33,19 +37,13 @@
 
     h3 {
       font-weight: 400;
-      font-style: Regular;
       font-size: 14px;
-      line-height: 100%;
-      letter-spacing: 0%;
       color: $primary-color;
     }
 
     h2 {
       font-weight: 700;
-      font-style: Bold;
       font-size: 24px;
-      line-height: 100%;
-      letter-spacing: 0%;
     }
 
     .thread-header {
@@ -93,11 +91,24 @@
   overflow-y: auto;
 }
 
+/* parent message uses grid – unchanged */
 .thread-message {
   display: grid;
   grid-template-columns: 90px min-content auto;
   grid-template-rows: auto auto;
   padding: 0 18px;
+  position: relative;
+  margin-top: 10px;
+  transition: background-color .2s ease;
+
+  &:hover {
+    background-color: #eceefe;
+    cursor: pointer;
+
+    .message {
+      background-color: #fff;
+    }
+  }
 }
 
 .avatar {
@@ -134,18 +145,6 @@
   grid-row: 2;
 }
 
-// .emoji-container {
-//   width: 64px;
-//   height: 29px;
-//   grid-column-start: 2;
-//   padding: 10px;
-//   border: 1px solid rgb(173, 176, 217);
-//   border-radius: 30px;
-//   @include flex-setup();
-//   gap: 10px;
-//   margin-top: 10px;
-// }
-
 .add-reaction {
   grid-column-start: 3;
   width: 50px;
@@ -156,7 +155,6 @@
 
   button {
     transform: scale(1);
-    transform-origin: center;
     transition: transform 0.2s ease-in-out;
     border: none;
     background-color: white;
@@ -177,7 +175,7 @@
 }
 
 .answer-wrapper {
-  margin: 20px 0 20px 0;
+  margin: 20px 0;
 }
 
 .number-of-answers {
@@ -187,7 +185,7 @@
   color: rgb(173, 176, 217);
 
   span {
-    padding: 0 10px 0 10px;
+    padding: 0 10px;
     white-space: nowrap;
   }
 }
@@ -215,6 +213,9 @@
     align-items: flex-start;
     gap: 8px;
     margin: 12px 0;
+    position: relative;
+    padding: 8px 18px;
+    /* anchor */
 
     .avatar img {
       width: 70px;
@@ -227,10 +228,12 @@
       flex-direction: column;
       padding: 10px 14px;
       border-radius: 12px;
-      max-width: 80%; // or 100%, depending on layout
+      max-width: 80%;
       width: fit-content;
       word-break: break-word;
       text-align: left;
+      position: relative;
+      /* anchor toolbar & edit box */
     }
 
     .reply-header {
@@ -260,7 +263,6 @@
       line-height: 1.4;
     }
 
-    // Right side for current user
     &.me {
       flex-direction: row-reverse;
       text-align: right;
@@ -303,7 +305,7 @@
     gap: 10px;
     padding: 5px;
 
-    & > button:nth-child(3) {
+    &>button:nth-child(3) {
       margin-left: 320%;
     }
   }
@@ -334,27 +336,23 @@
   right: 12px;
   z-index: 10000;
 }
+
 :host ::ng-deep .thread-message-field .emoji-wrapper .emoji-mart {
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box;
-}
-
-/* (Optional) limit height so it won't overflow the viewport */
-:host ::ng-deep .thread-message-field .emoji-wrapper .emoji-mart {
   max-height: calc(100vh - 220px);
   overflow: auto;
 }
 
+/* ------------------------------
+   Common hover styling (kept)
+   ------------------------------ */
 .thread-message,
 .thread-reply {
-  display: grid;
-  grid-template-columns: 90px min-content auto;
-  grid-template-rows: auto auto;
-  padding: 10px 18px;
-  position: relative;
   margin-top: 10px;
   transition: background-color 0.2s ease;
+  padding: 8px 18px;
 
   &:hover {
     background-color: #eceefe;
@@ -367,7 +365,6 @@
 
   .message,
   .reply-body {
-    // background-color: #fff;
     border-radius: 16px;
     padding: 14px;
     transition: background-color 0.2s ease;
@@ -380,22 +377,28 @@
   }
 }
 
+/* toolbar anchors to reply-body; shows centered relative to bubble edge */
 .message-toolbar {
-  position: relative;
-  top: -20px;
-  right: 10px;
+  position: absolute;
+  top: -28px;
+  right: -60px;
   display: flex;
   gap: 10px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 24px;
   padding: 6px 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
   z-index: 50;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity .2s ease;
   overflow: visible;
+
+  &.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   button {
     background: transparent;
@@ -415,27 +418,9 @@
       transform: scale(1.1);
     }
   }
-  .emoji-popover {
-      position: absolute;
-      top: calc(100% + 8px);
-      bottom: auto;
-      left: 0;
-      width: min(320px, calc(100% - 16px));
-      z-index: 10000;
-    }
-  
-    .message-toolbar .emoji-popover .emoji-mart {
-      width: 100% !important;
-      max-height: min(60svh, 420px);
-      overflow: auto;
-      box-sizing: border-box;
-    }
-    .thread-reply.me .message-toolbar .emoji-popover {
-      left: auto;
-      right: 0;
-    }
 }
 
+/* edit popup stays within bubble, never clipped */
 .edit-message-box {
   background-color: #fff;
   border-radius: 12px;
@@ -443,7 +428,10 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   textarea {
-    width: 300px;
+    width: 100%;
+    /* <- was 300px */
+    max-width: 100%;
+    /* ensure no overflow */
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -474,9 +462,9 @@
   }
 }
 
+/* reactions (unchanged structurally) */
 .reactions {
   position: relative;
-  /* anchor the popover */
 }
 
 .reactions-row {
@@ -485,7 +473,6 @@
   gap: 6px;
   flex-wrap: nowrap;
   overflow: visible;
-  /* allow tooltips to overflow */
   max-width: 100%;
 }
 
@@ -517,7 +504,6 @@
   cursor: pointer;
 }
 
-/* keep the base tooltip */
 .reaction-chip .tooltip {
   position: absolute;
   left: 50%;
@@ -581,6 +567,18 @@
   }
 }
 
+/* Centered overlay INSIDE thread sidebar */
+.emoji-popover-overlay {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  width: min(320px, calc(100% - 24px));
+  max-height: none;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
 @media (max-width: 480px) {
   .reactions-popover .popover-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -595,38 +593,32 @@
 }
 
 @media (max-width: 580px) {
-  .avatar {
-    img {
-      width: 50px;
-      height: auto;
-    }
+  .avatar img {
+    width: 50px;
+    height: auto;
   }
 
-  .answer-wrapper {
-    .avatar {
-      img {
-        width: 50px;
-        height: auto;
-      }
-    }
+  .answer-wrapper .avatar img {
+    width: 50px;
+    height: auto;
   }
 
-  .thread {
-    .headline {
-      padding: 10px 16px;
-      height: 80px;
-    }
+  .thread .headline {
+    padding: 10px 16px;
+    height: 80px;
   }
+
   :host ::ng-deep .thread-message-field .emoji-wrapper {
-      position: absolute;
-      top: auto !important;
-      bottom: calc(100% + 120px) !important;
-      width: min(320px, calc(100% - 16px));
-      right: 12px;
-      z-index: 10000;
+    position: absolute;
+    top: auto !important;
+    bottom: calc(100% + 120px) !important;
+    width: min(320px, calc(100% - 16px));
+    right: 12px;
+    z-index: 10000;
   }
+
   :host ::ng-deep .thread-message-field .emoji-wrapper .emoji-mart {
-      max-height: calc(100vh - 340px);
-      overflow: auto;
+    max-height: calc(100vh - 340px);
+    overflow: auto;
   }
 }

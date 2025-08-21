@@ -1,186 +1,213 @@
-<div class="thread" [ngClass]="{ 'd-none': isClose }">
-   <div class="headline">
-      <div class="headline-content">
-         <h2>Thread</h2>
-         <h3 class="thread-header" (click)="threadType !== 'channel' ? openProfileCard(parentMessage?.senderId) : null">
-            @if (threadType === 'channel') {
-            #{{ channelName }}
-            } @else {
-            <ng-container>
-               <img [src]="getAvatarPath(parentMessage?.senderId)" class="avatar-small" />
-               <span>{{ getUserName(parentMessage?.senderId) }}</span>
-            </ng-container>
-            }
-         </h3>
-      </div>
-      <button class="close" (click)="close($event)"></button>
-   </div>
-   @if (selectedChannelUsers.length > 0) {
-   <div class="channel-users">
+<div class="thread" #threadRoot [ngClass]="{ 'd-none': isClose }">
+  <div class="headline">
+    <div class="headline-content">
+      <h2>Thread</h2>
+      <h3 class="thread-header" (click)="threadType !== 'channel' ? openProfileCard(parentMessage?.senderId) : null">
+        @if (threadType === 'channel') {
+          #{{ channelName }}
+        } @else {
+          <ng-container>
+            <img [src]="getAvatarPath(parentMessage?.senderId)" class="avatar-small" />
+            <span>{{ getUserName(parentMessage?.senderId) }}</span>
+          </ng-container>
+        }
+      </h3>
+    </div>
+    <button class="close" (click)="close($event)"></button>
+  </div>
+
+  @if (selectedChannelUsers.length > 0) {
+    <div class="channel-users">
       @for (user of selectedChannelUsers; track user.name) {
-      <div class="user">
-         <img [src]="user.avatarPath" class="avatar-small" />
-         <span>{{ user.name }}</span>
-      </div>
+        <div class="user">
+          <img [src]="user.avatarPath" class="avatar-small" />
+          <span>{{ user.name }}</span>
+        </div>
       }
-   </div>
-   }
-   <div class="main-content-wrapper">
-      <div class="main-content">
-         @if (parentMessage && userMap[parentMessage.senderId]) {
-         <div class="thread-message" (mouseenter)="hoveredMessageId = parentMessage.id"
-         (mouseleave)="hoveredMessageId = null">
-         <div class="avatar">
-            <img [src]="getAvatarPath(parentMessage.senderId)" alt="Avatar"
-            (click)="openProfileCard(parentMessage.senderId)" />
-         </div>
-         <div class="user-name" (click)="openProfileCard(parentMessage.senderId)">{{ getUserName(parentMessage.senderId)
-            }}
-         </div>
-         <div class="time">{{ parentMessage.timestamp?.toDate() | date: 'shortTime' }}</div>
-         <div class="message">
+    </div>
+  }
+
+  <div class="main-content-wrapper">
+    <div class="main-content" #scroller>
+      @if (parentMessage && userMap[parentMessage.senderId]) {
+        <div
+          class="thread-message"
+          (mouseenter)="hoveredMessageId = parentMessage.id"
+          (mouseleave)="hoveredMessageId = null"
+        >
+          <div class="avatar">
+            <img
+              [src]="getAvatarPath(parentMessage.senderId)"
+              alt="Avatar"
+              (click)="openProfileCard(parentMessage.senderId)"
+            />
+          </div>
+
+          <div class="user-name" (click)="openProfileCard(parentMessage.senderId)">
+            {{ getUserName(parentMessage.senderId) }}
+          </div>
+
+          <div class="time">
+            {{ parentMessage.timestamp?.toDate() | date: 'shortTime' }}
+          </div>
+
+          <div class="message">
             <p>{{ parentMessage.text }}</p>
-         </div>
-         <div class="reactions">
+          </div>
+
+          <div class="reactions">
             @for (reaction of getReactionArray(parentMessage.reactions); track reaction.emoji) {
-            <!-- <span>{{ reaction.emoji }}</span> hidden the reaction in theads from parent-message -->
+              <!-- parent message reactions intentionally hidden in thread -->
             }
-         </div>
-         @if (hoveredMessageId === parentMessage.id) {
-         @if (parentMessage.senderId === currentUserId) {
-         <div class="message-toolbar">
-            <button (click)="startEditingThread(parentMessage)" title="Nachricht bearbeiten">
-            <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
-            </button>
-         </div>
-         }
-         }
-      </div>
+          </div>
+
+          @if (hoveredMessageId === parentMessage.id) {
+            @if (parentMessage.senderId === currentUserId) {
+              <div class="message-toolbar">
+                <button (click)="startEditingThread(parentMessage)" title="Nachricht bearbeiten">
+                  <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+                </button>
+              </div>
+            }
+          }
+        </div>
       }
+
       <div class="answer-wrapper">
-         <div class="number-of-answers">
-            <span>{{ replies.length }} Antworten</span>
-            <div class="line"></div>
-         </div>
-         <div class="answer-content">
-            @for (reply of replies; track reply.id) {
-            <!-- <div class="emoji-wrapper">
-               <emoji-mart title="Pick your emoji…" emoji="point_up" set="apple" (emojiClick)="addEmoji($event)"
-               [hidden]="!emojiPicker"></emoji-mart>
-            </div> -->
+        <div class="number-of-answers">
+          <span>{{ replies.length }} Antworten</span>
+          <div class="line"></div>
+        </div>
+
+        <div class="answer-content">
+          @for (reply of replies; track reply.id) {
             @if (userMap[reply.senderId]) {
-            <div class="thread-reply" [ngClass]="{ 'me': reply.senderId === currentUserId }"
-            (mouseenter)="hoveredMessageId = reply.id" (mouseleave)="hoveredMessageId = null">
-            <div class="avatar" (click)="openProfileCard(reply.senderId)">
-               <img [src]="getAvatarPath(reply.senderId)" alt="Avatar" />
-            </div>
-            <div class="reply-body">
-               <div class="reply-header">
-                  <h3 class="reply-author" (click)="openProfileCard(reply.senderId)">{{ getUserName(reply.senderId) }}
-                  </h3>
-                  <span class="reply-time">{{ reply.timestamp?.toDate() | date:'shortTime' }}</span>
-               </div>
-               @if (editingMessageId === reply.id) {
-               <div class="edit-message-box">
-                  <textarea [(ngModel)]="editedMessageText" rows="3" autofocus></textarea>
-                  <div class="edit-buttons">
-                     <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
-                     <button class="save-btn" (click)="saveEditedMessage(reply.id)">Speichern</button>
+              <div
+                class="thread-reply"
+                [ngClass]="{ 'me': reply.senderId === currentUserId }"
+                (mouseenter)="hoveredMessageId = reply.id"
+                (mouseleave)="hoveredMessageId = null"
+              >
+                <div class="avatar" (click)="openProfileCard(reply.senderId)">
+                  <img [src]="getAvatarPath(reply.senderId)" alt="Avatar" />
+                </div>
+
+                <div class="reply-body">
+                  <div class="reply-header">
+                    <h3 class="reply-author" (click)="openProfileCard(reply.senderId)">
+                      {{ getUserName(reply.senderId) }}
+                    </h3>
+                    <span class="reply-time">{{ reply.timestamp?.toDate() | date:'shortTime' }}</span>
                   </div>
-               </div>
-               } @else {
-               <div class="reply-text message" [innerHTML]="reply.text | parseTags"></div>
-               }
-               <div class="reactions">
-                  @if (reply.reactions && (getVisibleReactionsReply(reply).length || getHiddenCountReply(reply))) {
-                     <div class="reactions-row">
-                        <!-- visible chips (merged by emoji) -->
-                        @for (r of getVisibleReactionsReply(reply); track r.emoji) {
-                        <button
-                           class="reaction-chip"
-                           type="button"
-                           [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
-                           [attr.title]="getReactionTooltip(r.emoji, r.users)"
-                        >
-                           <span class="emoji">{{ r.emoji }}</span>
-                           <span class="count">{{ r.count }}</span>
-                           <div class="tooltip">
-                              {{ getReactionTooltip(r.emoji, r.users) }}
-                           </div>
-                        </button>
-                        }
 
-                        <!-- +X chip for remaining emojis -->
-                        @if (getHiddenCountReply(reply) > 0) {
-                        <button
-                           class="reaction-chip more"
-                           type="button"
-                           (click)="toggleReactionsPopover(reply.id!)"
-                           [attr.aria-expanded]="openReactionsPopoverFor === reply.id"
-                           [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCountReply(reply)"
-                        >
-                           +{{ getHiddenCountReply(reply) }}
-                        </button>
-                        }
-                     </div>
-
-                     <!-- popover with the rest -->
-                     @if (openReactionsPopoverFor === reply.id) {
-                        <div class="reactions-popover" (mouseleave)="openReactionsPopoverFor = null">
-                        <div class="popover-header">Weitere Reaktionen</div>
-                        <div class="popover-grid">
-                           @for (r of getHiddenReactionsReply(reply); track r.emoji) {
-                              <div
-                              class="reaction-chip"
-                              [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
-                              [attr.title]="getReactionTooltip(r.emoji, r.users)"
-                              >
-                              <span class="emoji">{{ r.emoji }}</span>
-                              <span class="count">{{ r.count }}</span>
-                              <div class="tooltip">
-                                 {{ getReactionTooltip(r.emoji, r.users) }}
-                              </div>
-                              </div>
-                           }
-                        </div>
-                        </div>
-                     }
+                  @if (editingMessageId === reply.id) {
+                    <div class="edit-message-box">
+                      <textarea [(ngModel)]="editedMessageText" rows="3" autofocus></textarea>
+                      <div class="edit-buttons">
+                        <button class="cancel-btn" (click)="cancelEditing()">Abbrechen</button>
+                        <button class="save-btn" (click)="saveEditedMessage(reply.id)">Speichern</button>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="reply-text message" [innerHTML]="reply.text | parseTags"></div>
                   }
+
+                  <div class="reactions">
+                    @if (reply.reactions && (getVisibleReactionsReply(reply).length || getHiddenCountReply(reply))) {
+                      <div class="reactions-row">
+                        @for (r of getVisibleReactionsReply(reply); track r.emoji) {
+                          <button
+                            class="reaction-chip"
+                            type="button"
+                            [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
+                            [attr.title]="getReactionTooltip(r.emoji, r.users)"
+                          >
+                            <span class="emoji">{{ r.emoji }}</span>
+                            <span class="count">{{ r.count }}</span>
+                            <div class="tooltip">
+                              {{ getReactionTooltip(r.emoji, r.users) }}
+                            </div>
+                          </button>
+                        }
+
+                        @if (getHiddenCountReply(reply) > 0) {
+                          <button
+                            class="reaction-chip more"
+                            type="button"
+                            (click)="toggleReactionsPopover(reply.id!)"
+                            [attr.aria-expanded]="openReactionsPopoverFor === reply.id"
+                            [attr.aria-label]="'Weitere Reaktionen anzeigen: ' + getHiddenCountReply(reply)"
+                          >
+                            +{{ getHiddenCountReply(reply) }}
+                          </button>
+                        }
+                      </div>
+
+                      @if (openReactionsPopoverFor === reply.id) {
+                        <div class="reactions-popover" (mouseleave)="openReactionsPopoverFor = null">
+                          <div class="popover-header">Weitere Reaktionen</div>
+                          <div class="popover-grid">
+                            @for (r of getHiddenReactionsReply(reply); track r.emoji) {
+                              <div
+                                class="reaction-chip"
+                                [attr.aria-label]="getReactionTooltip(r.emoji, r.users)"
+                                [attr.title]="getReactionTooltip(r.emoji, r.users)"
+                              >
+                                <span class="emoji">{{ r.emoji }}</span>
+                                <span class="count">{{ r.count }}</span>
+                                <div class="tooltip">
+                                  {{ getReactionTooltip(r.emoji, r.users) }}
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    }
                   </div>
 
-            </div>
-            @if (hoveredMessageId === reply.id) {
-            <div class="message-toolbar">
-               <button (click)="selectEmojiForMessage(reply.id!)">
-               <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
-               </button>
-              @if (emojiPickerForMessageId === reply.id) {
-               <div class="emoji-popover">
-                  <emoji-mart
-                     set="apple"
-                     title="Pick your emoji"
-                     (emojiClick)="addEmojiToMessage($event, reply.id!)">
-                  </emoji-mart>
-               </div>
-               }
-               @if (reply.senderId === currentUserId) {
-               <button (click)="startEditingThread(reply)" title="Nachricht bearbeiten">
-               <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
-               </button>
-               }
-            </div>
+                  <!-- toolbar INSIDE the bubble so it anchors correctly -->
+                  @if (hoveredMessageId === reply.id) {
+                    <div class="message-toolbar" [class.open]="emojiPickerForMessageId === reply.id">
+                      <button (click)="toggleEmojiPicker(reply.id!, $event)">
+                        <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
+                      </button>
+
+                      @if (reply.senderId === currentUserId) {
+                        <button (click)="startEditingThread(reply)" title="Nachricht bearbeiten">
+                          <img src="/assets/images/sidenav-img/more_vert.svg" alt="Edit" />
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
             }
-         </div>
-         }
-         }
+          }
+        </div>
       </div>
-   </div>
-</div>
-</div>
-<div class="thread-composer">
-  <app-message-field
-    class="thread-message-field"
-    (messageSend)="sendThreadMessage($event)">
-  </app-message-field>
-</div>
+    </div>
+  </div>
+
+  <!-- SINGLE, CENTERED EMOJI PICKER OVERLAY (stays inside the thread sidebar) -->
+  <div
+    class="emoji-popover-overlay"
+    *ngIf="emojiPickerForMessageId"
+    [style.top.px]="emojiTop"
+    (click)="$event.stopPropagation()"
+  >
+    <emoji-mart
+      set="apple"
+      title="Pick your emoji"
+      (emojiClick)="addEmojiToMessage($event, emojiPickerForMessageId!)"
+    >
+    </emoji-mart>
+  </div>
+
+  <div class="thread-composer">
+    <app-message-field
+      class="thread-message-field"
+      (messageSend)="sendThreadMessage($event)">
+    </app-message-field>
+  </div>
 </div>
