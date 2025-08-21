@@ -17,7 +17,6 @@ import {
   getDocs,
   getDoc,
   setDoc,
-
 } from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
 import { Channel } from '../interfaces/channel';
@@ -33,7 +32,9 @@ export class ChannelService {
 
   getChannels(): Observable<(Channel & { id: string })[]> {
     const channelsRef = collection(this.firestore, 'channels');
-    return collectionData(channelsRef, { idField: 'id' }) as Observable<(Channel & { id: string })[]>;
+    return collectionData(channelsRef, { idField: 'id' }) as Observable<
+      (Channel & { id: string })[]
+    >;
   }
 
   getChannelIdByTitle(
@@ -50,15 +51,19 @@ export class ChannelService {
 
   async createChannelWithPresetId(channel: Channel): Promise<string> {
     const channelsRef = collection(this.firestore, 'channels');
-    const newDocRef = doc(channelsRef);     // generate ID first
-    await setDoc(newDocRef, channel);       // write using that ID
+    const newDocRef = doc(channelsRef); // generate ID first
+    await setDoc(newDocRef, channel); // write using that ID
     return newDocRef.id;
   }
 
-
   async createChannel(channel: Partial<Channel>): Promise<void> {
     // Validate required fields
-    if (!channel.title || !channel.creatorId || !channel.members || channel.members.length === 0) {
+    if (
+      !channel.title ||
+      !channel.creatorId ||
+      !channel.members ||
+      channel.members.length === 0
+    ) {
       throw new Error('Missing required channel fields.');
     }
 
@@ -67,12 +72,13 @@ export class ChannelService {
 
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      throw new Error(`A channel with the name "${channel.title}" already exists.`);
+      throw new Error(
+        `A channel with the name "${channel.title}" already exists.`
+      );
     }
 
-    // Ensure required fields are added properly
     const newChannel: Channel = {
-      id: '', // Will be set later if needed
+      id: '',
       title: channel.title,
       description: channel.description || '',
       createdAt: channel.createdAt || new Date(),
@@ -92,7 +98,9 @@ export class ChannelService {
 
   getChannelById(id: string): Observable<Channel & { id: string }> {
     const channelRef = doc(this.firestore, 'channels', id);
-    return docData(channelRef, { idField: 'id' }) as Observable<Channel & { id: string }>;
+    return docData(channelRef, { idField: 'id' }) as Observable<
+      Channel & { id: string }
+    >;
   }
 
   triggerAddChannelDialog() {
@@ -151,17 +159,32 @@ export class ChannelService {
     });
   }
 
-  async updateLastReplyTimestamp(channelId: string, messageId: string): Promise<void> {
-    const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
-    console.log('Updating timestamp at path:', `channels/${channelId}/messages/${messageId}`);
+  async updateLastReplyTimestamp(
+    channelId: string,
+    messageId: string
+  ): Promise<void> {
+    const parentRef = doc(
+      this.firestore,
+      `channels/${channelId}/messages/${messageId}`
+    );
+    console.log(
+      'Updating timestamp at path:',
+      `channels/${channelId}/messages/${messageId}`
+    );
 
     await updateDoc(parentRef, {
       lastReplyTimestamp: serverTimestamp(),
     });
   }
 
-  async updateParentMessageThreadInfo(channelId: string, messageId: string): Promise<void> {
-    const parentRef = doc(this.firestore, `channels/${channelId}/messages/${messageId}`);
+  async updateParentMessageThreadInfo(
+    channelId: string,
+    messageId: string
+  ): Promise<void> {
+    const parentRef = doc(
+      this.firestore,
+      `channels/${channelId}/messages/${messageId}`
+    );
     const parentSnap = await getDoc(parentRef);
 
     if (!parentSnap.exists()) {
@@ -172,9 +195,7 @@ export class ChannelService {
     const currentCount = parentSnap.data()?.['replyCount'] || 0;
     await updateDoc(parentRef, {
       replyCount: currentCount + 1,
-      lastReplyTimestamp: new Date()
+      lastReplyTimestamp: new Date(),
     });
   }
-
-
 }
