@@ -170,7 +170,7 @@
                   @if (hoveredMessageId === reply.id) {
                     <div class="message-toolbar" [class.open]="emojiPickerForMessageId === reply.id">
                       <button (click)="toggleEmojiPicker(reply.id!, $event)">
-                        <img src="/assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
+                        <img src="assets/images/sidenav-img/add_reaction.svg" alt="Reaction" />
                       </button>
 
                       @if (reply.senderId === currentUserId) {
