@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
-  
+
   private shouldRedirectToLogin(user: any): boolean {
     const url = this.router.url;
     const allowedPaths = [
@@ -60,9 +60,13 @@ export class AppComponent implements OnInit {
   private handleUnauthorizedAccess(): void {
     if (!this.userAuthService.loggedOutManually) {
       this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
+      setTimeout(() => {
+        this.setToast(false, '');
+      }, 3000);
     }
     this.userAuthService.loggedOutManually = false;
   }
+
 
   setToast(show: boolean, message: string): void {
     this.showToast = show;
