@@ -138,18 +138,18 @@
     background-image: url("../../../assets/icons/alternate_email.svg");
   }
 }
-.emoji-container{
+.emoji-container {
   position: relative;
   overflow: visible;
 }
 
 .emoji-wrapper {
-    position: absolute;
-    left: 5% !important;
-    bottom: calc(100% + 160px) !important;
-    z-index: 10000;
-    width: min(320px, 100%);
-    max-width: calc(100vw - 32px);
+  position: absolute;
+  left: 5% !important;
+  bottom: calc(100% + 160px) !important;
+  z-index: 10000;
+  width: min(320px, 100%);
+  max-width: calc(100vw - 32px);
 }
 
 .emoji-wrapper .emoji-mart {
@@ -221,9 +221,9 @@
   }
   .emoji-wrapper {
     position: absolute;
-      left: 5% !important;
-      bottom: calc(100% + 130px) !important;
-      z-index: 10000;
-      width: min(300px, 100%);
+    left: 5% !important;
+    bottom: calc(100% + 130px) !important;
+    z-index: 10000;
+    width: min(300px, 100%);
   }
 }
