@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CommonModule, formatCurrency } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { InputFieldComponent } from '../../shared/input-field/input-field.component';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -119,6 +119,7 @@ export class LoginComponent {
 
   onLogin(): void {
     if (this.loginForm.valid) {
+      this.loginForm.disable();
       this.authService
         .login(this.loginForm.value.email, this.loginForm.value.password)
         .then(async (userCredential) => {
@@ -128,8 +129,10 @@ export class LoginComponent {
         })
         .catch((error) => {
           this.showErrorFeedback();
+          this.loginForm.enable();
         });
     }
+
     this.loginForm.reset();
   }
 
