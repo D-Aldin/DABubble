@@ -159,6 +159,8 @@ export class RegisterComponent {
 
   onNameChange(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    this.nameInput = inputElement.value;
+    this.nameInput = inputElement.value
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
   }
 }
