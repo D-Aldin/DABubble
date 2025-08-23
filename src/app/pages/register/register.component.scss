@@ -139,7 +139,7 @@ section {
   @include mixins.iphone-four() {
     .submit-button {
       width: 85px;
-      height: 36px;
+      // height: 36px;
       font-size: 1rem;
       margin-top: 0.2rem;
     }
@@ -349,7 +349,7 @@ section {
 
   @include mixins.iphone-four() {
     padding: 15px;
-    height: 415px;
+    height: 435px;
 
     h1 {
       font-size: 1.125rem;
@@ -405,6 +405,7 @@ section {
 @media (max-width: 440px) {
   .register-card {
     padding: 0.8rem;
+    height: 455px;
 
     .title {
       font-size: 28px;

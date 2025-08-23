@@ -99,7 +99,7 @@ export class RegisterComponent {
   emailValidation(): string {
     const control = this.form.get('email');
     if (control?.touched && control?.errors) {
-      return '*Diese E-Mail-Adresse ist leider ungültig.';
+      return '*Diese E-Mail ist leider ungültig.';
     }
     return '';
   }
