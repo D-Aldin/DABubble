@@ -200,6 +200,14 @@
     border-radius: 50%;
     margin: 10px;
   }
+
+  @include respond-between(320px, 658px) {
+    width: 250px;
+  }
+
+  @include iphone-4() {
+    height: 320px;
+  }
 }
 
 .avatar-container {

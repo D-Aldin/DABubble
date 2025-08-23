@@ -10,6 +10,7 @@
   border-radius: 30px;
   display: flex;
   flex-direction: column;
+  transition: width 21s;
 
   .heading {
     display: flex;
@@ -144,7 +145,8 @@
       }
 
       &:hover {
-        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+          brightness(94%) contrast(92%);
       }
 
       .plus-btn {
@@ -215,7 +217,8 @@
       }
 
       &:hover {
-        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg) brightness(94%) contrast(92%);
+        filter: invert(28%) sepia(94%) saturate(533%) hue-rotate(203deg)
+          brightness(94%) contrast(92%);
       }
     }
   }
