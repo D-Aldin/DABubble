@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
     private router: Router,
     private renderer: Renderer2
   ) {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (event.url.includes('/dashboard')) {
           this.renderer.removeClass(document.body, 'mobile-unlock');
@@ -58,7 +58,10 @@ export class AppComponent implements OnInit {
   }
 
   private handleUnauthorizedAccess(): void {
-    if (!this.userAuthService.loggedOutManually) {
+    if (
+      !this.userAuthService.loggedOutManually &&
+      this.router.url.includes('login')
+    ) {
       this.setToast(true, 'Bitte melde dich an, um fortzufahren.');
       setTimeout(() => {
         this.setToast(false, '');
@@ -66,7 +69,6 @@ export class AppComponent implements OnInit {
     }
     this.userAuthService.loggedOutManually = false;
   }
-
 
   setToast(show: boolean, message: string): void {
     this.showToast = show;
