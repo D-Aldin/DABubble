@@ -12,8 +12,6 @@ import {
   query,
   orderBy,
   where,
-  QuerySnapshot,
-  DocumentData,
   getDocs,
   getDoc,
   setDoc,

@@ -35,12 +35,15 @@
 
         <ng-template #usersLoaded>
           @for (channel of channels$ | async; track channel.id) {
-          <div class="channel-item"
+          @if(channel.members.includes(authService.currentUserId)) {
+              <div class="channel-item"
             (click)="onChannelClick(channel.id); selectChannel(channel); triggerBounce(channel.id)"
             [ngClass]="{'selected' : channel.id == selectedChannel && isURLChannel, 'bounce-x': bounceMap[channel.id] && isURLChannel}">
             <b>#</b>
             <span>{{ channel.title }}</span>
           </div>
+          }
+        
           }
         </ng-template>
       </div>
