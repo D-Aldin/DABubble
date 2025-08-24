@@ -269,6 +269,16 @@
     min-height: 83%;
     max-height: calc(65vh - 140px);
   }
+
+  @include mixins.ipadAir() {
+    min-height: 70%;
+    max-height: calc(75vh - 140px);
+  }
+
+  @include mixins.surfacePro() {
+    min-height: 62%;
+    max-height: calc(65vh - 140px);
+  }
 }
 
 .avatar {

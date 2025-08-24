@@ -121,6 +121,10 @@ section {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+
+  @include iphoneProMax() {
+    max-height: 440px;
+  }
 }
 
 h3 {

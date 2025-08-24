@@ -242,6 +242,24 @@
   }
 }
 
+@mixin ipadAir {
+  @media only screen and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2) {
+    @content;
+  }
+}
+
+@mixin surfacePro {
+  @media only screen and (device-width: 912px) and (device-height: 1368px) and (-webkit-device-pixel-ratio: 2) {
+    @content;
+  }
+}
+
+@mixin iphoneProMax {
+  @media only screen and (device-width: 430px) and (device-height: 932px) {
+    @content;
+  }
+}
+
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;

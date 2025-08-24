@@ -20,6 +20,14 @@
   @include ipadMini() {
     height: calc(87vh - 140px) !important;
   }
+
+  @include ipadAir() {
+    height: calc(75vh - 140px) !important;
+  }
+
+  @include surfacePro() {
+    height: calc(66vh - 140px) !important;
+  }
 }
 
 .mobile-edit-btn {
@@ -426,6 +434,10 @@
   flex-direction: column;
   overflow-y: auto;
   height: 100vh;
+
+  @include iphoneProMax() {
+    height: 70vh !important;
+  }
 }
 
 app-channel-messages {
