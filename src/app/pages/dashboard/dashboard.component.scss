@@ -71,6 +71,10 @@ section {
     margin-left: 0;
     width: 100%;
   }
+
+  @include mixins.ipadMini() {
+    height: calc(86vh - 130px) !important;
+  }
 }
 
 .main-content {
@@ -154,6 +158,10 @@ section {
 
   @include mixins.ipadPro() {
     bottom: 42rem;
+  }
+
+  @include mixins.ipadMini() {
+    bottom: 22rem;
   }
 }
 

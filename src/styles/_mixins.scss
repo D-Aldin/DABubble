@@ -236,6 +236,12 @@
   }
 }
 
+@mixin ipadMini {
+  @media only screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) {
+    @content;
+  }
+}
+
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;
