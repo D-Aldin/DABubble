@@ -456,7 +456,7 @@
 @media (max-height: 900px) {
   .profile-card {
     max-width: 95vw !important;
-    height: auto;
+    height: 490px !important;
     padding: 40px 20px;
     margin: 0;
 
@@ -469,5 +469,9 @@
   .email-link {
     display: flex;
     width: 90%;
+  }
+
+  .button-row {
+    gap: 10px;
   }
 }
