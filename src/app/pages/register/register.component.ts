@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InputFieldComponent } from '../../shared/input-field/input-field.component';
 import {
   FormBuilder,
@@ -13,6 +13,8 @@ import { Router, RouterModule } from '@angular/router';
 import { avatarImgPaths, defaultAvatar } from './avatar-selection.config';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
+import { ChannelService } from '../../core/services/channel.service';
+import { firstValueFrom, take } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -42,12 +44,14 @@ export class RegisterComponent {
   showErrorToast: boolean = false;
   showSuccessToast: boolean = false;
   nameInput: string = '';
+  newlyRegisteredUser: any;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private channelService: ChannelService
   ) {
     this.form = this.fb.group({
       name: [
@@ -123,6 +127,7 @@ export class RegisterComponent {
         .register(this.form.value.email, this.form.value.password)
         .then(async (userCredential) => {
           const user = userCredential.user;
+          this.newlyRegisteredUser = userCredential.user;
           if (user.email)
             await this.userService.createUserDocument(
               user.uid,
@@ -130,6 +135,7 @@ export class RegisterComponent {
               this.nameInput,
               user.email
             );
+          this.addRegisteredUserToAllChannels(user.uid)
           this.showSuccessFeedback();
           this.proceedToLogin();
         })
@@ -162,5 +168,20 @@ export class RegisterComponent {
     this.nameInput = inputElement.value
       .toLowerCase()
       .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  async addRegisteredUserToAllChannels(uid: string): Promise<void> {
+    try {
+      const channels = await firstValueFrom(
+        this.channelService.getChannels().pipe(take(1))
+      );
+      if (!channels || channels.length === 0) return;
+      const ops = channels.map(ch =>
+        this.channelService.addUsersToChannel(ch.id, [uid])
+      );
+      await Promise.all(ops);
+    } catch (err) {
+      console.error('Failed to add user to all channels:', err);
+    }
   }
 }

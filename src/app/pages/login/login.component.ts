@@ -12,6 +12,8 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { SuccessToastComponent } from '../../shared/success-toast/success-toast.component';
 import { UserService } from '../../core/services/user.service';
+import { ChannelService } from '../../core/services/channel.service';
+import { firstValueFrom, take } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -37,8 +39,9 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private channelService: ChannelService
+  ) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -72,12 +75,28 @@ export class LoginComponent {
           user.displayName ?? '',
           user.email ?? ''
         );
+        this.addRegisteredUserToAllChannels(user.uid)
         this.proceedToDashboard(0);
       },
       error: (err) => {
         console.error('Guest login failed:', err);
       },
     });
+  }
+
+  async addRegisteredUserToAllChannels(uid: string): Promise<void> {
+    try {
+      const channels = await firstValueFrom(
+        this.channelService.getChannels().pipe(take(1))
+      );
+      if (!channels || channels.length === 0) return;
+      const ops = channels.map(ch =>
+        this.channelService.addUsersToChannel(ch.id, [uid])
+      );
+      await Promise.all(ops);
+    } catch (err) {
+      console.error('Failed to add user to all channels:', err);
+    }
   }
 
   async onGoogleLogin(): Promise<void> {
