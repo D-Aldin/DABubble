@@ -230,6 +230,12 @@
   }
 }
 
+@mixin ipadPro {
+  @media only screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) {
+    @content;
+  }
+}
+
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;

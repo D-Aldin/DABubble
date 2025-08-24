@@ -258,6 +258,12 @@
   @include mixins.iphone-pro() {
     min-height: 96%;
   }
+
+  @include mixins.ipadPro() {
+    width: 100vw;
+    min-height: 0;
+    max-height: calc(76vh - 140px);
+  }
 }
 
 .avatar {

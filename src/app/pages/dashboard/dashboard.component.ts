@@ -77,10 +77,16 @@ export class DashboardComponent {
   @HostListener('window:resize')
   onResize() {
     const width = window.innerWidth;
+    const height = window.innerHeight;
     this.isMediumScreen = width >= 980 && width <= 1400;
     this.screenWidth = width;
     if (this.screenWidth < 700) {
       this.setupMobileDashboardView();
+    }
+
+    if (this.screenWidth == 1024 && height == 1366) {
+      this.setupMobileDashboardView();
+      this.isIntroSectionVisible = false;
     }
   }
 

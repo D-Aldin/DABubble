@@ -12,6 +12,10 @@
   transform-origin: left;
   animation: curtainSlideIn 0.18s ease-out forwards;
   transition: all 0.5s ease-in-out;
+
+  @include ipadPro() {
+    height: calc(65vh - 140px);
+  }
 }
 
 .mobile-edit-btn {
@@ -410,12 +414,10 @@
 
 .message-field-wrapper {
   width: 100%;
-  // position: absolute;
   bottom: 10px;
 }
 
 .messages-container {
-  // height: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

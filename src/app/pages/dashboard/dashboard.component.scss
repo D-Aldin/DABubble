@@ -23,6 +23,10 @@ body {
     animation: slideInFromRight 0.35s ease-out;
     will-change: transform, opacity;
   }
+
+  @include mixins.ipadPro() {
+    height: 75vh !important;
+  }
 }
 
 .content-wrapper {
@@ -44,6 +48,10 @@ section {
   height: 100vh;
   justify-content: center;
   background-color: $secondary-color;
+
+  @include mixins.ipadPro() {
+    height: 55vh;
+  }
 }
 
 .dashboard-wrapper {
@@ -142,6 +150,10 @@ section {
       font-weight: 500;
       text-align: center;
     }
+  }
+
+  @include mixins.ipadPro() {
+    bottom: 42rem;
   }
 }
 
